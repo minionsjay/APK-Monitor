@@ -227,7 +227,22 @@ for mr in monitor_records:
 parts.append('</table>\n')
 
 # 端点统计按厂商分组
+# 生成端点CSV
+endpoint_csv_rows = []
+for cloud in ["华为云","阿里云","腾讯云","未知"]:
+    entries=endpoint_groups.get(cloud,[])
+    for ip,apks,stats in sorted(entries):
+        endpoint_csv_rows.append({'IP地址':ip,'厂商':cloud,'包数':stats.get('packets','-'),'字节数':stats.get('bytes','-'),'发送字节':stats.get('tx_bytes','-'),'接收字节':stats.get('rx_bytes','-'),'出现在APK':', '.join(apks)})
+endpoint_csv_buf=io.StringIO()
+endpoint_writer=csv.DictWriter(endpoint_csv_buf,fieldnames=['IP地址','厂商','包数','字节数','发送字节','接收字节','出现在APK'] if endpoint_csv_rows else [''])
+if endpoint_csv_rows:
+    endpoint_writer.writeheader()
+    endpoint_writer.writerows(endpoint_csv_rows)
+endpoint_csv_b64=base64.b64encode(endpoint_csv_buf.getvalue().encode('utf-8-sig')).decode()
+
 parts.append('<h2>端点统计（按厂商分组）</h2>\n')
+parts.append(f'<button class="btn-download" onclick="downloadEndpointCSV()">下载端点CSV</button>\n')
+parts.append(f'<script>function downloadEndpointCSV(){{var c=\'{endpoint_csv_b64}\';var l=document.createElement(\'a\');l.href=\'data:text/csv;base64,\'+c;l.download=\'端点统计.csv\';l.click()}}</script>\n')
 for cloud in ["华为云","阿里云","腾讯云","未知"]:
     entries=endpoint_groups.get(cloud,[])
     if not entries: continue
