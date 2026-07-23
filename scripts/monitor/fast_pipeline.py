@@ -257,19 +257,24 @@ def install_worker():
 
         # 存储检查
         if get_storage_gb() < STORAGE_THRESHOLD_GB:
-            print('存储不足'); os.remove(apk_path); stats['skipped']+=1; continue
+            print('存储不足'); os.path.exists(apk_path) and os.remove(apk_path); stats['skipped']+=1; continue
 
         # 卸载同包名
         subprocess.run(f'{ADB} uninstall {pkg}'.split(), capture_output=True, timeout=30)
 
         # 安装
         t3 = time.time()
-        r = subprocess.run(f'{ADB} install -r {apk_path}'.split(),
-                          capture_output=True, text=True, timeout=120)
-        t_inst = time.time() - t3
-        stats['total_install'] += t_inst
-        if 'Success' not in r.stdout:
-            print(f'安装失败({t_inst:.1f}s)'); os.remove(apk_path); stats['failed']+=1; continue
+        try:
+            r = subprocess.run(f'{ADB} install -r {apk_path}'.split(),
+                              capture_output=True, text=True, timeout=120)
+            t_inst = time.time() - t3
+            stats['total_install'] += t_inst
+            if 'Success' not in r.stdout:
+                print(f'安装失败({t_inst:.1f}s)'); os.path.exists(apk_path) and os.remove(apk_path); stats['failed']+=1; continue
+        except subprocess.TimeoutExpired:
+            print('安装超时(120s)'); stats['failed']+=1; continue
+        except Exception as e:
+            print(f'安装异常({e})'); stats['failed']+=1; continue
 
         # 启动+弹窗+获取节点
         t4 = time.time()
