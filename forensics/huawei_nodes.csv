@@ -1,0 +1,12 @@
+IP,端口,类型,APK,app_name,反向DNS,SNI,TLS握手,数据传输
+110.41.11.13,30146,proxy,714cpk28,,ecs-110-41-11-13.compute.hwclouds-dns.com,,否,否
+110.41.60.161,30122,proxy,718c257,,ecs-110-41-60-161.compute.hwclouds-dns.com,,否,否
+113.45.254.81,30146,proxy,714cpk28,,ecs-113-45-254-81.compute.hwclouds-dns.com,,否,否
+113.45.47.238,30146,proxy,714cpk28,,ecs-113-45-47-238.compute.hwclouds-dns.com,,否,否
+114.132.204.167,30139,proxy,718xssp20,,N/A,music.163.com,是,是
+114.132.241.58,30139,control,718xssp20,,N/A,,否,否
+116.205.241.185,30122,proxy,718c257,,jiniq.com,,否,否
+121.37.218.156,30146,proxy,714cpk28,,ecs-121-37-218-156.compute.hwclouds-dns.com,share.note.youdao.com,是,是
+121.37.39.209,30122,proxy,718c257,,ecs-121-37-39-209.compute.hwclouds-dns.com,,否,否
+124.71.15.147,30122,proxy,718c257,,ecs-124-71-15-147.compute.hwclouds-dns.com,,否,否
+124.71.18.253,30146,proxy,714cpk28,,ecs-124-71-18-253.compute.hwclouds-dns.com,,否,否

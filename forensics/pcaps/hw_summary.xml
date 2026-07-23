@@ -1,0 +1,5013 @@
+<?xml version="1.0" encoding="utf-8"?>
+<psml version="0" creator="wireshark/3.6.2">
+<structure>
+<section>No.</section>
+<section>Time</section>
+<section>Source</section>
+<section>Destination</section>
+<section>Protocol</section>
+<section>Length</section>
+<section>Info</section>
+</structure>
+
+<packet>
+<section>1</section>
+<section>0.000000</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>80</section>
+<section>37864 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=2692464557 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>2</section>
+<section>0.000392</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>80</section>
+<section>47918 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1722028710 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>3</section>
+<section>0.000887</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>80</section>
+<section>38334 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=138547421 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>4</section>
+<section>0.001742</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>80</section>
+<section>47846 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=2146892614 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>5</section>
+<section>0.011156</section>
+<section>121.37.39.209</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 37864 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=402422252 TSecr=2692464557 WS=128</section>
+</packet>
+
+<packet>
+<section>6</section>
+<section>0.011274</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>37864 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2692464568 TSecr=402422252</section>
+</packet>
+
+<packet>
+<section>7</section>
+<section>0.011367</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>37864 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2692464568 TSecr=402422252</section>
+</packet>
+
+<packet>
+<section>8</section>
+<section>0.012925</section>
+<section>124.71.15.147</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 38334 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=3750703541 TSecr=138547421 WS=128</section>
+</packet>
+
+<packet>
+<section>9</section>
+<section>0.013026</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>38334 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=138547434 TSecr=3750703541</section>
+</packet>
+
+<packet>
+<section>10</section>
+<section>0.013134</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>38334 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=138547434 TSecr=3750703541</section>
+</packet>
+
+<packet>
+<section>11</section>
+<section>0.017849</section>
+<section>116.205.241.185</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 47846 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2823467937 TSecr=2146892614 WS=128</section>
+</packet>
+
+<packet>
+<section>12</section>
+<section>0.017908</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>47846 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2146892631 TSecr=2823467937</section>
+</packet>
+
+<packet>
+<section>13</section>
+<section>0.018100</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>47846 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2146892631 TSecr=2823467937</section>
+</packet>
+
+<packet>
+<section>14</section>
+<section>0.018104</section>
+<section>110.41.60.161</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 47918 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=3523577477 TSecr=1722028710 WS=128</section>
+</packet>
+
+<packet>
+<section>15</section>
+<section>0.018165</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>47918 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1722028728 TSecr=3523577477</section>
+</packet>
+
+<packet>
+<section>16</section>
+<section>0.018732</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>47918 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1722028728 TSecr=3523577477</section>
+</packet>
+
+<packet>
+<section>17</section>
+<section>0.024192</section>
+<section>121.37.39.209</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 37864 [ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=402422266 TSecr=2692464568</section>
+</packet>
+
+<packet>
+<section>18</section>
+<section>0.024297</section>
+<section>121.37.39.209</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 37864 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=402422266 TSecr=2692464568</section>
+</packet>
+
+<packet>
+<section>19</section>
+<section>0.024362</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>37864 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=2692464581 TSecr=402422266</section>
+</packet>
+
+<packet>
+<section>20</section>
+<section>0.026645</section>
+<section>124.71.15.147</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 38334 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=3750703556 TSecr=138547434</section>
+</packet>
+
+<packet>
+<section>21</section>
+<section>0.026700</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>38334 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=138547447 TSecr=3750703556</section>
+</packet>
+
+<packet>
+<section>22</section>
+<section>0.030267</section>
+<section>116.205.241.185</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 47846 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=2823467954 TSecr=2146892631</section>
+</packet>
+
+<packet>
+<section>23</section>
+<section>0.030364</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>47846 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=2146892643 TSecr=2823467954</section>
+</packet>
+
+<packet>
+<section>24</section>
+<section>0.030406</section>
+<section>110.41.60.161</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 47918 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=3523577496 TSecr=1722028728</section>
+</packet>
+
+<packet>
+<section>25</section>
+<section>0.030469</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>47918 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1722028740 TSecr=3523577496</section>
+</packet>
+
+<packet>
+<section>26</section>
+<section>0.395627</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39298 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=419 Len=0 TSval=1919174890 TSecr=82979198</section>
+</packet>
+
+<packet>
+<section>27</section>
+<section>0.397184</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39726 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=397 Len=0 TSval=1919174892 TSecr=82979168</section>
+</packet>
+
+<packet>
+<section>28</section>
+<section>0.397344</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>43378 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=638 Len=0 TSval=1919174892 TSecr=82973545</section>
+</packet>
+
+<packet>
+<section>29</section>
+<section>0.397419</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39732 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=397 Len=0 TSval=1919174892 TSecr=82979280</section>
+</packet>
+
+<packet>
+<section>30</section>
+<section>0.397470</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39730 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=397 Len=0 TSval=1919174892 TSecr=82979236</section>
+</packet>
+
+<packet>
+<section>31</section>
+<section>0.407116</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>125</section>
+<section>30146 → 39298 [PSH, ACK] Seq=1 Ack=2 Win=503 Len=53 TSval=82982202 TSecr=1919174890</section>
+</packet>
+
+<packet>
+<section>32</section>
+<section>0.407210</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39298 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>33</section>
+<section>0.408644</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39298 [FIN, ACK] Seq=54 Ack=2 Win=503 Len=0 TSval=82982202 TSecr=1919174890</section>
+</packet>
+
+<packet>
+<section>34</section>
+<section>0.408718</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39298 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>35</section>
+<section>0.408741</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>125</section>
+<section>30146 → 39726 [PSH, ACK] Seq=1 Ack=2 Win=507 Len=53 TSval=82982203 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>36</section>
+<section>0.408803</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39726 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>37</section>
+<section>0.408834</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>125</section>
+<section>30146 → 39732 [PSH, ACK] Seq=1 Ack=2 Win=507 Len=53 TSval=82982202 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>38</section>
+<section>0.408888</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39732 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>39</section>
+<section>0.408907</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39726 [FIN, ACK] Seq=54 Ack=2 Win=507 Len=0 TSval=82982203 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>40</section>
+<section>0.408945</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39726 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>41</section>
+<section>0.408963</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39732 [FIN, ACK] Seq=54 Ack=2 Win=507 Len=0 TSval=82982202 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>42</section>
+<section>0.408999</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39732 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>43</section>
+<section>0.410894</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>125</section>
+<section>30146 → 39730 [PSH, ACK] Seq=1 Ack=2 Win=507 Len=53 TSval=82982204 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>44</section>
+<section>0.410949</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39730 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>45</section>
+<section>0.410977</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>125</section>
+<section>30146 → 43378 [PSH, ACK] Seq=1 Ack=2 Win=459 Len=53 TSval=82982203 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>46</section>
+<section>0.411030</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>43378 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>47</section>
+<section>0.411099</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39730 [FIN, ACK] Seq=54 Ack=2 Win=507 Len=0 TSval=82982204 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>48</section>
+<section>0.411140</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39730 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>49</section>
+<section>0.411161</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 43378 [FIN, ACK] Seq=54 Ack=2 Win=459 Len=0 TSval=82982203 TSecr=1919174892</section>
+</packet>
+
+<packet>
+<section>50</section>
+<section>0.411198</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>43378 → 30146 [RST] Seq=2 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>51</section>
+<section>2.929942</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 40868 [ACK] Seq=1 Ack=1 Win=495 Len=0 TSval=2626288970 TSecr=286596432</section>
+</packet>
+
+<packet>
+<section>52</section>
+<section>2.930168</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP ACKed unseen segment] 40868 → 30139 [ACK] Seq=1 Ack=2 Win=463 Len=0 TSval=286611793 TSecr=2626274379</section>
+</packet>
+
+<packet>
+<section>53</section>
+<section>3.209623</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>39914 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919177704 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>54</section>
+<section>3.218065</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 39914 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=82985012 TSecr=1919177704 WS=128</section>
+</packet>
+
+<packet>
+<section>55</section>
+<section>3.218281</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39914 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919177713 TSecr=82985012</section>
+</packet>
+
+<packet>
+<section>56</section>
+<section>3.218376</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39914 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919177713 TSecr=82985012</section>
+</packet>
+
+<packet>
+<section>57</section>
+<section>3.218585</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>39918 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919177713 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>58</section>
+<section>3.229126</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39914 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=82985022 TSecr=1919177713</section>
+</packet>
+
+<packet>
+<section>59</section>
+<section>3.229317</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39914 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1919177724 TSecr=82985022</section>
+</packet>
+
+<packet>
+<section>60</section>
+<section>3.229395</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 39918 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=82985023 TSecr=1919177713 WS=128</section>
+</packet>
+
+<packet>
+<section>61</section>
+<section>3.229517</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39918 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919177724 TSecr=82985023</section>
+</packet>
+
+<packet>
+<section>62</section>
+<section>3.229599</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39918 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919177724 TSecr=82985023</section>
+</packet>
+
+<packet>
+<section>63</section>
+<section>3.229791</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>39922 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919177724 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>64</section>
+<section>3.238887</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 39922 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=82985033 TSecr=1919177724 WS=128</section>
+</packet>
+
+<packet>
+<section>65</section>
+<section>3.239099</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39922 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919177734 TSecr=82985033</section>
+</packet>
+
+<packet>
+<section>66</section>
+<section>3.239152</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39918 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=82985034 TSecr=1919177724</section>
+</packet>
+
+<packet>
+<section>67</section>
+<section>3.239214</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39918 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1919177734 TSecr=82985034</section>
+</packet>
+
+<packet>
+<section>68</section>
+<section>3.239363</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1</section>
+<section>328</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>69</section>
+<section>3.249137</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39922 [ACK] Seq=1 Ack=257 Win=65024 Len=0 TSval=82985043 TSecr=1919177734</section>
+</packet>
+
+<packet>
+<section>70</section>
+<section>3.252104</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>71</section>
+<section>3.252277</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39922 → 30146 [ACK] Seq=257 Ack=1399 Win=90624 Len=0 TSval=1919177747 TSecr=82985046</section>
+</packet>
+
+<packet>
+<section>72</section>
+<section>3.252351</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30146 → 39922 [PSH, ACK] Seq=1399 Ack=257 Win=65024 Len=1398 TSval=82985046 TSecr=1919177734 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>73</section>
+<section>3.252407</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39922 → 30146 [ACK] Seq=257 Ack=2797 Win=93440 Len=0 TSval=1919177747 TSecr=82985046</section>
+</packet>
+
+<packet>
+<section>74</section>
+<section>3.252428</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>75</section>
+<section>3.252468</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39922 → 30146 [ACK] Seq=257 Ack=4195 Win=96000 Len=0 TSval=1919177747 TSecr=82985046</section>
+</packet>
+
+<packet>
+<section>76</section>
+<section>3.252486</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>77</section>
+<section>3.252522</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39922 → 30146 [ACK] Seq=257 Ack=4500 Win=98816 Len=0 TSval=1919177747 TSecr=82985046</section>
+</packet>
+
+<packet>
+<section>78</section>
+<section>3.254568</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>79</section>
+<section>3.263435</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>80</section>
+<section>3.264835</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>39930 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919177759 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>81</section>
+<section>3.276544</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 39930 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=82985072 TSecr=1919177759 WS=128</section>
+</packet>
+
+<packet>
+<section>82</section>
+<section>3.276769</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39930 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919177771 TSecr=82985072</section>
+</packet>
+
+<packet>
+<section>83</section>
+<section>3.276966</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1</section>
+<section>328</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>84</section>
+<section>3.288734</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39930 [ACK] Seq=1 Ack=257 Win=65024 Len=0 TSval=82985083 TSecr=1919177772</section>
+</packet>
+
+<packet>
+<section>85</section>
+<section>3.291001</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>86</section>
+<section>3.291162</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39930 → 30146 [ACK] Seq=257 Ack=1399 Win=90624 Len=0 TSval=1919177786 TSecr=82985085</section>
+</packet>
+
+<packet>
+<section>87</section>
+<section>3.291234</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30146 → 39930 [PSH, ACK] Seq=1399 Ack=257 Win=65024 Len=1398 TSval=82985085 TSecr=1919177772 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>88</section>
+<section>3.291307</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39930 → 30146 [ACK] Seq=257 Ack=2797 Win=93440 Len=0 TSval=1919177786 TSecr=82985085</section>
+</packet>
+
+<packet>
+<section>89</section>
+<section>3.291368</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>90</section>
+<section>3.291420</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39930 → 30146 [ACK] Seq=257 Ack=4195 Win=96000 Len=0 TSval=1919177786 TSecr=82985085</section>
+</packet>
+
+<packet>
+<section>91</section>
+<section>3.291441</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>92</section>
+<section>3.291480</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39930 → 30146 [ACK] Seq=257 Ack=4500 Win=98816 Len=0 TSval=1919177786 TSecr=82985085</section>
+</packet>
+
+<packet>
+<section>93</section>
+<section>3.293111</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>94</section>
+<section>3.302660</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39922 → 30146 [ACK] Seq=407 Ack=4713 Win=101632 Len=0 TSval=1919177797 TSecr=82985058</section>
+</packet>
+
+<packet>
+<section>95</section>
+<section>3.306098</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>96</section>
+<section>3.317268</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>97</section>
+<section>3.317301</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39922 → 30146 [FIN, ACK] Seq=460 Ack=4713 Win=101632 Len=0 TSval=1919177812 TSecr=82985058</section>
+</packet>
+
+<packet>
+<section>98</section>
+<section>3.317341</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>99</section>
+<section>3.317362</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>39930 → 30146 [FIN, ACK] Seq=460 Ack=4713 Win=101632 Len=0 TSval=1919177812 TSecr=82985101</section>
+</packet>
+
+<packet>
+<section>100</section>
+<section>3.320300</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41248 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286612183 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>101</section>
+<section>3.326013</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>102</section>
+<section>3.326199</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39922 → 30146 [RST] Seq=460 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>103</section>
+<section>3.326262</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39922 [FIN, ACK] Seq=4766 Ack=461 Win=64896 Len=0 TSval=82985121 TSecr=1919177812</section>
+</packet>
+
+<packet>
+<section>104</section>
+<section>3.326322</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39922 → 30146 [RST] Seq=461 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>105</section>
+<section>3.327513</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>106</section>
+<section>3.327785</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39930 → 30146 [RST] Seq=460 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>107</section>
+<section>3.327916</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39930 [FIN, ACK] Seq=4766 Ack=460 Win=64896 Len=0 TSval=82985122 TSecr=1919177812</section>
+</packet>
+
+<packet>
+<section>108</section>
+<section>3.328030</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39930 → 30146 [RST] Seq=460 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>109</section>
+<section>3.328116</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 39930 [ACK] Seq=4767 Ack=461 Win=64896 Len=0 TSval=82985123 TSecr=1919177812</section>
+</packet>
+
+<packet>
+<section>110</section>
+<section>3.328202</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>39930 → 30146 [RST] Seq=461 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>111</section>
+<section>3.331558</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41248 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626289374 TSecr=286612183 WS=128</section>
+</packet>
+
+<packet>
+<section>112</section>
+<section>3.331744</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41248 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286612194 TSecr=2626289374</section>
+</packet>
+
+<packet>
+<section>113</section>
+<section>3.332199</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41248 → 30139 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286612195 TSecr=2626289374</section>
+</packet>
+
+<packet>
+<section>114</section>
+<section>3.345033</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41248 [ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=2626289385 TSecr=286612195</section>
+</packet>
+
+<packet>
+<section>115</section>
+<section>3.345238</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41248 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=2626289385 TSecr=286612195</section>
+</packet>
+
+<packet>
+<section>116</section>
+<section>3.345355</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41248 → 30139 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=286612208 TSecr=2626289385</section>
+</packet>
+
+<packet>
+<section>117</section>
+<section>3.686069</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>37786 → 30139 [ACK] Seq=1 Ack=1 Win=408 Len=0 TSval=286612549 TSecr=2626274380</section>
+</packet>
+
+<packet>
+<section>118</section>
+<section>3.686154</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] [TCP ACKed unseen segment] 40868 → 30139 [ACK] Seq=0 Ack=2 Win=463 Len=0 TSval=286612549 TSecr=2626274379</section>
+</packet>
+
+<packet>
+<section>119</section>
+<section>3.696271</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP ACKed unseen segment] 30139 → 37786 [ACK] Seq=1 Ack=2 Win=505 Len=0 TSval=2626289739 TSecr=286597454</section>
+</packet>
+
+<packet>
+<section>120</section>
+<section>3.697744</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Previous segment not captured] 30139 → 40868 [ACK] Seq=2 Ack=1 Win=495 Len=0 TSval=2626289737 TSecr=286611793</section>
+</packet>
+
+<packet>
+<section>121</section>
+<section>3.950368</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] [TCP ACKed unseen segment] 30139 → 37786 [ACK] Seq=0 Ack=2 Win=505 Len=0 TSval=2626289993 TSecr=286597454</section>
+</packet>
+
+<packet>
+<section>122</section>
+<section>3.950571</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Previous segment not captured] 37786 → 30139 [ACK] Seq=2 Ack=1 Win=408 Len=0 TSval=286612813 TSecr=2626289739</section>
+</packet>
+
+<packet>
+<section>123</section>
+<section>4.797602</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>125</section>
+<section>40986 → 30139 [PSH, ACK] Seq=1 Ack=1 Win=397 Len=53 TSval=286613660 TSecr=2626281047</section>
+</packet>
+
+<packet>
+<section>124</section>
+<section>4.797718</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>40986 → 30139 [FIN, ACK] Seq=54 Ack=1 Win=397 Len=0 TSval=286613660 TSecr=2626281047</section>
+</packet>
+
+<packet>
+<section>125</section>
+<section>4.809963</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>125</section>
+<section>30139 → 40986 [PSH, ACK] Seq=1 Ack=54 Win=507 Len=53 TSval=2626290851 TSecr=286613660</section>
+</packet>
+
+<packet>
+<section>126</section>
+<section>4.809997</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>40986 → 30139 [RST] Seq=54 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>127</section>
+<section>4.810010</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Previous segment not captured] 30139 → 40986 [ACK] Seq=55 Ack=55 Win=507 Len=0 TSval=2626290851 TSecr=286613660</section>
+</packet>
+
+<packet>
+<section>128</section>
+<section>4.810025</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>40986 → 30139 [RST] Seq=55 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>129</section>
+<section>4.810033</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Out-Of-Order] 30139 → 40986 [FIN, ACK] Seq=54 Ack=54 Win=507 Len=0 TSval=2626290851 TSecr=286613660</section>
+</packet>
+
+<packet>
+<section>130</section>
+<section>4.810046</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>40986 → 30139 [RST] Seq=54 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>131</section>
+<section>5.045155</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>125</section>
+<section>30139 → 40988 [PSH, ACK] Seq=1 Ack=1 Win=507 Len=53 TSval=2626291086 TSecr=286603949</section>
+</packet>
+
+<packet>
+<section>132</section>
+<section>5.045346</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>40988 → 30139 [ACK] Seq=1 Ack=54 Win=397 Len=0 TSval=286613908 TSecr=2626291086</section>
+</packet>
+
+<packet>
+<section>133</section>
+<section>5.045394</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 40988 [FIN, ACK] Seq=54 Ack=1 Win=507 Len=0 TSval=2626291086 TSecr=286603949</section>
+</packet>
+
+<packet>
+<section>134</section>
+<section>5.045615</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>125</section>
+<section>40988 → 30139 [PSH, ACK] Seq=1 Ack=55 Win=397 Len=53 TSval=286613908 TSecr=2626291086</section>
+</packet>
+
+<packet>
+<section>135</section>
+<section>5.045704</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>40988 → 30139 [FIN, ACK] Seq=54 Ack=55 Win=397 Len=0 TSval=286613908 TSecr=2626291086</section>
+</packet>
+
+<packet>
+<section>136</section>
+<section>5.046589</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41390 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286613909 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>137</section>
+<section>5.056647</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30139 → 40988 [RST] Seq=55 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>138</section>
+<section>5.056785</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30139 → 40988 [RST] Seq=55 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>139</section>
+<section>5.056829</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41390 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626291099 TSecr=286613909 WS=128</section>
+</packet>
+
+<packet>
+<section>140</section>
+<section>5.056945</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41390 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286613920 TSecr=2626291099</section>
+</packet>
+
+<packet>
+<section>141</section>
+<section>5.057342</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>142</section>
+<section>5.069768</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41390 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626291110 TSecr=286613920</section>
+</packet>
+
+<packet>
+<section>143</section>
+<section>5.069832</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>144</section>
+<section>5.069862</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41390 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286613933 TSecr=2626291111</section>
+</packet>
+
+<packet>
+<section>145</section>
+<section>5.069890</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 41390 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626291111 TSecr=286613920 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>146</section>
+<section>5.069906</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41390 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286613933 TSecr=2626291111</section>
+</packet>
+
+<packet>
+<section>147</section>
+<section>5.069912</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>148</section>
+<section>5.069923</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41390 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286613933 TSecr=2626291111</section>
+</packet>
+
+<packet>
+<section>149</section>
+<section>5.069929</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>150</section>
+<section>5.069938</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41390 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286613933 TSecr=2626291111</section>
+</packet>
+
+<packet>
+<section>151</section>
+<section>5.072233</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>152</section>
+<section>5.082621</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>153</section>
+<section>5.083396</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41394 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286613946 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>154</section>
+<section>5.098457</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41394 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626291135 TSecr=286613946 WS=128</section>
+</packet>
+
+<packet>
+<section>155</section>
+<section>5.098575</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286613961 TSecr=2626291135</section>
+</packet>
+
+<packet>
+<section>156</section>
+<section>5.099071</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>157</section>
+<section>5.112942</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41394 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626291152 TSecr=286613962</section>
+</packet>
+
+<packet>
+<section>158</section>
+<section>5.112961</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>159</section>
+<section>5.112977</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286613976 TSecr=2626291153</section>
+</packet>
+
+<packet>
+<section>160</section>
+<section>5.112996</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 41394 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626291153 TSecr=286613962 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>161</section>
+<section>5.113012</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286613976 TSecr=2626291153</section>
+</packet>
+
+<packet>
+<section>162</section>
+<section>5.113019</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>163</section>
+<section>5.113032</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286613976 TSecr=2626291153</section>
+</packet>
+
+<packet>
+<section>164</section>
+<section>5.113040</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>165</section>
+<section>5.113052</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286613976 TSecr=2626291153</section>
+</packet>
+
+<packet>
+<section>166</section>
+<section>5.114757</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>167</section>
+<section>5.122714</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41390 → 30139 [ACK] Seq=399 Ack=4713 Win=101632 Len=0 TSval=286613985 TSecr=2626291124</section>
+</packet>
+
+<packet>
+<section>168</section>
+<section>5.126265</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>169</section>
+<section>5.165997</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [ACK] Seq=399 Ack=4713 Win=101632 Len=0 TSval=286614029 TSecr=2626291166</section>
+</packet>
+
+<packet>
+<section>170</section>
+<section>14.875830</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>171</section>
+<section>14.876122</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41390 → 30139 [FIN, ACK] Seq=452 Ack=4713 Win=101632 Len=0 TSval=286623739 TSecr=2626291124</section>
+</packet>
+
+<packet>
+<section>172</section>
+<section>14.886868</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>173</section>
+<section>14.887004</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41390 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>174</section>
+<section>14.887412</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Previous segment not captured] 30139 → 41390 [ACK] Seq=4767 Ack=453 Win=64896 Len=0 TSval=2626300929 TSecr=286623739</section>
+</packet>
+
+<packet>
+<section>175</section>
+<section>14.887489</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41390 → 30139 [RST] Seq=453 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>176</section>
+<section>14.887523</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Out-Of-Order] 30139 → 41390 [FIN, ACK] Seq=4766 Ack=452 Win=64896 Len=0 TSval=2626300929 TSecr=286623738</section>
+</packet>
+
+<packet>
+<section>177</section>
+<section>14.887580</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41390 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>178</section>
+<section>15.126423</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>179</section>
+<section>15.126577</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [ACK] Seq=399 Ack=4766 Win=101632 Len=0 TSval=286623989 TSecr=2626301167</section>
+</packet>
+
+<packet>
+<section>180</section>
+<section>15.126613</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41394 [FIN, ACK] Seq=4766 Ack=399 Win=64896 Len=0 TSval=2626301167 TSecr=286614029</section>
+</packet>
+
+<packet>
+<section>181</section>
+<section>15.126978</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>182</section>
+<section>15.127076</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41394 → 30139 [FIN, ACK] Seq=452 Ack=4767 Win=101632 Len=0 TSval=286623990 TSecr=2626301167</section>
+</packet>
+
+<packet>
+<section>183</section>
+<section>15.128786</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41584 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286623991 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>184</section>
+<section>15.140689</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30139 → 41394 [RST] Seq=4767 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>185</section>
+<section>15.140786</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30139 → 41394 [RST] Seq=4767 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>186</section>
+<section>15.140998</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41584 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626301181 TSecr=286623991 WS=128</section>
+</packet>
+
+<packet>
+<section>187</section>
+<section>15.141094</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41584 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286624004 TSecr=2626301181</section>
+</packet>
+
+<packet>
+<section>188</section>
+<section>15.142099</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>189</section>
+<section>15.154041</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41584 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626301195 TSecr=286624005</section>
+</packet>
+
+<packet>
+<section>190</section>
+<section>15.154458</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>191</section>
+<section>15.154562</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41584 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286624017 TSecr=2626301196</section>
+</packet>
+
+<packet>
+<section>192</section>
+<section>15.154778</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 41584 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626301196 TSecr=286624005 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>193</section>
+<section>15.154848</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41584 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286624017 TSecr=2626301196</section>
+</packet>
+
+<packet>
+<section>194</section>
+<section>15.155109</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>195</section>
+<section>15.155175</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41584 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286624018 TSecr=2626301196</section>
+</packet>
+
+<packet>
+<section>196</section>
+<section>15.155348</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>197</section>
+<section>15.155415</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41584 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286624018 TSecr=2626301196</section>
+</packet>
+
+<packet>
+<section>198</section>
+<section>15.157424</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>199</section>
+<section>15.168311</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>200</section>
+<section>15.169157</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41586 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286624032 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>201</section>
+<section>15.181816</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41586 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626301224 TSecr=286624032 WS=128</section>
+</packet>
+
+<packet>
+<section>202</section>
+<section>15.182010</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286624045 TSecr=2626301224</section>
+</packet>
+
+<packet>
+<section>203</section>
+<section>15.183519</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>204</section>
+<section>15.196121</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41586 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626301238 TSecr=286624046</section>
+</packet>
+
+<packet>
+<section>205</section>
+<section>15.196215</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>206</section>
+<section>15.196296</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286624059 TSecr=2626301239</section>
+</packet>
+
+<packet>
+<section>207</section>
+<section>15.196374</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 41586 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626301239 TSecr=286624046 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>208</section>
+<section>15.196471</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286624059 TSecr=2626301239</section>
+</packet>
+
+<packet>
+<section>209</section>
+<section>15.196514</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>210</section>
+<section>15.196560</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>211</section>
+<section>15.196649</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286624059 TSecr=2626301239</section>
+</packet>
+
+<packet>
+<section>212</section>
+<section>15.196738</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286624059 TSecr=2626301239</section>
+</packet>
+
+<packet>
+<section>213</section>
+<section>15.199539</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>214</section>
+<section>15.206001</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41584 → 30139 [ACK] Seq=399 Ack=4713 Win=101632 Len=0 TSval=286624069 TSecr=2626301210</section>
+</packet>
+
+<packet>
+<section>215</section>
+<section>15.212164</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>216</section>
+<section>15.249350</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [ACK] Seq=399 Ack=4713 Win=101632 Len=0 TSval=286624112 TSecr=2626301254</section>
+</packet>
+
+<packet>
+<section>217</section>
+<section>18.288407</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 30139 → 40868 [ACK] Seq=1 Ack=1 Win=495 Len=0 TSval=2626304329 TSecr=286611793</section>
+</packet>
+
+<packet>
+<section>218</section>
+<section>18.288700</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 40868 → 30139 [ACK] Seq=1 Ack=2 Win=463 Len=0 TSval=286627151 TSecr=2626289737</section>
+</packet>
+
+<packet>
+<section>219</section>
+<section>19.046116</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 40868 → 30139 [ACK] Seq=0 Ack=2 Win=463 Len=0 TSval=286627909 TSecr=2626289737</section>
+</packet>
+
+<packet>
+<section>220</section>
+<section>19.046295</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 37786 → 30139 [ACK] Seq=1 Ack=1 Win=408 Len=0 TSval=286627909 TSecr=2626289739</section>
+</packet>
+
+<packet>
+<section>221</section>
+<section>19.056836</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 30139 → 37786 [ACK] Seq=1 Ack=2 Win=505 Len=0 TSval=2626305099 TSecr=286612813</section>
+</packet>
+
+<packet>
+<section>222</section>
+<section>19.057047</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 30139 → 40868 [ACK] Seq=2 Ack=1 Win=495 Len=0 TSval=2626305098 TSecr=286627151</section>
+</packet>
+
+<packet>
+<section>223</section>
+<section>19.310482</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 30139 → 37786 [ACK] Seq=0 Ack=2 Win=505 Len=0 TSval=2626305353 TSecr=286612813</section>
+</packet>
+
+<packet>
+<section>224</section>
+<section>19.310703</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 37786 → 30139 [ACK] Seq=2 Ack=1 Win=408 Len=0 TSval=286628173 TSecr=2626305099</section>
+</packet>
+
+<packet>
+<section>225</section>
+<section>23.351041</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>40376 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919197846 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>226</section>
+<section>23.364953</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 40376 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=83005159 TSecr=1919197846 WS=128</section>
+</packet>
+
+<packet>
+<section>227</section>
+<section>23.365237</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40376 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919197860 TSecr=83005159</section>
+</packet>
+
+<packet>
+<section>228</section>
+<section>23.365474</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40376 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919197860 TSecr=83005159</section>
+</packet>
+
+<packet>
+<section>229</section>
+<section>23.366052</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>40378 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919197861 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>230</section>
+<section>23.375487</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40376 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=83005169 TSecr=1919197860</section>
+</packet>
+
+<packet>
+<section>231</section>
+<section>23.375575</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40376 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1919197870 TSecr=83005169</section>
+</packet>
+
+<packet>
+<section>232</section>
+<section>23.379236</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 40378 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=83005172 TSecr=1919197861 WS=128</section>
+</packet>
+
+<packet>
+<section>233</section>
+<section>23.379434</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40378 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919197874 TSecr=83005172</section>
+</packet>
+
+<packet>
+<section>234</section>
+<section>23.380434</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1</section>
+<section>328</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>235</section>
+<section>23.392877</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40378 [ACK] Seq=1 Ack=257 Win=65024 Len=0 TSval=83005186 TSecr=1919197875</section>
+</packet>
+
+<packet>
+<section>236</section>
+<section>23.394836</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>237</section>
+<section>23.394958</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40378 → 30146 [ACK] Seq=257 Ack=1399 Win=90624 Len=0 TSval=1919197890 TSecr=83005188</section>
+</packet>
+
+<packet>
+<section>238</section>
+<section>23.395026</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30146 → 40378 [PSH, ACK] Seq=1399 Ack=257 Win=65024 Len=1398 TSval=83005188 TSecr=1919197875 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>239</section>
+<section>23.395089</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40378 → 30146 [ACK] Seq=257 Ack=2797 Win=93440 Len=0 TSval=1919197890 TSecr=83005188</section>
+</packet>
+
+<packet>
+<section>240</section>
+<section>23.395117</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>241</section>
+<section>23.395175</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40378 → 30146 [ACK] Seq=257 Ack=4195 Win=96000 Len=0 TSval=1919197890 TSecr=83005188</section>
+</packet>
+
+<packet>
+<section>242</section>
+<section>23.395266</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>243</section>
+<section>23.395314</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40378 → 30146 [ACK] Seq=257 Ack=4500 Win=98816 Len=0 TSval=1919197890 TSecr=83005188</section>
+</packet>
+
+<packet>
+<section>244</section>
+<section>23.397288</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>245</section>
+<section>23.409640</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>246</section>
+<section>23.410601</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>40380 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919197905 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>247</section>
+<section>23.419540</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 40380 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=83005215 TSecr=1919197905 WS=128</section>
+</packet>
+
+<packet>
+<section>248</section>
+<section>23.419726</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919197914 TSecr=83005215</section>
+</packet>
+
+<packet>
+<section>249</section>
+<section>23.420224</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1</section>
+<section>328</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>250</section>
+<section>23.429308</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40380 [ACK] Seq=1 Ack=257 Win=65024 Len=0 TSval=83005225 TSecr=1919197915</section>
+</packet>
+
+<packet>
+<section>251</section>
+<section>23.431585</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>252</section>
+<section>23.431672</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [ACK] Seq=257 Ack=1399 Win=90624 Len=0 TSval=1919197926 TSecr=83005227</section>
+</packet>
+
+<packet>
+<section>253</section>
+<section>23.431735</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30146 → 40380 [PSH, ACK] Seq=1399 Ack=257 Win=65024 Len=1398 TSval=83005227 TSecr=1919197915 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>254</section>
+<section>23.431801</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [ACK] Seq=257 Ack=2797 Win=93440 Len=0 TSval=1919197926 TSecr=83005227</section>
+</packet>
+
+<packet>
+<section>255</section>
+<section>23.431829</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>256</section>
+<section>23.431891</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [ACK] Seq=257 Ack=4195 Win=96000 Len=0 TSval=1919197927 TSecr=83005227</section>
+</packet>
+
+<packet>
+<section>257</section>
+<section>23.431979</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>258</section>
+<section>23.432031</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [ACK] Seq=257 Ack=4500 Win=98816 Len=0 TSval=1919197927 TSecr=83005227</section>
+</packet>
+
+<packet>
+<section>259</section>
+<section>23.433909</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>260</section>
+<section>23.442741</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>261</section>
+<section>23.449362</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40378 → 30146 [ACK] Seq=407 Ack=4713 Win=101632 Len=0 TSval=1919197944 TSecr=83005203</section>
+</packet>
+
+<packet>
+<section>262</section>
+<section>23.482691</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [ACK] Seq=407 Ack=4713 Win=101632 Len=0 TSval=1919197977 TSecr=83005238</section>
+</packet>
+
+<packet>
+<section>263</section>
+<section>24.777608</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>80</section>
+<section>48562 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1722053487 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>264</section>
+<section>24.787865</section>
+<section>110.41.60.161</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 48562 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=3523602253 TSecr=1722053487 WS=128</section>
+</packet>
+
+<packet>
+<section>265</section>
+<section>24.787990</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>48562 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1722053498 TSecr=3523602253</section>
+</packet>
+
+<packet>
+<section>266</section>
+<section>24.788215</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>48562 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1722053498 TSecr=3523602253</section>
+</packet>
+
+<packet>
+<section>267</section>
+<section>24.798266</section>
+<section>110.41.60.161</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 48562 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=3523602264 TSecr=1722053498</section>
+</packet>
+
+<packet>
+<section>268</section>
+<section>24.798368</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>48562 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1722053508 TSecr=3523602264</section>
+</packet>
+
+<packet>
+<section>269</section>
+<section>24.973354</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>270</section>
+<section>24.973436</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41584 → 30139 [FIN, ACK] Seq=452 Ack=4713 Win=101632 Len=0 TSval=286633836 TSecr=2626301210</section>
+</packet>
+
+<packet>
+<section>271</section>
+<section>24.985015</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>272</section>
+<section>24.985247</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41584 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>273</section>
+<section>24.985322</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Previous segment not captured] 30139 → 41584 [ACK] Seq=4767 Ack=453 Win=64896 Len=0 TSval=2626311025 TSecr=286633836</section>
+</packet>
+
+<packet>
+<section>274</section>
+<section>24.985385</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41584 → 30139 [RST] Seq=453 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>275</section>
+<section>24.985409</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Out-Of-Order] 30139 → 41584 [FIN, ACK] Seq=4766 Ack=452 Win=64896 Len=0 TSval=2626311025 TSecr=286633836</section>
+</packet>
+
+<packet>
+<section>276</section>
+<section>24.985452</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41584 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>277</section>
+<section>25.190204</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41768 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286634053 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>278</section>
+<section>25.202496</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41768 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626311244 TSecr=286634053 WS=128</section>
+</packet>
+
+<packet>
+<section>279</section>
+<section>25.202669</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41768 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286634065 TSecr=2626311244</section>
+</packet>
+
+<packet>
+<section>280</section>
+<section>25.203029</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41768 → 30139 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286634066 TSecr=2626311244</section>
+</packet>
+
+<packet>
+<section>281</section>
+<section>25.205389</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41770 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286634068 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>282</section>
+<section>25.212387</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>283</section>
+<section>25.212537</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [ACK] Seq=399 Ack=4766 Win=101632 Len=0 TSval=286634075 TSecr=2626311254</section>
+</packet>
+
+<packet>
+<section>284</section>
+<section>25.212590</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41586 [FIN, ACK] Seq=4766 Ack=399 Win=64896 Len=0 TSval=2626311254 TSecr=286624112</section>
+</packet>
+
+<packet>
+<section>285</section>
+<section>25.212857</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>286</section>
+<section>25.212993</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41586 → 30139 [FIN, ACK] Seq=452 Ack=4767 Win=101632 Len=0 TSval=286634076 TSecr=2626311254</section>
+</packet>
+
+<packet>
+<section>287</section>
+<section>25.215339</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41768 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=2626311257 TSecr=286634066</section>
+</packet>
+
+<packet>
+<section>288</section>
+<section>25.215408</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41768 → 30139 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=286634078 TSecr=2626311257</section>
+</packet>
+
+<packet>
+<section>289</section>
+<section>25.219358</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41770 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626311259 TSecr=286634068 WS=128</section>
+</packet>
+
+<packet>
+<section>290</section>
+<section>25.219505</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41770 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286634082 TSecr=2626311259</section>
+</packet>
+
+<packet>
+<section>291</section>
+<section>25.220209</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>292</section>
+<section>25.224526</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30139 → 41586 [RST] Seq=4767 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>293</section>
+<section>25.224699</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30139 → 41586 [RST] Seq=4767 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>294</section>
+<section>25.233817</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41770 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626311274 TSecr=286634083</section>
+</packet>
+
+<packet>
+<section>295</section>
+<section>25.234213</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>296</section>
+<section>25.234304</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41770 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286634097 TSecr=2626311274</section>
+</packet>
+
+<packet>
+<section>297</section>
+<section>25.234371</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 41770 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626311274 TSecr=286634083 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>298</section>
+<section>25.234451</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41770 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286634097 TSecr=2626311274</section>
+</packet>
+
+<packet>
+<section>299</section>
+<section>25.234600</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>300</section>
+<section>25.234682</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>301</section>
+<section>25.234746</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41770 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286634097 TSecr=2626311274</section>
+</packet>
+
+<packet>
+<section>302</section>
+<section>25.234889</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41770 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286634098 TSecr=2626311274</section>
+</packet>
+
+<packet>
+<section>303</section>
+<section>25.238427</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>304</section>
+<section>25.252406</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>305</section>
+<section>25.253830</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41772 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286634116 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>306</section>
+<section>25.265646</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41772 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626311307 TSecr=286634116 WS=128</section>
+</packet>
+
+<packet>
+<section>307</section>
+<section>25.266100</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41772 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286634129 TSecr=2626311307</section>
+</packet>
+
+<packet>
+<section>308</section>
+<section>25.267696</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>309</section>
+<section>25.281016</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41772 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626311322 TSecr=286634130</section>
+</packet>
+
+<packet>
+<section>310</section>
+<section>25.281261</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>311</section>
+<section>25.281391</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41772 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286634144 TSecr=2626311323</section>
+</packet>
+
+<packet>
+<section>312</section>
+<section>25.281485</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 41772 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626311323 TSecr=286634130 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>313</section>
+<section>25.281544</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41772 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286634144 TSecr=2626311323</section>
+</packet>
+
+<packet>
+<section>314</section>
+<section>25.281571</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>315</section>
+<section>25.281619</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41772 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286634144 TSecr=2626311323</section>
+</packet>
+
+<packet>
+<section>316</section>
+<section>25.281644</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>317</section>
+<section>25.281738</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41772 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286634144 TSecr=2626311323</section>
+</packet>
+
+<packet>
+<section>318</section>
+<section>25.284494</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>319</section>
+<section>25.289366</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41770 → 30139 [ACK] Seq=399 Ack=4713 Win=101632 Len=0 TSval=286634152 TSecr=2626311292</section>
+</packet>
+
+<packet>
+<section>320</section>
+<section>25.296563</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>321</section>
+<section>25.297329</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>322</section>
+<section>25.297436</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41770 → 30139 [FIN, ACK] Seq=452 Ack=4713 Win=101632 Len=0 TSval=286634160 TSecr=2626311292</section>
+</packet>
+
+<packet>
+<section>323</section>
+<section>25.297537</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>324</section>
+<section>25.297591</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41772 → 30139 [FIN, ACK] Seq=452 Ack=4713 Win=101632 Len=0 TSval=286634160 TSecr=2626311339</section>
+</packet>
+
+<packet>
+<section>325</section>
+<section>25.308802</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>326</section>
+<section>25.308915</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41772 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>327</section>
+<section>25.308967</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41772 [FIN, ACK] Seq=4766 Ack=452 Win=64896 Len=0 TSval=2626311350 TSecr=286634160</section>
+</packet>
+
+<packet>
+<section>328</section>
+<section>25.309021</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41772 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>329</section>
+<section>25.309052</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41772 [ACK] Seq=4767 Ack=453 Win=64896 Len=0 TSval=2626311351 TSecr=286634160</section>
+</packet>
+
+<packet>
+<section>330</section>
+<section>25.309099</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41772 → 30139 [RST] Seq=453 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>331</section>
+<section>25.310873</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>332</section>
+<section>25.310960</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41770 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>333</section>
+<section>25.311000</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Previous segment not captured] 30139 → 41770 [ACK] Seq=4767 Ack=453 Win=64896 Len=0 TSval=2626311351 TSecr=286634160</section>
+</packet>
+
+<packet>
+<section>334</section>
+<section>25.311054</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41770 → 30139 [RST] Seq=453 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>335</section>
+<section>25.311080</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Out-Of-Order] 30139 → 41770 [FIN, ACK] Seq=4766 Ack=452 Win=64896 Len=0 TSval=2626311351 TSecr=286634160</section>
+</packet>
+
+<packet>
+<section>336</section>
+<section>25.311128</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>41770 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>337</section>
+<section>27.504487</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>80</section>
+<section>39120 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=138574925 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>338</section>
+<section>27.512846</section>
+<section>124.71.15.147</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 39120 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=3750731044 TSecr=138574925 WS=128</section>
+</packet>
+
+<packet>
+<section>339</section>
+<section>27.513084</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>39120 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=138574934 TSecr=3750731044</section>
+</packet>
+
+<packet>
+<section>340</section>
+<section>27.513698</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>39120 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=138574934 TSecr=3750731044</section>
+</packet>
+
+<packet>
+<section>341</section>
+<section>27.521950</section>
+<section>124.71.15.147</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 39120 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=3750731053 TSecr=138574934</section>
+</packet>
+
+<packet>
+<section>342</section>
+<section>27.522050</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>39120 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=138574943 TSecr=3750731053</section>
+</packet>
+
+<packet>
+<section>343</section>
+<section>27.536203</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>80</section>
+<section>38668 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=2692492093 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>344</section>
+<section>27.546926</section>
+<section>121.37.39.209</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 38668 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=402449792 TSecr=2692492093 WS=128</section>
+</packet>
+
+<packet>
+<section>345</section>
+<section>27.547100</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>38668 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2692492104 TSecr=402449792</section>
+</packet>
+
+<packet>
+<section>346</section>
+<section>27.547329</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>38668 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2692492104 TSecr=402449792</section>
+</packet>
+
+<packet>
+<section>347</section>
+<section>27.557406</section>
+<section>121.37.39.209</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 38668 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=402449802 TSecr=2692492104</section>
+</packet>
+
+<packet>
+<section>348</section>
+<section>27.557527</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>38668 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=2692492114 TSecr=402449802</section>
+</packet>
+
+<packet>
+<section>349</section>
+<section>27.559740</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>80</section>
+<section>48626 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=2146920172 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>350</section>
+<section>27.570468</section>
+<section>116.205.241.185</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 48626 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2823495493 TSecr=2146920172 WS=128</section>
+</packet>
+
+<packet>
+<section>351</section>
+<section>27.570641</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>48626 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2146920183 TSecr=2823495493</section>
+</packet>
+
+<packet>
+<section>352</section>
+<section>27.571047</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>48626 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2146920184 TSecr=2823495493</section>
+</packet>
+
+<packet>
+<section>353</section>
+<section>27.581355</section>
+<section>116.205.241.185</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 48626 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=2823495504 TSecr=2146920184</section>
+</packet>
+
+<packet>
+<section>354</section>
+<section>27.581447</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>48626 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=2146920194 TSecr=2823495504</section>
+</packet>
+
+<packet>
+<section>355</section>
+<section>28.543605</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>41902 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286637406 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>356</section>
+<section>28.558468</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 41902 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626314598 TSecr=286637406 WS=128</section>
+</packet>
+
+<packet>
+<section>357</section>
+<section>28.558850</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41902 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286637421 TSecr=2626314598</section>
+</packet>
+
+<packet>
+<section>358</section>
+<section>28.559256</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41902 → 30139 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286637422 TSecr=2626314598</section>
+</packet>
+
+<packet>
+<section>359</section>
+<section>28.573353</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 41902 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=2626314613 TSecr=286637422</section>
+</packet>
+
+<packet>
+<section>360</section>
+<section>28.573462</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>41902 → 30139 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=286637436 TSecr=2626314613</section>
+</packet>
+
+<packet>
+<section>361</section>
+<section>33.352254</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>362</section>
+<section>33.352363</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40378 → 30146 [FIN, ACK] Seq=460 Ack=4713 Win=101632 Len=0 TSval=1919207847 TSecr=83005203</section>
+</packet>
+
+<packet>
+<section>363</section>
+<section>33.364465</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>364</section>
+<section>33.364602</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>40378 → 30146 [RST] Seq=460 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>365</section>
+<section>33.364662</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Previous segment not captured] 30146 → 40378 [ACK] Seq=4767 Ack=461 Win=64896 Len=0 TSval=83015158 TSecr=1919207847</section>
+</packet>
+
+<packet>
+<section>366</section>
+<section>33.364731</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>40378 → 30146 [RST] Seq=461 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>367</section>
+<section>33.364770</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Out-Of-Order] 30146 → 40378 [FIN, ACK] Seq=4766 Ack=460 Win=64896 Len=0 TSval=83015158 TSecr=1919207847</section>
+</packet>
+
+<packet>
+<section>368</section>
+<section>33.364829</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>40378 → 30146 [RST] Seq=460 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>369</section>
+<section>33.443179</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>370</section>
+<section>33.443377</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [ACK] Seq=407 Ack=4766 Win=101632 Len=0 TSval=1919207938 TSecr=83015239</section>
+</packet>
+
+<packet>
+<section>371</section>
+<section>33.443429</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40380 [FIN, ACK] Seq=4766 Ack=407 Win=64896 Len=0 TSval=83015239 TSecr=1919197977</section>
+</packet>
+
+<packet>
+<section>372</section>
+<section>33.443835</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>373</section>
+<section>33.443915</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40380 → 30146 [FIN, ACK] Seq=460 Ack=4767 Win=101632 Len=0 TSval=1919207939 TSecr=83015239</section>
+</packet>
+
+<packet>
+<section>374</section>
+<section>33.452467</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30146 → 40380 [RST] Seq=4767 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>375</section>
+<section>33.452666</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>66</section>
+<section>30146 → 40380 [RST] Seq=4767 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>376</section>
+<section>33.523672</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>40700 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919208018 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>377</section>
+<section>33.533875</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 40700 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=83015327 TSecr=1919208018 WS=128</section>
+</packet>
+
+<packet>
+<section>378</section>
+<section>33.533975</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40700 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919208029 TSecr=83015327</section>
+</packet>
+
+<packet>
+<section>379</section>
+<section>33.534599</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1</section>
+<section>328</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>380</section>
+<section>33.545907</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40700 [ACK] Seq=1 Ack=257 Win=65024 Len=0 TSval=83015338 TSecr=1919208029</section>
+</packet>
+
+<packet>
+<section>381</section>
+<section>33.547794</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>382</section>
+<section>33.547879</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40700 → 30146 [ACK] Seq=257 Ack=1399 Win=90624 Len=0 TSval=1919208042 TSecr=83015341</section>
+</packet>
+
+<packet>
+<section>383</section>
+<section>33.547945</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30146 → 40700 [PSH, ACK] Seq=1399 Ack=257 Win=65024 Len=1398 TSval=83015341 TSecr=1919208029 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>384</section>
+<section>33.548003</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40700 → 30146 [ACK] Seq=257 Ack=2797 Win=93440 Len=0 TSval=1919208043 TSecr=83015341</section>
+</packet>
+
+<packet>
+<section>385</section>
+<section>33.548029</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>386</section>
+<section>33.548076</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40700 → 30146 [ACK] Seq=257 Ack=4195 Win=96000 Len=0 TSval=1919208043 TSecr=83015341</section>
+</packet>
+
+<packet>
+<section>387</section>
+<section>33.548100</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>388</section>
+<section>33.548143</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40700 → 30146 [ACK] Seq=257 Ack=4500 Win=98816 Len=0 TSval=1919208043 TSecr=83015341</section>
+</packet>
+
+<packet>
+<section>389</section>
+<section>33.550478</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>390</section>
+<section>33.561551</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>391</section>
+<section>33.592136</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>392</section>
+<section>33.592230</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40700 → 30146 [FIN, ACK] Seq=460 Ack=4713 Win=101632 Len=0 TSval=1919208087 TSecr=83015354</section>
+</packet>
+
+<packet>
+<section>393</section>
+<section>33.592877</section>
+<section>192.168.1.16</section>
+<section>113.45.47.238</section>
+<section>TCP</section>
+<section>80</section>
+<section>38516 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=3472139879 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>394</section>
+<section>33.594126</section>
+<section>192.168.1.16</section>
+<section>124.71.18.253</section>
+<section>TCP</section>
+<section>80</section>
+<section>47346 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1878944242 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>395</section>
+<section>33.594165</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>80</section>
+<section>40736 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1919208089 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>396</section>
+<section>33.594186</section>
+<section>192.168.1.16</section>
+<section>113.45.254.81</section>
+<section>TCP</section>
+<section>80</section>
+<section>40374 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=99933868 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>397</section>
+<section>33.594217</section>
+<section>192.168.1.16</section>
+<section>110.41.11.13</section>
+<section>TCP</section>
+<section>80</section>
+<section>46480 → 30146 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1560277521 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>398</section>
+<section>33.602319</section>
+<section>113.45.47.238</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 38516 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=465417604 TSecr=3472139879 WS=128</section>
+</packet>
+
+<packet>
+<section>399</section>
+<section>33.602420</section>
+<section>192.168.1.16</section>
+<section>113.45.47.238</section>
+<section>TCP</section>
+<section>72</section>
+<section>38516 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=3472139889 TSecr=465417604</section>
+</packet>
+
+<packet>
+<section>400</section>
+<section>33.602487</section>
+<section>192.168.1.16</section>
+<section>113.45.47.238</section>
+<section>TCP</section>
+<section>72</section>
+<section>38516 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=3472139889 TSecr=465417604</section>
+</packet>
+
+<packet>
+<section>401</section>
+<section>33.603272</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>402</section>
+<section>33.603371</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>40700 → 30146 [RST] Seq=460 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>403</section>
+<section>33.603480</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40700 [FIN, ACK] Seq=4766 Ack=460 Win=64896 Len=0 TSval=83015395 TSecr=1919208087</section>
+</packet>
+
+<packet>
+<section>404</section>
+<section>33.603546</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>40700 → 30146 [RST] Seq=460 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>405</section>
+<section>33.603583</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40700 [ACK] Seq=4767 Ack=461 Win=64896 Len=0 TSval=83015396 TSecr=1919208087</section>
+</packet>
+
+<packet>
+<section>406</section>
+<section>33.603640</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>60</section>
+<section>40700 → 30146 [RST] Seq=461 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>407</section>
+<section>33.605287</section>
+<section>124.71.18.253</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 47346 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=3652906846 TSecr=1878944242 WS=128</section>
+</packet>
+
+<packet>
+<section>408</section>
+<section>33.605389</section>
+<section>192.168.1.16</section>
+<section>124.71.18.253</section>
+<section>TCP</section>
+<section>72</section>
+<section>47346 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1878944253 TSecr=3652906846</section>
+</packet>
+
+<packet>
+<section>409</section>
+<section>33.605427</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 40736 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=83015400 TSecr=1919208089 WS=128</section>
+</packet>
+
+<packet>
+<section>410</section>
+<section>33.605469</section>
+<section>192.168.1.16</section>
+<section>124.71.18.253</section>
+<section>TCP</section>
+<section>72</section>
+<section>47346 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1878944253 TSecr=3652906846</section>
+</packet>
+
+<packet>
+<section>411</section>
+<section>33.605522</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40736 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919208100 TSecr=83015400</section>
+</packet>
+
+<packet>
+<section>412</section>
+<section>33.605780</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40736 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1919208100 TSecr=83015400</section>
+</packet>
+
+<packet>
+<section>413</section>
+<section>33.606810</section>
+<section>113.45.254.81</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 40374 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=38650091 TSecr=99933868 WS=128</section>
+</packet>
+
+<packet>
+<section>414</section>
+<section>33.606877</section>
+<section>192.168.1.16</section>
+<section>113.45.254.81</section>
+<section>TCP</section>
+<section>72</section>
+<section>40374 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=99933881 TSecr=38650091</section>
+</packet>
+
+<packet>
+<section>415</section>
+<section>33.606908</section>
+<section>110.41.11.13</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30146 → 46480 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=1560100766 TSecr=1560277521 WS=128</section>
+</packet>
+
+<packet>
+<section>416</section>
+<section>33.606996</section>
+<section>192.168.1.16</section>
+<section>110.41.11.13</section>
+<section>TCP</section>
+<section>72</section>
+<section>46480 → 30146 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1560277534 TSecr=1560100766</section>
+</packet>
+
+<packet>
+<section>417</section>
+<section>33.607033</section>
+<section>192.168.1.16</section>
+<section>113.45.254.81</section>
+<section>TCP</section>
+<section>72</section>
+<section>40374 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=99933881 TSecr=38650091</section>
+</packet>
+
+<packet>
+<section>418</section>
+<section>33.607081</section>
+<section>192.168.1.16</section>
+<section>110.41.11.13</section>
+<section>TCP</section>
+<section>72</section>
+<section>46480 → 30146 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1560277534 TSecr=1560100766</section>
+</packet>
+
+<packet>
+<section>419</section>
+<section>33.611952</section>
+<section>113.45.47.238</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 38516 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=465417614 TSecr=3472139889</section>
+</packet>
+
+<packet>
+<section>420</section>
+<section>33.612009</section>
+<section>192.168.1.16</section>
+<section>113.45.47.238</section>
+<section>TCP</section>
+<section>72</section>
+<section>38516 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=3472139899 TSecr=465417614</section>
+</packet>
+
+<packet>
+<section>421</section>
+<section>33.616077</section>
+<section>124.71.18.253</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 47346 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=3652906857 TSecr=1878944253</section>
+</packet>
+
+<packet>
+<section>422</section>
+<section>33.616173</section>
+<section>192.168.1.16</section>
+<section>124.71.18.253</section>
+<section>TCP</section>
+<section>72</section>
+<section>47346 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1878944264 TSecr=3652906857</section>
+</packet>
+
+<packet>
+<section>423</section>
+<section>33.618577</section>
+<section>121.37.218.156</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40736 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=83015412 TSecr=1919208100</section>
+</packet>
+
+<packet>
+<section>424</section>
+<section>33.618647</section>
+<section>192.168.1.16</section>
+<section>121.37.218.156</section>
+<section>TCP</section>
+<section>72</section>
+<section>40736 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1919208113 TSecr=83015412</section>
+</packet>
+
+<packet>
+<section>425</section>
+<section>33.620265</section>
+<section>113.45.254.81</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 40374 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=38650104 TSecr=99933881</section>
+</packet>
+
+<packet>
+<section>426</section>
+<section>33.620323</section>
+<section>192.168.1.16</section>
+<section>113.45.254.81</section>
+<section>TCP</section>
+<section>72</section>
+<section>40374 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=99933894 TSecr=38650104</section>
+</packet>
+
+<packet>
+<section>427</section>
+<section>33.620531</section>
+<section>110.41.11.13</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30146 → 46480 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=1560100779 TSecr=1560277534</section>
+</packet>
+
+<packet>
+<section>428</section>
+<section>33.620581</section>
+<section>192.168.1.16</section>
+<section>110.41.11.13</section>
+<section>TCP</section>
+<section>72</section>
+<section>46480 → 30146 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1560277547 TSecr=1560100779</section>
+</packet>
+
+<packet>
+<section>429</section>
+<section>33.647960</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 30139 → 40868 [ACK] Seq=1 Ack=1 Win=495 Len=0 TSval=2626319689 TSecr=286627151</section>
+</packet>
+
+<packet>
+<section>430</section>
+<section>33.648077</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 40868 → 30139 [ACK] Seq=1 Ack=2 Win=463 Len=0 TSval=286642511 TSecr=2626305098</section>
+</packet>
+
+<packet>
+<section>431</section>
+<section>34.406399</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 40868 → 30139 [ACK] Seq=0 Ack=2 Win=463 Len=0 TSval=286643269 TSecr=2626305098</section>
+</packet>
+
+<packet>
+<section>432</section>
+<section>34.406437</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 37786 → 30139 [ACK] Seq=1 Ack=1 Win=408 Len=0 TSval=286643269 TSecr=2626305099</section>
+</packet>
+
+<packet>
+<section>433</section>
+<section>34.416719</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 30139 → 37786 [ACK] Seq=1 Ack=2 Win=505 Len=0 TSval=2626320459 TSecr=286628173</section>
+</packet>
+
+<packet>
+<section>434</section>
+<section>34.418367</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 30139 → 40868 [ACK] Seq=2 Ack=1 Win=495 Len=0 TSval=2626320458 TSecr=286642511</section>
+</packet>
+
+<packet>
+<section>435</section>
+<section>34.670860</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive] 30139 → 37786 [ACK] Seq=0 Ack=2 Win=505 Len=0 TSval=2626320713 TSecr=286628173</section>
+</packet>
+
+<packet>
+<section>436</section>
+<section>34.671011</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>[TCP Keep-Alive ACK] 37786 → 30139 [ACK] Seq=2 Ack=1 Win=408 Len=0 TSval=286643534 TSecr=2626320459</section>
+</packet>
+
+<packet>
+<section>437</section>
+<section>35.059648</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>42110 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286643922 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>438</section>
+<section>35.069609</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 42110 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626321111 TSecr=286643922 WS=128</section>
+</packet>
+
+<packet>
+<section>439</section>
+<section>35.069704</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42110 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286643932 TSecr=2626321111</section>
+</packet>
+
+<packet>
+<section>440</section>
+<section>35.070792</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>441</section>
+<section>35.082174</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 42110 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626321123 TSecr=286643933</section>
+</packet>
+
+<packet>
+<section>442</section>
+<section>35.082240</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>443</section>
+<section>35.082303</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42110 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286643945 TSecr=2626321124</section>
+</packet>
+
+<packet>
+<section>444</section>
+<section>35.082361</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 42110 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626321124 TSecr=286643933 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>445</section>
+<section>35.082426</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42110 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286643945 TSecr=2626321124</section>
+</packet>
+
+<packet>
+<section>446</section>
+<section>35.082457</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>447</section>
+<section>35.082519</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42110 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286643945 TSecr=2626321124</section>
+</packet>
+
+<packet>
+<section>448</section>
+<section>35.082548</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>449</section>
+<section>35.082626</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42110 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286643945 TSecr=2626321124</section>
+</packet>
+
+<packet>
+<section>450</section>
+<section>35.085008</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>451</section>
+<section>35.093823</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>80</section>
+<section>38898 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=2692499650 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>452</section>
+<section>35.094653</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>80</section>
+<section>48950 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=1722063804 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>453</section>
+<section>35.095210</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>454</section>
+<section>35.096054</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>42130 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286643959 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>455</section>
+<section>35.098687</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>80</section>
+<section>39382 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=138582519 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>456</section>
+<section>35.099432</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>80</section>
+<section>48884 → 30122 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=2146927712 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>457</section>
+<section>35.105023</section>
+<section>121.37.39.209</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 38898 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=402457349 TSecr=2692499650 WS=128</section>
+</packet>
+
+<packet>
+<section>458</section>
+<section>35.105117</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>38898 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2692499662 TSecr=402457349</section>
+</packet>
+
+<packet>
+<section>459</section>
+<section>35.105242</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>38898 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2692499662 TSecr=402457349</section>
+</packet>
+
+<packet>
+<section>460</section>
+<section>35.107346</section>
+<section>110.41.60.161</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 48950 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=3523612570 TSecr=1722063804 WS=128</section>
+</packet>
+
+<packet>
+<section>461</section>
+<section>35.107409</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>48950 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1722063817 TSecr=3523612570</section>
+</packet>
+
+<packet>
+<section>462</section>
+<section>35.107923</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>48950 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=1722063818 TSecr=3523612570</section>
+</packet>
+
+<packet>
+<section>463</section>
+<section>35.109319</section>
+<section>124.71.15.147</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 39382 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=3750738640 TSecr=138582519 WS=128</section>
+</packet>
+
+<packet>
+<section>464</section>
+<section>35.109390</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>39382 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=138582530 TSecr=3750738640</section>
+</packet>
+
+<packet>
+<section>465</section>
+<section>35.109756</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30139 → 42130 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2626321149 TSecr=286643959 WS=128</section>
+</packet>
+
+<packet>
+<section>466</section>
+<section>35.109817</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>39382 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=138582530 TSecr=3750738640</section>
+</packet>
+
+<packet>
+<section>467</section>
+<section>35.109861</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42130 → 30139 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=286643972 TSecr=2626321149</section>
+</packet>
+
+<packet>
+<section>468</section>
+<section>35.110362</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1</section>
+<section>320</section>
+<section>Client Hello</section>
+</packet>
+
+<packet>
+<section>469</section>
+<section>35.114754</section>
+<section>116.205.241.185</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>80</section>
+<section>30122 → 48884 [SYN, ACK] Seq=0 Ack=1 Win=65160 Len=0 MSS=1410 SACK_PERM=1 TSval=2823503036 TSecr=2146927712 WS=128</section>
+</packet>
+
+<packet>
+<section>470</section>
+<section>35.114841</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>48884 → 30122 [ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2146927727 TSecr=2823503036</section>
+</packet>
+
+<packet>
+<section>471</section>
+<section>35.115772</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>48884 → 30122 [FIN, ACK] Seq=1 Ack=1 Win=87808 Len=0 TSval=2146927728 TSecr=2823503036</section>
+</packet>
+
+<packet>
+<section>472</section>
+<section>35.117970</section>
+<section>121.37.39.209</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 38898 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=402457361 TSecr=2692499662</section>
+</packet>
+
+<packet>
+<section>473</section>
+<section>35.118036</section>
+<section>192.168.1.16</section>
+<section>121.37.39.209</section>
+<section>TCP</section>
+<section>72</section>
+<section>38898 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=2692499675 TSecr=402457361</section>
+</packet>
+
+<packet>
+<section>474</section>
+<section>35.120463</section>
+<section>124.71.15.147</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 39382 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=3750738651 TSecr=138582530</section>
+</packet>
+
+<packet>
+<section>475</section>
+<section>35.120516</section>
+<section>192.168.1.16</section>
+<section>124.71.15.147</section>
+<section>TCP</section>
+<section>72</section>
+<section>39382 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=138582541 TSecr=3750738651</section>
+</packet>
+
+<packet>
+<section>476</section>
+<section>35.125709</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 42130 [ACK] Seq=1 Ack=249 Win=65024 Len=0 TSval=2626321162 TSecr=286643973</section>
+</packet>
+
+<packet>
+<section>477</section>
+<section>35.125749</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Server Hello</section>
+</packet>
+
+<packet>
+<section>478</section>
+<section>35.125791</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42130 → 30139 [ACK] Seq=249 Ack=1399 Win=90624 Len=0 TSval=286643988 TSecr=2626321163</section>
+</packet>
+
+<packet>
+<section>479</section>
+<section>35.125857</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>1470</section>
+<section>30139 → 42130 [PSH, ACK] Seq=1399 Ack=249 Win=65024 Len=1398 TSval=2626321163 TSecr=286643973 [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>480</section>
+<section>35.125910</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42130 → 30139 [ACK] Seq=249 Ack=2797 Win=93440 Len=0 TSval=286643989 TSecr=2626321163</section>
+</packet>
+
+<packet>
+<section>481</section>
+<section>35.126000</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>1470</section>
+<section>Certificate [TCP segment of a reassembled PDU]</section>
+</packet>
+
+<packet>
+<section>482</section>
+<section>35.126052</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42130 → 30139 [ACK] Seq=249 Ack=4195 Win=96000 Len=0 TSval=286643989 TSecr=2626321163</section>
+</packet>
+
+<packet>
+<section>483</section>
+<section>35.126106</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>377</section>
+<section>Server Key Exchange, Server Hello Done</section>
+</packet>
+
+<packet>
+<section>484</section>
+<section>35.126151</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42130 → 30139 [ACK] Seq=249 Ack=4500 Win=98816 Len=0 TSval=286643989 TSecr=2626321163</section>
+</packet>
+
+<packet>
+<section>485</section>
+<section>35.126655</section>
+<section>110.41.60.161</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 48950 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=3523612583 TSecr=1722063818</section>
+</packet>
+
+<packet>
+<section>486</section>
+<section>35.126747</section>
+<section>192.168.1.16</section>
+<section>110.41.60.161</section>
+<section>TCP</section>
+<section>72</section>
+<section>48950 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=1722063836 TSecr=3523612583</section>
+</packet>
+
+<packet>
+<section>487</section>
+<section>35.127734</section>
+<section>116.205.241.185</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30122 → 48884 [FIN, ACK] Seq=1 Ack=2 Win=65280 Len=0 TSval=2823503051 TSecr=2146927728</section>
+</packet>
+
+<packet>
+<section>488</section>
+<section>35.127808</section>
+<section>192.168.1.16</section>
+<section>116.205.241.185</section>
+<section>TCP</section>
+<section>72</section>
+<section>48884 → 30122 [ACK] Seq=2 Ack=2 Win=87808 Len=0 TSval=2146927740 TSecr=2823503051</section>
+</packet>
+
+<packet>
+<section>489</section>
+<section>35.128092</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>222</section>
+<section>Client Key Exchange, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>490</section>
+<section>35.132701</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42110 → 30139 [ACK] Seq=399 Ack=4713 Win=101632 Len=0 TSval=286643995 TSecr=2626321137</section>
+</packet>
+
+<packet>
+<section>491</section>
+<section>35.139081</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>285</section>
+<section>New Session Ticket, Change Cipher Spec, Encrypted Handshake Message</section>
+</packet>
+
+<packet>
+<section>492</section>
+<section>35.162640</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>493</section>
+<section>35.162751</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>72</section>
+<section>42110 → 30139 [FIN, ACK] Seq=452 Ack=4713 Win=101632 Len=0 TSval=286644025 TSecr=2626321137</section>
+</packet>
+
+<packet>
+<section>494</section>
+<section>35.163144</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>80</section>
+<section>42160 → 30139 [SYN] Seq=0 Win=65535 Len=0 MSS=1460 SACK_PERM=1 TSval=286644026 TSecr=0 WS=256</section>
+</packet>
+
+<packet>
+<section>495</section>
+<section>35.173973</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TLSv1.2</section>
+<section>125</section>
+<section>Encrypted Alert</section>
+</packet>
+
+<packet>
+<section>496</section>
+<section>35.174089</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>42110 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>497</section>
+<section>35.174187</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 42110 [FIN, ACK] Seq=4766 Ack=452 Win=64896 Len=0 TSval=2626321214 TSecr=286644025</section>
+</packet>
+
+<packet>
+<section>498</section>
+<section>35.174244</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>42110 → 30139 [RST] Seq=452 Win=0 Len=0</section>
+</packet>
+
+<packet>
+<section>499</section>
+<section>35.174287</section>
+<section>114.132.204.167</section>
+<section>192.168.1.16</section>
+<section>TCP</section>
+<section>72</section>
+<section>30139 → 42110 [ACK] Seq=4767 Ack=453 Win=64896 Len=0 TSval=2626321215 TSecr=286644025</section>
+</packet>
+
+<packet>
+<section>500</section>
+<section>35.174328</section>
+<section>192.168.1.16</section>
+<section>114.132.204.167</section>
+<section>TCP</section>
+<section>60</section>
+<section>42110 → 30139 [RST] Seq=453 Win=0 Len=0</section>
+</packet>
+
+</psml>

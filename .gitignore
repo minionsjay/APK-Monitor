@@ -1,0 +1,7 @@
+*.apk
+*.so
+*.dex
+__pycache__/
+*.pyc
+new_samples/
+screenshots/icons/*.webp
