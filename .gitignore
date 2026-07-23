@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 new_samples/
 screenshots/icons/*.webp
+archive/
