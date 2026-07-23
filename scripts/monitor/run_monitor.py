@@ -7,7 +7,7 @@
 import subprocess, json, os, time, re
 from datetime import datetime
 
-ADB = "adb -s 192.168.1.16:43351"
+ADB = "adb -s 192.168.1.16:38399"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 DB_PATH = "/home/ninini/Agents/APK-Research/data/proxy_monitor_db.json"
 BASE_DIR = "/home/ninini/Agents/APK-Research"

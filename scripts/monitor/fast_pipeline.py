@@ -11,7 +11,7 @@
 import subprocess, json, os, time, re, csv, zipfile, hashlib, threading, queue
 from datetime import datetime
 
-ADB = "adb -s 192.168.1.16:43351"
+ADB = "adb -s 192.168.1.16:38399"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
 APK_DIR = f"{BASE_DIR}/new_samples"
