@@ -403,8 +403,14 @@ def generate_report():
     }
     save_json(f'{out_dir}/run_result.json', run_result)
 
-    # 调用 regen_html.py 生成HTML（更新同一个文件）
+    # 调用 regen_html.py 生成HTML（主报告+latest目录）
     subprocess.run(['python3', f'{BASE_DIR}/scripts/monitor/regen_html.py'], timeout=60)
+    # 复制到latest目录
+    import shutil
+    src = f'{BASE_DIR}/forensics/pcaps/hw_forensics_report.html'
+    dst = f'{out_dir}/report.html'
+    if os.path.exists(src):
+        shutil.copy2(src, dst)
 
     # 保存IP变更摘要
     print(f"\n=== IP变更 ===")

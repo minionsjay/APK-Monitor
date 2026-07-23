@@ -6,3 +6,5 @@ __pycache__/
 new_samples/
 screenshots/icons/*.webp
 archive/
+forensics/pcaps/hw_forensics_report.html
+outputs/*/report.html
