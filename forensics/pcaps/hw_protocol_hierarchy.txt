@@ -3,11 +3,22 @@
 Protocol Hierarchy Statistics
 Filter: 
 
-sll                                      frames:500 bytes:104287
-  ip                                     frames:500 bytes:104287
-    tcp                                  frames:500 bytes:104287
-      data                               frames:9 bytes:1125
-      tls                                frames:102 bytes:56912
-        tcp.segments                     frames:26 bytes:24011
-          tls                            frames:26 bytes:24011
+sll                                      frames:28351 bytes:6131280
+  ip                                     frames:27330 bytes:6039008
+    tcp                                  frames:27225 bytes:5930870
+      data                               frames:751 bytes:299543
+      tls                                frames:5638 bytes:3041970
+        tcp.segments                     frames:1228 bytes:1143162
+          tls                            frames:1179 bytes:1116313
+      enip                               frames:2 bytes:1798
+    udp                                  frames:102 bytes:107950
+      data                               frames:102 bytes:107950
+    igmp                                 frames:1 bytes:52
+  ipv6                                   frames:1011 bytes:91702
+    tcp                                  frames:988 bytes:88348
+    data                                 frames:1 bytes:96
+    udp                                  frames:8 bytes:2026
+      dns                                frames:8 bytes:2026
+    icmpv6                               frames:14 bytes:1232
+  arp                                    frames:10 bytes:570
 ===================================================================
