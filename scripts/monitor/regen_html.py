@@ -194,11 +194,21 @@ for apk in db['apks']:
     icon_b64=img_b64(icon_path,200) if os.path.exists(icon_path) else ''
     shot_path='screenshots/'+aid+'.png'
     if not os.path.exists(shot_path):
-        shot_path='screenshots/fhvbdg_exdyfb.png' if aid=='exdyfb' else ''
+        # 尝试其他格式
+        for alt in [aid.replace('.','_'), aid.split('.')[0]]:
+            alt_path = f'screenshots/{alt}.png'
+            if os.path.exists(alt_path):
+                shot_path = alt_path
+                break
+        else:
+            shot_path = ''
     shot_thumb_b64=img_b64(shot_path,240) if shot_path and os.path.exists(shot_path) else ''
     shot_full_b64=img_b64_full(shot_path) if shot_path and os.path.exists(shot_path) else ''
     if shot_thumb_b64 and shot_full_b64:
         shot_cell = '<img class="screenshot-thumb" src="data:image/png;base64,'+shot_thumb_b64+'" onclick="openLightbox(\''+shot_full_b64+'\',\''+label+'_运行截图\')"><br><span style="font-size:12px;color:#888">点击放大</span>'
+    elif icon_b64:
+        # 没有截图，用图标替代
+        shot_cell = '<img class="icon" src="data:image/png;base64,'+icon_b64+'"><br><span style="font-size:12px;color:#888">无截图</span>'
     else:
         shot_cell = 'N/A'
     icon_html = '<img class="icon" src="data:image/png;base64,'+icon_b64+'">' if icon_b64 else 'N/A'
