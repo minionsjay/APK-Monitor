@@ -30,13 +30,12 @@ func main() {
 		caKey, _ = k2.(*rsa.PrivateKey)
 	}
 	
-	// 启动两个监听
 	go listenPort("127.0.0.1:30122", "8.134.93.241:30122")
 	go listenPort("127.0.0.1:30164", "119.29.117.106:30164")
 	go listenPort("127.0.0.1:30139", "159.75.151.31:30139")
 	go listenPort("127.0.0.1:30138", "175.178.12.252:30138")
 	
-	select {} // 阻塞
+	select {}
 }
 
 func listenPort(listenAddr, backendAddr string) {
@@ -45,10 +44,9 @@ func listenPort(listenAddr, backendAddr string) {
 		fmt.Println("监听失败", listenAddr, err)
 		return
 	}
-	logFile, _ := os.OpenFile("/sdcard/mitm_log3.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	logFile, _ := os.OpenFile("/data/local/tmp/mitm_keys.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	defer logFile.Close()
 	fmt.Fprintf(logFile, "监听 %s → %s\n", listenAddr, backendAddr)
-	
 	for {
 		conn, err := ln.Accept()
 		if err != nil { continue }
@@ -81,7 +79,6 @@ func handleConn(clientConn net.Conn, backendAddr string, logFile *os.File) {
 	n, err := clientConn.Read(buf)
 	if err != nil || n < 5 { return }
 	
-	// 解析SNI
 	sni := "mail.163.com"
 	data := buf[5:n]
 	if len(data) > 38 {
@@ -119,20 +116,34 @@ func handleConn(clientConn net.Conn, backendAddr string, logFile *os.File) {
 		}
 	}
 	
+	// 提取client_random (32字节，在ClientHello中)
+	var clientRandom []byte
+	if len(data) >= 34 {
+		clientRandom = data[2:34] // version(2) + random(32)
+	}
+	
 	fmt.Fprintf(logFile, "连接 SNI=%s → %s\n", sni, backendAddr)
+	if clientRandom != nil {
+		fmt.Fprintf(logFile, "client_random: %s\n", hex.EncodeToString(clientRandom))
+	}
 	
 	cert, err := signCert(sni)
 	if err != nil { return }
 	bc := &bufferedConn{Conn: clientConn, buf: buf[:n]}
 	tlsConn := tls.Server(bc, &tls.Config{Certificates: []tls.Certificate{cert}})
 	if err := tlsConn.Handshake(); err != nil {
-		fmt.Fprintf(logFile, "TLS失败 SNI=%s: %v\n", sni, err)
+		fmt.Fprintf(logFile, "TLS失败: %v\n", err)
 		return
 	}
 	defer tlsConn.Close()
 	
-	fmt.Fprintf(logFile, "✅ TLS握手 SNI=%s → %s\n", sni, backendAddr)
+	// 获取server_random
+	serverState := tlsConn.ConnectionState()
+	_ = serverState
 	
+	fmt.Fprintf(logFile, "✅ TLS握手 SNI=%s\n", sni)
+	
+	// 连接后端
 	backend, err := tls.Dial("tcp", backendAddr, &tls.Config{
 		InsecureSkipVerify: true,
 		ServerName:         sni,
@@ -151,6 +162,11 @@ func handleConn(clientConn net.Conn, backendAddr string, logFile *os.File) {
 	}
 	defer backend.Close()
 	
+	// 后端的TLS状态
+	backendState := backend.ConnectionState()
+	fmt.Fprintf(logFile, "backend cipher: 0x%04x\n", backendState.CipherSuite)
+	
+	// 记录所有明文数据
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
