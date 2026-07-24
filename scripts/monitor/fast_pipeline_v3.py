@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
-快速流水线 v2
+快速流水线 v3 — 适配 Android 14 (一加9 Pro, 无 root)
 - 线程1: 下载+检测 → 队列
-- 线程2: 安装+获取节点 → 记录
+- 线程2: 安装(自动点击确认)+获取节点(/proc/PID/net/tcp) → 记录
 - IP变更对比
-- 时间记录
 - 每次生成HTML报告
 """
 
 import subprocess, json, os, time, re, csv, zipfile, hashlib, threading, queue
 from datetime import datetime
 
-ADB = "adb -s 192.168.1.5:39769"
+ADB = "adb -s 192.168.1.5:41123"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
 APK_DIR = f"{BASE_DIR}/new_samples"
@@ -32,6 +31,7 @@ def get_cloud(ip):
     if ip.startswith('8.13') or ip.startswith('8.138') or ip.startswith('8.148') or ip.startswith('8.163'): return "阿里云"
     elif any(ip.startswith(p) for p in ['43.','42.','106.','159.75','139.','175.178','134.175','1.1','111.230','119.','123.207','129.204','193.112','115.175','139.9']): return "腾讯云"
     elif any(ip.startswith(p) for p in ['110.41','113.45','113.46','114.132','116.205','121.37','124.71']): return "华为云"
+    elif any(ip.startswith(p) for p in ['1.14','1.202']): return "腾讯云"
     return "未知"
 
 def load_json(path):
@@ -77,38 +77,177 @@ def detect_apk(apk_path):
         if any('WgSnp' in n or 'TifMz' in n for n in names): score += 40
     return score, pkg, label
 
-def click_popup():
-    for _ in range(2):
-        subprocess.run(f'{ADB} shell uiautomator dump /sdcard/ui.xml'.split(),
-                     capture_output=True, timeout=10)
-        subprocess.run(f'{ADB} pull /sdcard/ui.xml /tmp/ui_check.xml'.split(),
-                     capture_output=True, timeout=5)
-        try:
-            with open('/tmp/ui_check.xml') as f: ui = f.read()
-            matches = re.findall(r'text="(允许)"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
-            if matches:
-                _, x1, y1, x2, y2 = matches[0]
-                subprocess.run(f'{ADB} shell input tap {(int(x1)+int(x2))//2} {(int(y1)+int(y2))//2}'.split(),
-                             capture_output=True, timeout=5)
-                time.sleep(2)
-                return True
-        except:
-            pass
-        time.sleep(1)
+def dump_ui():
+    subprocess.run(f'{ADB} shell uiautomator dump /sdcard/ui.xml'.split(),
+                   capture_output=True, timeout=10)
+    subprocess.run(f'{ADB} pull /sdcard/ui.xml /tmp/ui_check.xml'.split(),
+                   capture_output=True, timeout=5)
+    try:
+        with open('/tmp/ui_check.xml') as f: return f.read()
+    except: return ''
+
+def click_button(texts, max_tries=15, wait=2):
+    """在 UI 中查找并点击指定文字的按钮"""
+    for i in range(max_tries):
+        ui = dump_ui()
+        for text in texts:
+            for pat in [
+                r'text="' + text + r'"[^>]*clickable="true"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"',
+                r'text="' + text + r'"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"',
+            ]:
+                matches = re.findall(pat, ui)
+                if matches:
+                    x1, y1, x2, y2 = matches[0]
+                    cx, cy = (int(x1)+int(x2))//2, (int(y1)+int(y2))//2
+                    subprocess.run(f'{ADB} shell input tap {cx} {cy}'.split(),
+                                 capture_output=True, timeout=5)
+                    return True
+        time.sleep(wait)
     return False
 
-def get_proxy_nodes(pkg, max_wait=25):
+def install_apk(apk_path, timeout=90):
+    """通过 MT管理器安装 APK，绕过一加安装拦截"""
+    # 1. push APK 到公共目录
+    remote_apk = '/sdcard/Download/install.apk'
+    subprocess.run(f'{ADB} push {apk_path} {remote_apk}'.split(),
+                   capture_output=True, timeout=60)
+    
+    # 2. 用 am start 触发"打开方式"选择
+    subprocess.run(
+        f'{ADB} shell am start -a android.intent.action.VIEW '
+        f'-d "file://{remote_apk}" '
+        f'-t "application/vnd.android.package-archive" -f 0x10000000'.split(),
+        capture_output=True, timeout=10)
+    time.sleep(3)
+    
+    # 3. 在"打开方式"界面选 MT管理器
+    ui = dump_ui()
+    mt_match = re.search(r'text="MT管理器"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+    if mt_match:
+        x1, y1, x2, y2 = [int(v) for v in mt_match.groups()]
+        subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
+                       capture_output=True, timeout=5)
+        time.sleep(3)
+    else:
+        print("MT管理器未找到", end=' ')
+        return False
+    
+    # 4. 在 MT管理器 APK 信息页点"安装"
+    ui = dump_ui()
+    install_match = re.search(r'text="安装"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+    if install_match:
+        x1, y1, x2, y2 = [int(v) for v in install_match.groups()]
+        subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
+                       capture_output=True, timeout=5)
+        time.sleep(3)
+    
+    # 5. 可能弹"安装未知应用"权限（首次需要，后续不需要）
+    ui = dump_ui()
+    if '允许来自此来源' in ui or '安装未知应用' in ui:
+        switch = re.search(r'text="(开启|关闭)"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+        if switch:
+            x1, y1, x2, y2 = [int(v) for v in switch.groups()]
+            subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
+                           capture_output=True, timeout=5)
+            time.sleep(2)
+        # 按返回回到 MT管理器
+        subprocess.run(f'{ADB} shell input keyevent KEYCODE_BACK'.split(),
+                       capture_output=True, timeout=5)
+        time.sleep(2)
+        # 再点安装
+        ui = dump_ui()
+        install_match = re.search(r'text="安装"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+        if install_match:
+            x1, y1, x2, y2 = [int(v) for v in install_match.groups()]
+            subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
+                           capture_output=True, timeout=5)
+            time.sleep(3)
+    
+    # 6. 一加安装引导界面：点"继续安装"
+    for _ in range(3):
+        ui = dump_ui()
+        if '继续安装' in ui:
+            match = re.search(r'text="继续安装"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+            if match:
+                x1, y1, x2, y2 = [int(v) for v in match.groups()]
+                subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
+                               capture_output=True, timeout=5)
+                time.sleep(5)
+                break
+        time.sleep(2)
+    
+    # 7. 可能还有"安装信息收集提醒"的"继续安装"
+    for _ in range(3):
+        ui = dump_ui()
+        if '继续安装' in ui:
+            match = re.search(r'text="继续安装"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+            if match:
+                x1, y1, x2, y2 = [int(v) for v in match.groups()]
+                subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
+                               capture_output=True, timeout=5)
+                time.sleep(5)
+        if '取消安装' in ui and '继续安装' not in ui:
+            break
+        time.sleep(2)
+    
+    # 8. 等安装完成
+    time.sleep(5)
+    subprocess.run(f'{ADB} shell input keyevent KEYCODE_HOME'.split(),
+                   capture_output=True, timeout=5)
+    return True
+
+def get_proxy_nodes_via_proc(pkg, max_wait=20):
+    """通过 /proc/PID/net/tcp 获取代理节点 IP（不需要 root）"""
     for i in range(max_wait // 5):
         time.sleep(5)
-        result = subprocess.run(f'{ADB} shell cat /sdcard/Android/data/{pkg}/files/sdk_forwarder_fixed.json'.split(),
-                              capture_output=True, text=True, timeout=5)
-        if result.stdout and result.stdout.strip().startswith('{'):
-            try:
-                data = json.loads(result.stdout)
-                nodes = data.get('app_line_ips', [])
-                if nodes: return nodes
-            except:
-                pass
+        try:
+            # 获取 APP PID
+            r = subprocess.run(f'{ADB} shell pidof {pkg}'.split(),
+                             capture_output=True, text=True, timeout=5)
+            pid = r.stdout.strip()
+            if not pid:
+                continue
+            
+            # 读取 /proc/PID/net/tcp
+            nodes = set()
+            for proto in ['tcp', 'tcp6']:
+                r = subprocess.run(f'{ADB} shell cat /proc/{pid}/net/{proto}'.split(),
+                                 capture_output=True, text=True, timeout=5)
+                for line in r.stdout.strip().split('\n')[1:]:
+                    parts = line.split()
+                    if len(parts) < 4:
+                        continue
+                    remote = parts[2]
+                    state = parts[3]
+                    # 只看 ESTABLISHED(01), SYN_SENT(02), TIME_WAIT(06)
+                    if state not in ("01", "02", "06"):
+                        continue
+                    ip_hex, port_hex = remote.split(':')
+                    port = int(port_hex, 16)
+                    if port <= 100:
+                        continue
+                    
+                    # IPv4
+                    if len(ip_hex) == 8:
+                        b = bytes.fromhex(ip_hex)
+                        ip = f"{b[3]}.{b[2]}.{b[1]}.{b[0]}"
+                        if ip.startswith("127.") or ip.startswith("0.0.") or ip.startswith("192.168."):
+                            continue
+                        nodes.add(f"{ip}:{port}")
+                    
+                    # IPv4-mapped IPv6
+                    elif len(ip_hex) == 32 and ip_hex.startswith("00000000000000000000ffff"):
+                        hex_ip = ip_hex[24:]
+                        b = bytes.fromhex(hex_ip)
+                        ip = f"{b[3]}.{b[2]}.{b[1]}.{b[0]}"
+                        if ip.startswith("127.") or ip.startswith("0.0.") or ip.startswith("192.168."):
+                            continue
+                        nodes.add(f"{ip}:{port}")
+            
+            if nodes:
+                return sorted(nodes)
+        except:
+            pass
     return []
 
 def extract_icon(apk_path, apk_id):
@@ -125,7 +264,6 @@ def extract_icon(apk_path, apk_id):
         with zipfile.ZipFile(apk_path) as zf:
             webps = [(n, zf.getinfo(n).file_size) for n in zf.namelist() if n.endswith('.webp')]
             if not webps:
-                # 没有webp，找最大的png
                 pngs = [(n, zf.getinfo(n).file_size) for n in zf.namelist() if n.endswith('.png') and 'res/' in n]
                 if pngs:
                     pngs.sort(key=lambda x: x[1], reverse=True)
@@ -133,7 +271,6 @@ def extract_icon(apk_path, apk_id):
                 else:
                     return None
             else:
-                # 精确匹配
                 found = False
                 if icon_path:
                     path_parts = icon_path.replace('\\','/').split('/')
@@ -145,7 +282,6 @@ def extract_icon(apk_path, apk_id):
                             found = True
                             break
                 if not found:
-                    # 取最大的webp
                     webps.sort(key=lambda x: x[1], reverse=True)
                     data = zf.read(webps[0][0])
             icon_file = f'{BASE_DIR}/screenshots/icons/{apk_id}.png'
@@ -177,28 +313,30 @@ stats = {'downloaded':0,'installed':0,'failed':0,'skipped':0,
          'total_dl':0.0,'total_detect':0.0,'total_install':0.0,'total_node':0.0,
          'total_icon':0.0}
 
-# 本次运行收集的所有节点
 current_run_nodes = set()
-current_run_details = []  # 每个APK的详细信息
+current_run_details = []
 
 def download_worker(domains):
     """线程1：下载+检测→队列"""
     for i, d in enumerate(domains):
         domain = d.get('pre_host','')
         url = d.get('max(prev)', f'https://{domain}/')
-        if domain in existing_ids: continue
+        if domain in existing_ids:
+            continue
 
         print(f"[D {i+1}/{len(domains)}] {domain}", end=' ')
 
         try:
             t0 = time.time()
-            r = subprocess.run(['curl','-sk','-L','--connect-timeout','6','-A','Mozilla/5.0 (Linux; Android 13; Pixel 4) AppleWebKit/537.36',url],
+            r = subprocess.run(['curl','-sk','-L','--connect-timeout','6',
+                              '-A','Mozilla/5.0 (Linux; Android 13; Pixel 4) AppleWebKit/537.36',url],
                              capture_output=True, text=True, timeout=10)
             t_html = time.time() - t0
             html = r.stdout
             if not html or len(html) < 50:
                 print(f'无响应({t_html:.1f}s)'); stats['failed']+=1; continue
 
+            # 新格式: android: "URL" 或 android: "URL"
             android_urls = re.findall(r'android\s*:\s*"([^"]+)"', html)
             android_url2 = re.findall(r'androidUrl\s*:\s*"([^"]+)"', html)
             redirect = re.findall(r'window\.location\s*=\s*"([^"]+)"', html)
@@ -244,7 +382,7 @@ def download_worker(domains):
     apk_queue.put(None)
 
 def install_worker():
-    """线程2：安装+获取节点→记录"""
+    """线程2：安装(自动点击确认)+获取节点→记录"""
     while True:
         item = apk_queue.get()
         if item is None: break
@@ -262,35 +400,26 @@ def install_worker():
         # 卸载同包名
         subprocess.run(f'{ADB} uninstall {pkg}'.split(), capture_output=True, timeout=30)
 
-        # 安装
+        # 安装（自动点击确认）
         t3 = time.time()
-        try:
-            r = subprocess.run(f'{ADB} install -r {apk_path}'.split(),
-                              capture_output=True, text=True, timeout=120)
-            t_inst = time.time() - t3
-            stats['total_install'] += t_inst
-            if 'Success' not in r.stdout:
-                print(f'安装失败({t_inst:.1f}s)'); os.path.exists(apk_path) and os.remove(apk_path); stats['failed']+=1; continue
-        except subprocess.TimeoutExpired:
-            print('安装超时(120s)'); stats['failed']+=1; continue
-        except Exception as e:
-            print(f'安装异常({e})'); stats['failed']+=1; continue
+        if not install_apk(apk_path):
+            print(f'安装失败'); os.path.exists(apk_path) and os.remove(apk_path); stats['failed']+=1; continue
+        t_inst = time.time() - t3
+        stats['total_install'] += t_inst
 
         # 启动+弹窗+获取节点
         t4 = time.time()
         subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(),
                       capture_output=True, timeout=10)
-        time.sleep(5)  # 等5秒让APP界面加载
-        click_popup()
-        nodes = get_proxy_nodes(pkg)
-        hw_ips = [ip for ip in nodes if get_cloud(ip) == "华为云"]
+        time.sleep(8)
+        # 点击通知弹窗
+        click_button(["允许"], max_tries=3, wait=2)
+        # 获取节点（通过 /proc/PID/net/tcp）
+        nodes = get_proxy_nodes_via_proc(pkg)
+        hw_ips = [ip for ip in nodes if get_cloud(ip.split(':')[0]) == "华为云"]
 
-        # 截图（确保截到APP界面，不是桌面）
+        # 截图
         shot_path = screenshot(domain, pkg)
-        # 如果截图太小（可能是桌面），等待后再截一次
-        if shot_path and os.path.exists(shot_path) and os.path.getsize(shot_path) < 500000:
-            time.sleep(3)
-            shot_path = screenshot(domain, pkg)
 
         # 提取图标
         t5 = time.time()
@@ -320,8 +449,9 @@ def install_worker():
             existing_pkgs.add(pkg)
             save_state(state)
 
-            # 更新数据库
             db = load_json(DB_PATH)
+            if 'apks' not in db: db['apks'] = []
+            if 'all_proxy_nodes' not in db: db['all_proxy_nodes'] = []
             all_proxy = set(db.get('all_proxy_nodes', []))
             db['apks'].append({'id':domain,'package':pkg,'label':label,
                               'app_name':'','app_domain_port':'',
@@ -347,81 +477,45 @@ def install_worker():
             generate_report()
 
 def compute_ip_changes():
-    """计算IP变更"""
     db = load_json(DB_PATH)
     current_ips = set(db.get('all_proxy_nodes', []))
-
-    # 读取上次记录
     history = load_json(IP_HISTORY)
     timestamps = sorted(history.keys()) if history else []
     prev_ips = set(history[timestamps[-1]]['all_proxy']) if timestamps else set()
-
     new_ips = current_ips - prev_ips
     removed_ips = prev_ips - current_ips
     unchanged = current_ips & prev_ips
-
-    # 华为IP
-    current_hw = {ip for ip in current_ips if get_cloud(ip) == "华为云"}
-    prev_hw = {ip for ip in prev_ips if get_cloud(ip) == "华为云"}
+    current_hw = {ip for ip in current_ips if get_cloud(ip.split(':')[0]) == "华为云"}
+    prev_hw = {ip for ip in prev_ips if get_cloud(ip.split(':')[0]) == "华为云"}
     new_hw = current_hw - prev_hw
     removed_hw = prev_hw - current_hw
-
     return {
-        'new_proxy': sorted(new_ips),
-        'removed_proxy': sorted(removed_ips),
+        'new_proxy': sorted(new_ips), 'removed_proxy': sorted(removed_ips),
         'unchanged_proxy': sorted(unchanged),
-        'new_huawei': sorted(new_hw),
-        'removed_huawei': sorted(removed_hw),
-        'total_current': len(current_ips),
-        'total_previous': len(prev_ips),
-        'total_huawei_current': len(current_hw),
-        'total_huawei_previous': len(prev_hw),
+        'new_huawei': sorted(new_hw), 'removed_huawei': sorted(removed_hw),
+        'total_current': len(current_ips), 'total_previous': len(prev_ips),
+        'total_huawei_current': len(current_hw), 'total_huawei_previous': len(prev_hw),
         'all_proxy': sorted(current_ips),
     }
 
 def generate_report():
-    """生成HTML报告（更新同一个目录，不创建新文件夹）"""
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
     state = load_state()
     db = load_json(DB_PATH)
     changes = compute_ip_changes()
-
-    # 保存本次IP变更到历史
     history = load_json(IP_HISTORY)
     history[ts] = changes
     save_json(IP_HISTORY, history)
-
-    # 保存本次运行结果（覆盖最新目录）
     out_dir = f'{OUTPUTS_DIR}/latest'
     os.makedirs(out_dir, exist_ok=True)
-    run_result = {
-        'timestamp': ts,
-        'stats': stats,
-        'apk_details': current_run_details,
-        'ip_changes': changes,
-    }
+    run_result = {'timestamp': ts, 'stats': stats,
+                  'apk_details': current_run_details, 'ip_changes': changes}
     save_json(f'{out_dir}/run_result.json', run_result)
-
-    # 调用 regen_html.py 生成HTML（主报告+latest目录）
-    subprocess.run(['python3', f'{BASE_DIR}/scripts/monitor/regen_html.py'], timeout=60)
-    # 复制到latest目录
-    import shutil
-    src = f'{BASE_DIR}/forensics/pcaps/hw_forensics_report.html'
-    dst = f'{out_dir}/report.html'
-    if os.path.exists(src):
-        shutil.copy2(src, dst)
-
-    # 保存IP变更摘要
     print(f"\n=== IP变更 ===")
     print(f"代理节点: {changes['total_previous']} → {changes['total_current']} (新增{len(changes['new_proxy'])} 消失{len(changes['removed_proxy'])})")
     print(f"华为IP: {changes['total_huawei_previous']} → {changes['total_huawei_current']} (新增{len(changes['new_huawei'])} 消失{len(changes['removed_huawei'])})")
     if changes['new_huawei']:
         print(f"  新增华为: {', '.join(changes['new_huawei'][:5])}...")
-    if changes['removed_huawei']:
-        print(f"  消失华为: {', '.join(changes['removed_huawei'][:5])}...")
-
-    # 有新华为IP时自动推送到GitHub
     if changes['new_huawei']:
         print("检测到新华为IP，推送到GitHub...")
         try:
@@ -436,32 +530,24 @@ def generate_report():
 def main():
     with open(DOMAIN_CSV, encoding='utf-8-sig') as f:
         domains = list(csv.DictReader(f))
-
-    print(f"=== 快速流水线 v2 启动 ===")
+    print(f"=== 快速流水线 v3 启动 (Android 14, 一加9 Pro) ===")
     print(f"域名: {len(domains)}")
     print(f"已处理: {len(existing_ids)}")
     print(f"待处理: {len(domains) - len(existing_ids)}")
     print(f"手机存储: {get_storage_gb()}GB")
     print()
-
     t_start = time.time()
     dt = threading.Thread(target=download_worker, args=(domains,))
     it = threading.Thread(target=install_worker)
-    dt.start()
-    it.start()
-    dt.join()
-    it.join()
+    dt.start(); it.start()
+    dt.join(); it.join()
     elapsed = time.time() - t_start
-
     generate_report()
-
     n = stats['installed'] if stats['installed'] > 0 else 1
     print(f"\n=== 流水线完成 ===")
     print(f"总耗时: {elapsed/60:.1f}分钟")
     print(f"下载: {stats['downloaded']} 安装: {stats['installed']} 跳过: {stats['skipped']} 失败: {stats['failed']}")
     print(f"平均下载: {stats['total_dl']/n:.1f}s 检测: {stats['total_detect']/n:.1f}s 安装: {stats['total_install']/n:.1f}s 节点: {stats['total_node']/n:.1f}s")
-    print(f"下载总耗时: {stats['total_dl']/60:.1f}分钟 安装总耗时: {(stats['total_install']+stats['total_node'])/60:.1f}分钟")
-    print(f"流水线加速比: {(stats['total_dl']+stats['total_install']+stats['total_node'])/elapsed:.2f}x")
 
 if __name__ == '__main__':
     main()
