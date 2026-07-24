@@ -130,11 +130,11 @@ def capture_pcap(ip, port, duration=30):
     pcap_file = f"{PCAP_DIR}/{ip}_{port}_{ts}.pcap"
     
     # 在真机上执行 tcpdump
-    cmd = f"adb -s 192.168.1.16:43351 shell \"su 0 -c 'timeout {duration} tcpdump -i any host {ip} -c 200 -w /sdcard/forensics.pcap'\""
+    cmd = f"adb -s 192.168.1.16:38399 shell \"su 0 -c 'timeout {duration} tcpdump -i any host {ip} -c 200 -w /sdcard/forensics.pcap'\""
     try:
         subprocess.run(cmd, shell=True, timeout=duration+10, capture_output=True)
         # 拉取 pcap
-        subprocess.run(f"adb -s 192.168.1.16:43351 pull /sdcard/forensics.pcap {pcap_file}",
+        subprocess.run(f"adb -s 192.168.1.16:38399 pull /sdcard/forensics.pcap {pcap_file}",
                       shell=True, timeout=10, capture_output=True)
         if os.path.exists(pcap_file):
             return {'pcap_file': pcap_file, 'size': os.path.getsize(pcap_file)}

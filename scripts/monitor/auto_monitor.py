@@ -21,7 +21,7 @@ from Crypto.Util.Padding import unpad
 DB_PATH = "/home/ninini/Agents/APK-Research/proxy_monitor_db.json"
 SAMPLES_DIR = "/home/ninini/Agents/APK-Research/new_samples"
 DETECT_SCRIPT = "/home/ninini/Agents/APK-Research/detect_proxy_apk.py"
-ADB_DEVICE = "192.168.1.16:43351"
+ADB_DEVICE = "192.168.1.16:38399"
 
 # 已知域名
 DOMAINS = [
