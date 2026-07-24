@@ -104,3 +104,48 @@ auth_key来源：
   - 可能由forwarder control的响应提供
   - 或者在ProxyClient.handleConn的间接调用中生成
   - 加密方式: AES-IGE (tgnet.so)
+
+=== 突破性发现 ===
+
+FetchForwarderFixedTuple完整流程（forwarder_control.go:130-213）：
+1. net.SplitHostPort(host:port) → 解析地址
+2. net.Dialer.DialContext → 建立TCP连接
+3. crypto/tls.Conn.handshakeContext → TLS握手
+4. crypto/tls.Conn.ConnectionState → 检查TLS状态
+5. randomForwarderNonce() → nonce = hex(crypto/rand.Read(16B)) + FormatInt(time.Now().UnixNano(), 36)
+6. signForwarderHelloMAC(AES_key, msg) → HMAC-SHA256签名
+7. encoding/json.Marshal(fwdHelloRequest) → JSON序列化
+8. 发送JSON over TLS（不是DEADBEEF）
+9. io.ReadAtLeast → 读取响应（两次：头+体）
+10. encoding/json.Unmarshal(fwdControlResponse) → JSON反序列化
+11. verifyForwarderResponseMAC(AES_key, response) → 验证MAC
+
+关键结论：
+- forwarder control用的是标准HTTP over TLS
+- DEADBEEF只用于数据转发（VPN代理流量）
+- 两者是不同的通信通道
+- forwarder control不需要auth_key
+- 可以自己实现forwarder control客户端！
+
+SDK源码文件（8个）：
+1. app_line.go - 应用线路管理
+2. bootstrap.go - SDK启动
+3. controlplane.go - 控制面解析（新发现）
+4. forwarder_control.go - forwarder控制
+5. obfs.go - DEADBEEF封装
+6. pool.go - 连接池
+7. pool_tls.go - TLS配置
+8. proxy.go - 代理处理
+
+fwdHelloRequest字段（从signForwarderHelloMAC line 76-83）：
+- version: "2"
+- type: "hello"
+- nonce: randomForwarderNonce()
+- device_uuid: 设备UUID
+- timestamp: FormatInt(time.Now(), 10)
+- label: randomLabel()
+- 其他字段待确认
+
+MAC计算方式：
+msg = strings.Join([version, "hello", nonce, device_uuid, timestamp, ...], ".")
+MAC = hmacSHA256Hex(AES_key, msg)
