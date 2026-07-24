@@ -5,7 +5,7 @@
 """
 import subprocess, re, time, sys
 
-ADB = "adb -s 192.168.1.16:38399"
+ADB = "adb -s 192.168.1.16:41879"
 
 def find_and_click():
     """查找并点击"允许"按钮"""
