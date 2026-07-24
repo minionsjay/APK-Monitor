@@ -16,6 +16,7 @@ import (
 	"math/big"
 	"net"
 	"os"
+	"strings"
 	"sync"
 	"time"
 )
@@ -23,10 +24,8 @@ import (
 var caCert *x509.Certificate
 var caKey *rsa.PrivateKey
 
-var psk = []byte("pPVWQxaZLPSkVrQ0uGE3ycJYgBugl6H8WY3pEfbRD0tVNEYqi4Y7")
-
 func main() {
-	caPemData, _ := os.ReadFile("/sdcard/mitmproxy-ca.pem")
+	caPemData, _ := os.ReadFile("/data/local/tmp/mitmproxy-ca.pem")
 	caTLSCert, _ := tls.X509KeyPair(caPemData, caPemData)
 	caCert, _ = x509.ParseCertificate(caTLSCert.Certificate[0])
 	block, _ := pem.Decode(caPemData)
@@ -35,12 +34,13 @@ func main() {
 	} else if k2, err := x509.ParsePKCS8PrivateKey(block.Bytes); err == nil {
 		caKey, _ = k2.(*rsa.PrivateKey)
 	}
+
 	ln, err := net.Listen("tcp", "127.0.0.1:30139")
 	if err != nil {
 		fmt.Printf("监听失败: %v\n", err)
 		return
 	}
-	fmt.Println("代理启动")
+	fmt.Println("代理启动 127.0.0.1:30139")
 	for {
 		conn, err := ln.Accept()
 		if err != nil { continue }
@@ -73,22 +73,18 @@ func handleConn(clientConn net.Conn) {
 	if err != nil || n < 5 { return }
 
 	sni := "mail.163.com"
-	// 解析client_random
-	var clientRandom []byte
-	data := buf[5:n]
-	if len(data) >= 34 {
-		clientRandom = data[2:34]
-	}
 
 	cert, err := signCert(sni)
 	if err != nil { return }
 	bc := &bufferedConn{Conn: clientConn, buf: buf[:n]}
-	tlsConn := tls.Server(bc, &tls.Config{Certificates: []tls.Certificate{cert}})
+	keyLogServer := &strings.Builder{}
+	tlsConn := tls.Server(bc, &tls.Config{Certificates: []tls.Certificate{cert}, KeyLogWriter: keyLogServer})
 	if err := tlsConn.Handshake(); err != nil { return }
-	defer tlsConn.Close()
 
-	clientState := tlsConn.ConnectionState()
+	fmt.Printf("SERVER_KEYLOG: %s\n", keyLogServer.String())
 
+	// 用标准crypto/tls做后端，设置KeyLogWriter
+	keyLogBuf := &strings.Builder{}
 	backend, err := tls.Dial("tcp", "8.138.152.138:30139", &tls.Config{
 		InsecureSkipVerify: true,
 		ServerName:         sni,
@@ -100,6 +96,7 @@ func handleConn(clientConn net.Conn) {
 			0x0033, 0x0067, 0x0032, 0x0005, 0x0004, 0x002f,
 			0x003c, 0x000a,
 		},
+		KeyLogWriter: keyLogBuf,
 	})
 	if err != nil {
 		fmt.Printf("后端失败: %v\n", err)
@@ -107,65 +104,71 @@ func handleConn(clientConn net.Conn) {
 	}
 	defer backend.Close()
 
-	// 用客户端EKM派生auth_key的多种方式
-	labels := []string{"auth_key", "mtproto", "psk", "exporter", "EXTRA", "key", "cryption", "proxy", "master secret", "key expansion", "client write key", "server write key"}
-	
-	fmt.Printf("--- 新连接 ---\n")
-	if clientRandom != nil {
-		fmt.Printf("client_random: %s\n", hex.EncodeToString(clientRandom))
-	}
+	// 输出keylog
+	keyLogStr := keyLogBuf.String()
+	fmt.Printf("KEYLOG: %s\n", keyLogStr)
 
-	for _, label := range labels {
-		// EKM 256 bytes
-		ekm256, err1 := clientState.ExportKeyingMaterial(label, nil, 256)
-		if err1 == nil {
-			// 方法1: SHA1(EKM)[:8]
-			h1 := sha1.Sum(ekm256)
-			id1 := binary.LittleEndian.Uint64(h1[:8])
+	// 解析CLIENT_RANDOM
+	for _, line := range strings.Split(keyLogStr, "\n") {
+		if strings.HasPrefix(line, "CLIENT_RANDOM") {
+			parts := strings.Fields(line)
+			if len(parts) >= 3 {
+				cr := parts[1]
+				ms := parts[2]
+				fmt.Printf("client_random=%s master_secret=%s\n", cr, ms)
 
-			// 方法2: SHA1(HMAC-SHA256(PSK, EKM))[:8]
-			hm := hmac.New(sha256.New, psk)
-			hm.Write(ekm256)
-			ekm_hmac := hm.Sum(nil)
-			h2 := sha1.Sum(ekm_hmac)
-			id2 := binary.LittleEndian.Uint64(h2[:8])
+				// 用master_secret尝试各种auth_key派生
+				msBytes, _ := hex.DecodeString(ms)
+				psk := []byte("pPVWQxaZLPSkVrQ0uGE3ycJYgBugl6H8WY3pEfbRD0tVNEYqi4Y7")
 
-			// 方法3: SHA1(SHA256(PSK + EKM))[:8]
-			combined := append(append([]byte{}, psk...), ekm256...)
-			h3raw := sha256.Sum256(combined)
-			h3 := sha1.Sum(h3raw[:])
-			id3 := binary.LittleEndian.Uint64(h3[:8])
+				// 方法1: HMAC-SHA256(PSK, MS)
+				hm := hmac.New(sha256.New, psk)
+				hm.Write(msBytes)
+				ak1 := hm.Sum(nil)
+				h1 := sha1.Sum(ak1)
+				fmt.Printf("HMAC(PSK,MS)_id=0x%016x\n", binary.LittleEndian.Uint64(h1[:8]))
 
-			// 方法4: HMAC-SHA256(PSK, label) → auth_key → SHA1[:8]
-			hm4 := hmac.New(sha256.New, psk)
-			hm4.Write([]byte(label))
-			ak4 := hm4.Sum(nil)
-			h4 := sha1.Sum(ak4)
-			id4 := binary.LittleEndian.Uint64(h4[:8])
+				// 方法2: HMAC-SHA256(MS, PSK)
+				hm2 := hmac.New(sha256.New, msBytes)
+				hm2.Write(psk)
+				ak2 := hm2.Sum(nil)
+				h2 := sha1.Sum(ak2)
+				fmt.Printf("HMAC(MS,PSK)_id=0x%016x\n", binary.LittleEndian.Uint64(h2[:8]))
 
-			// 方法5: HMAC-SHA256(EKM, PSK) → auth_key → SHA1[:8]
-			hm5 := hmac.New(sha256.New, ekm256)
-			hm5.Write(psk)
-			ak5 := hm5.Sum(nil)
-			h5 := sha1.Sum(ak5)
-			id5 := binary.LittleEndian.Uint64(h5[:8])
+				// 方法3: SHA256(PSK + MS)
+				combined := append(append([]byte{}, psk...), msBytes...)
+				ak3 := sha256.Sum256(combined)
+				h3 := sha1.Sum(ak3[:])
+				fmt.Printf("SHA256(PSK+MS)_id=0x%016x\n", binary.LittleEndian.Uint64(h3[:8]))
 
-			fmt.Printf("label=%s id1=0x%016x id2=0x%016x id3=0x%016x id4=0x%016x id5=0x%016x\n",
-				label, id1, id2, id3, id4, id5)
-		}
-		
-		// EKM 48 bytes (master secret size)
-		ekm48, err2 := clientState.ExportKeyingMaterial(label, nil, 48)
-		if err2 == nil {
-			h1 := sha1.Sum(ekm48)
-			id1 := binary.LittleEndian.Uint64(h1[:8])
-			
-			hm := hmac.New(sha256.New, psk)
-			hm.Write(ekm48)
-			h2 := sha1.Sum(hm.Sum(nil))
-			id2 := binary.LittleEndian.Uint64(h2[:8])
+				// 方法4: 直接用MS作为auth_key
+				h4 := sha1.Sum(msBytes)
+				fmt.Printf("MS_direct_id=0x%016x\n", binary.LittleEndian.Uint64(h4[:8]))
 
-			fmt.Printf("label=%s(48) id1=0x%016x id2=0x%016x\n", label, id1, id2)
+				// 方法5: HMAC-SHA256(SHA256(PSK), MS)
+				pskHash := sha256.Sum256(psk)
+				hm5 := hmac.New(sha256.New, pskHash[:])
+				hm5.Write(msBytes)
+				ak5 := hm5.Sum(nil)
+				h5 := sha1.Sum(ak5)
+				fmt.Printf("HMAC(SHA256(PSK),MS)_id=0x%016x\n", binary.LittleEndian.Uint64(h5[:8]))
+
+				// 方法6: PRF(MS, "auth_key", PSK)
+				cs := backend.ConnectionState()
+				ekm, err := cs.ExportKeyingMaterial("auth_key", psk, 256)
+				if err == nil {
+					h6 := sha1.Sum(ekm)
+					fmt.Printf("EKM(auth_key,PSK)_id=0x%016x\n", binary.LittleEndian.Uint64(h6[:8]))
+				}
+
+				// 方法7: EKM with no context
+				cs2 := backend.ConnectionState()
+				ekm2, _ := cs2.ExportKeyingMaterial("auth_key", nil, 256)
+				if ekm2 != nil {
+					h7 := sha1.Sum(ekm2)
+					fmt.Printf("EKM(auth_key,nil)_id=0x%016x\n", binary.LittleEndian.Uint64(h7[:8]))
+				}
+			}
 		}
 	}
 
@@ -177,12 +180,11 @@ func handleConn(clientConn net.Conn) {
 		for {
 			n, err := tlsConn.Read(b)
 			if err != nil { break }
-			// 提取APP消息的auth_key_id
-			payload := b[6:n] // skip DEADBEEF(4)+sublen(2)
+			payload := b[6:n]
 			if len(payload) >= 2 {
 				plen := int(binary.BigEndian.Uint16(payload[:2]))
 				if plen > 0 && len(payload) > 2 {
-					inner := payload[3:] // skip payload_len(2)+padding_len(1)
+					inner := payload[3:]
 					if len(inner) >= 8 {
 						appAuthId := binary.LittleEndian.Uint64(inner[:8])
 						fmt.Printf("APP_AUTH_KEY_ID=0x%016x\n", appAuthId)

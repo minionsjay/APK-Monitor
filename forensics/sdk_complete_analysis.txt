@@ -1,0 +1,106 @@
+=== SDK完整逆向分析 ===
+
+源码文件（7个）：
+1. app_line.go - 应用线路管理
+2. bootstrap.go - SDK启动（355-364行: TLS配置）
+3. forwarder_control.go - forwarder控制（70-345行）
+4. obfs.go - DEADBEEF封装（31-72行）
+5. pool.go - 连接池（85-261行）
+6. pool_tls.go - TLS配置（15行）
+7. proxy.go - 代理处理（50-300行）
+
+SDK编译信息：
+- Go 1.25.0 (Windows AMD64)
+- utls v1.8.2
+- gomobile (Android ARM64)
+- -ldflags="-X proxy-system/sdk.EmbeddedPrivateKeyB64=..." (内嵌RSA私钥)
+
+SDK函数（350个）分为以下模块：
+
+1. SDKBootstrap（启动+管理）
+   - Init/Prepare/Start/Stop
+   - NewSDKBootstrap
+   - autoRefreshLoop/healthCheckLoop/resumeRecoveryLoop
+   - fetchForwarderControlPlane/doForwarderControlFetch
+   - refreshControlPlaneOnce/refreshControlPlaneOnceImpl
+   - resolveControlPlane/resolveControlPlaneClaimed
+   - prepareWithAppDomainLocked
+   - syncProxyTLSConfigLocked
+   - setAppLineIPs/applyPersistedAppLinesLocked
+   - loadOrCreateDeviceUUIDLocked
+
+2. ProxyClient（代理客户端）
+   - Start/Stop
+   - acceptLoop/handleConn
+   - reportConnectResult
+   - SetBeforeRelayHook/SetConnectResultHook/SetOnAcceptHook
+
+3. connPool（连接池）
+   - dial/get/put/discard/evict/refill/close/maintainLoop
+
+4. obfsConn（DEADBEEF封装）
+   - Write/writeFrame - 发送DEADBEEF
+   - Read - 读取DEADBEEF
+   - Close/RemoteAddr/SetDeadline
+
+5. forwarder_control（控制面）
+   - signForwarderHelloMAC - 签名hello MAC
+   - verifyForwarderResponseMAC - 验证响应MAC
+   - hmacSHA256Hex - HMAC-SHA256计算
+   - randomForwarderNonce - 生成随机nonce
+   - randomLabel - 生成随机label
+
+6. 加密/解密
+   - decryptNodeData - 解密.dat节点数据(AES-CBC)
+   - tryDecryptGCM - 尝试GCM解密
+   - tryDecryptCBC - 尝试CBC解密
+   - normalizeAESKey - AES key规范化
+   - DecodeSecretPayload - 解密RSA加密的配置
+   - decodeSecretPayloadWithKey
+   - parseRSAPrivateKey
+   - pkcs7Unpad
+
+7. 节点管理
+   - SelectFixedNodeSet/PickReachableFixedEndpoint
+   - anyEndpointReachable/probeAnyTCP/probeTCP
+   - checkAllNodesHealth/checkSingleNode/checkHighAvailabilityNodes
+   - CircuitBreaker（熔断器）
+
+8. DNS/域名
+   - resolveAppDomainHost/lookupAppDomainTXT/lookupTXTViaDNS
+   - decryptDomainTXT
+   - loadDomainEntryConfig
+
+forwarder_control.go关键逻辑：
+
+randomForwarderNonce (line 120-123):
+  nonce = hex(crypto/rand.Read(16B)) + FormatInt(time.Now().UnixNano(), 36)
+
+signForwarderHelloMAC (line 70-85):
+  msg = strings.Join(["version", "hello", nonce, device_uuid, timestamp, ...], ".")
+  MAC = hmacSHA256Hex(AES_key, msg)
+
+hmacSHA256Hex (line 114):
+  HMAC-SHA256(key, message) → hex编码
+
+DEADBEEF协议 (obfs.go):
+  writeFrame: DEADBEEF(4B) + sublen(2B) + payload_len(2B) + padding_len(1B) + padding + payload
+  Read: 解析DEADBEEF header，返回payload
+
+通信流程：
+1. APP从.dat获取控制面节点(AES-CBC解密)
+2. DNS解析app_domain获取控制面地址
+3. 连接控制面:30139 (TLS 1.2, ECDHE_RSA_WITH_AES_128_CBC_SHA)
+4. 发送fwdHelloRequest(明文JSON + HMAC-SHA256 MAC)
+5. 服务端返回fwdHelloResponse(明文JSON + MAC)
+6. APP验证MAC
+7. 获取代理节点列表
+8. 启动VPN代理(60139端口)
+9. 通过DEADBEEF+加密转发流量到代理节点:30139
+
+auth_key来源：
+  - 不在SDK的函数列表中
+  - 不在TLS/PSK/EKM/master_secret中
+  - 可能由forwarder control的响应提供
+  - 或者在ProxyClient.handleConn的间接调用中生成
+  - 加密方式: AES-IGE (tgnet.so)
