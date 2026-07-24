@@ -1,0 +1,63 @@
+=== 逆向工程最终报告 ===
+
+1. 通信格式确认
+   外层: DEADBEEF(4B magic) + sublen=0(2B) + payload_len(2B) + padding_len(1B) + padding(NB) + inner
+   inner: auth_key_id(8B) + msg_key(16B) + encrypted_data
+   验证: 4+2+2+1+padding+inner = 总长度 ✅
+
+2. TLS握手
+   - 标准crypto/tls + 20个cipher列表 + SNI = 成功
+   - cipher: ECDHE_RSA_WITH_AES_128_CBC_SHA (0xc013)
+   - SDK使用utls v1.8.2 (标准版，未修改)
+
+3. PSK/session ticket
+   - 值: pPVWQxaZLPSkVrQ0uGE3ycJYgBugl6H8WY3pEfbRD0tVNEYqi4Y7
+   - 用途: TLS session resumption (initPskExt = 标准utls代码)
+   - 不是外部PSK (ExternalPreSharedKeyExtension是TODO未实现)
+
+4. auth_key来源（排除法）
+   ❌ 不是TLS EKM (ExportKeyingMaterial) - 6种label+5种派生方式都不匹配
+   ❌ 不是PSK直接派生 (SHA1/HMAC/SHA256都不匹配)
+   ❌ 不在Go堆中 (不缓存)
+   ❌ 不是标准MTProto req_pq_multi (直接发被拒绝)
+   ❌ 不是通过DEADBEEF通道握手 (第一个消息就加密)
+   
+   可能来源:
+   - SDK自定义的密钥派生 (在DEADBEEF协议层)
+   - 从session ticket派生 (但需要session resumption)
+   - 从device_uuid+PSK派生 (但每个连接不同)
+
+5. SDK函数列表 (libgojni.so)
+   - obfsConn.writeFrame - DEADBEEF封装
+   - connPool.dial - 连接建立
+   - ProxyClient.handleConn - 连接处理
+   - tryDecryptGCM/tryDecryptCBC - 解密
+   - decryptNodeData - 解密节点数据
+   - normalizeAESKey - AES key规范化
+
+6. tgnet.so函数列表
+   - Handshake::beginHandshake → sendRequestData → Connection::sendData
+   - 发送标准req_pq_multi (auth_key_id=0)
+   - 但APP实际不用tgnet.so的握手
+
+7. utls函数列表
+   - sessionController.initPskExt - 标准session resumption
+   - sessionController.setPskToUConn - 设置PSK到UConn
+   - 没有外部PSK实现
+
+8. MITM代理
+   - 能看到APP完整明文通信
+   - 但MITM破坏了TLS session → auth_key变化 → 服务端不响应
+   - 502条APP明文消息，0条SERVER响应
+
+9. 当前阻塞
+   - 不知道auth_key如何派生
+   - 无法构造加密的MTProto消息
+   - 无法做MTProto握手（标准req_pq_multi被拒绝）
+   - MITM代理破坏了session
+
+10. 可行方案
+    a. 从MITM日志中提取session ticket，用utls session resumption连接
+    b. 用其他手机跑无节点APK（最简单）
+    c. 修改utls源码在TLS握手层注入PSK
+    d. 继续逆向SDK的密钥派生逻辑
