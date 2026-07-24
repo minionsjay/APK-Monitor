@@ -1,0 +1,41 @@
+=== TLS MITM代理分析报告 ===
+
+1. TLS MITM代理
+   - Go ARM64代理在设备上运行（/data/local/tmp/mtmitm）
+   - iptables DNAT: tcp --dport 30122 → 127.0.0.1:30122
+   - mitmproxy CA签发动态证书（mail.163.com）
+   - APP信任CA → 能看到明文
+   - APP成功获取节点 ✅
+
+2. 通信格式
+   外层: DEADBEEF(4B magic) + sublen(2B BE) + payload
+   payload: padding_len(1B) + padding(NB) + 加密MTProto
+   所有消息都有auth_key_id != 0 (加密)
+   没有标准MTProto的未加密req_pq_multi
+
+3. APP发送2种消息
+   777B: DEADBEEF + pad(2B) + inner(768B) auth_key_id=0xd40fe6b5b1def1e1
+   312B: DEADBEEF + pad(1B) + inner(304B) auth_key_id=0x7fa985a43e32b926
+
+4. SERVER返回5种消息
+   119B: auth_key_id=0x21e6f45e9db11559 (握手响应)
+   409B: auth_key_id=0x131da5b4ce5a5e27
+   1163B: auth_key_id=0xfae0105f2d966083
+   2326B: auth_key_id=0x7d0ca6ba18828ad7
+   3829B: auth_key_id=0x95c3de2f408ec313 (可能是节点列表)
+
+5. 通信流程
+   APP 777B(加密) → SERVER 119B(加密)
+   APP 312B(加密) → SERVER 409B/1163B/2326B/3829B(加密)
+
+6. 关键发现
+   - 每个连接用不同的auth_key_id
+   - 不是标准MTProto握手
+   - 可能是自定义DH密钥交换
+   - auth_key可能在TLS SessionID中传递
+   - 需要逆向libgojni.so中的握手逻辑
+
+7. 已有工具
+   - TLS MITM代理代码: go_src/mtproto_client/main.go
+   - MITM日志: forensics/mitm_log.txt (487KB)
+   - TLS握手成功: port 30122 + SNI mail.163.com + 20 ciphers
