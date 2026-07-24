@@ -35,7 +35,8 @@ BATCH_SIZE = 5  # 每次轮询5个APK
 STATE_FIELDS = ['apk_id', 'package', 'label', 'score', 'size_mb',
                 'first_installed', 'last_monitored', 'proxy_count',
                 'huawei_count', 'installed_on_device', 'apk_path',
-                'domain', 'download_url', 'status']
+                'domain', 'download_url', 'status',
+                'download_time', 'detect_time', 'install_time', 'node_time']
 
 def get_cloud(ip):
     if ip.startswith('8.13') or ip.startswith('8.138') or ip.startswith('8.148') or ip.startswith('8.163'): return "阿里云"
