@@ -1,0 +1,12 @@
+=== 30138端口确认用DEADBEEF ===
+
+MITM代理截获:
+  APP_30138 409字节 DEADBEEF格式
+  auth_key_id: d150ff07d050cb42
+  无SRV_30138响应(后端连接失败)
+
+结论:
+  30138端口也用DEADBEEF+MTProto
+  不是标准TLS+JSON
+  forwarder control JSON可能通过DEADBEEF通道发送
+  在已加密的通道上
