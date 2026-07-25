@@ -1,0 +1,28 @@
+=== FetchForwarderFixedTuple完整分析 ===
+
+完整流程（884行反编译代码）：
+
+1. net.SplitHostPort(host:port) → 解析地址
+2. net.Dialer.DialContext → TCP连接
+3. tls.Config创建(标准crypto/tls)
+4. tls.Conn创建+版本0x0303直接设置
+5. tls.Conn.handshakeContext → TLS握手
+6. time.Now() → 获取时间
+7. randomForwarderNonce() → 生成nonce
+8. 填充fwdHelloRequest结构体(nonce,uuid,ts)
+9. signForwarderHelloMAC(AES_key, msg) → 签名MAC
+10. json.Marshal(fwdHelloRequest) → 序列化JSON
+11. JSON末尾添加\n → JSON+'\n'
+12. tls.Conn.Write(JSON+\n) → 发送
+13. io.ReadAtLeast(4字节) → 读取响应长度(大端)
+14. binary.Read(4字节) → 解析长度(字节交换)
+15. 检查长度 < 65535
+16. makeslice(长度) → 创建缓冲区
+17. io.ReadAtLeast(长度) → 读取响应体
+18. json.Unmarshal(fwdControlResponse) → 反序列化
+19. 检查response.Type == 'error'
+
+关键发现：
+- 发送格式: JSON + '\n'
+- 标准crypto/tls(不是utls)
+- TLS Conn版本直接设置0x0303

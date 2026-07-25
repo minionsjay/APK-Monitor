@@ -1,166 +1,205 @@
 package main
 
 import (
-	"crypto/hmac"
 	"crypto/rand"
-	"crypto/sha256"
+	"crypto/rsa"
+	"crypto/tls"
+	"crypto/x509"
+	"crypto/x509/pkix"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
+	"math/big"
 	"net"
-	"strconv"
-	"strings"
+	"encoding/pem"
+	"os"
+	"sync"
 	"time"
-
-	utls "github.com/refraction-networking/utls"
 )
 
-type FwdHelloRequest struct {
-	Version      string `json:"version"`
-	Type         string `json:"type"`
-	Nonce        string `json:"nonce"`
-	DeviceUUID   string `json:"device_uuid,omitempty"`
-	TimestampUnix string `json:"timestamp_unix"`
-	SDKVersion   string `json:"sdk_version,omitempty"`
-	MAC          string `json:"mac"`
-}
-
-// 自定义空扩展
-type CustomExtension struct {
-	utls.TLSExtension
-	TypeID uint16
-	Data   []byte
-}
-
-func (e *CustomExtension) writeToUConn(uc *utls.UConn) error {
-	return nil
-}
-
-func (e *CustomExtension) Len() int {
-	return 4 + len(e.Data)
-}
-
-func (e *CustomExtension) Read(b []byte) (int, error) {
-	// 写入扩展类型(2B) + 长度(2B) + 数据
-	if len(b) < 4 {
-		return 0, fmt.Errorf("buffer too small")
-	}
-	b[0] = byte(e.TypeID >> 8)
-	b[1] = byte(e.TypeID)
-	b[2] = byte(len(e.Data) >> 8)
-	b[3] = byte(len(e.Data))
-	n := copy(b[4:], e.Data)
-	return 4 + n, nil
-}
+var caCert *x509.Certificate
+var caKey *rsa.PrivateKey
 
 func main() {
-	aesKey := "htHtoU17cKxTjwVh1m2iyHfEI39RG1Cw"
-	deviceUUID := "740176FFFFFFEEFFFFFFF8FFFFFFB8FFFFFFF414FFFFFFA561FFFFFFA66A52FFFFFFADFFFFFF9B7E544861FFFFFFAD"
-	nonce := randomNonce()
-	tsStr := strconv.FormatInt(time.Now().Unix(), 10)
-	msg := strings.Join([]string{"2", "hello", nonce, deviceUUID, tsStr, "2", "", ""}, ".")
-	mac := hmacHex(aesKey, msg)
-
-	req := FwdHelloRequest{
-		Version: "2", Type: "hello", Nonce: nonce,
-		DeviceUUID: deviceUUID, TimestampUnix: tsStr,
-		SDKVersion: "4.0.1", MAC: mac,
+	caPemData, _ := os.ReadFile("/data/local/tmp/mitmproxy-ca.pem")
+	caTLSCert, _ := tls.X509KeyPair(caPemData, caPemData)
+	caCert, _ = x509.ParseCertificate(caTLSCert.Certificate[0])
+	block, _ := pem.Decode(caPemData)
+	if k, err := x509.ParsePKCS1PrivateKey(block.Bytes); err == nil {
+		caKey = k
+	} else if k2, err := x509.ParsePKCS8PrivateKey(block.Bytes); err == nil {
+		caKey, _ = k2.(*rsa.PrivateKey)
 	}
-	jsonData, _ := json.Marshal(req)
-	fmt.Printf("JSON: %s\n\n", jsonData)
 
-	node := "8.138.152.138:30139"
-
-	// 用utls自定义ClientHelloSpec
-	// 完全模拟APP的ClientHello
-	fmt.Printf("=== utls自定义扩展(0x3374+0x754f) ===\n")
-	sendWithCustomExt(node, "mail.163.com", jsonData)
-}
-
-func sendWithCustomExt(node, sni string, data []byte) {
-	rawConn, err := net.DialTimeout("tcp", node, 10*time.Second)
+	ln, err := net.Listen("tcp", "127.0.0.1:30139")
 	if err != nil {
-		fmt.Printf("连接失败: %v\n", err)
+		fmt.Printf("监听失败: %v\n", err)
 		return
 	}
-	defer rawConn.Close()
+	fmt.Println("MITM代理启动 127.0.0.1:30139")
+	for {
+		conn, err := ln.Accept()
+		if err != nil { continue }
+		go handleConn(conn)
+	}
+}
 
-	config := &utls.Config{
-		InsecureSkipVerify: true,
-		ServerName:         sni,
-		MinVersion:         utls.VersionTLS12,
-		MaxVersion:         utls.VersionTLS12,
+func signCert(sni string) (tls.Certificate, error) {
+	serverKey, _ := rsa.GenerateKey(rand.Reader, 2048)
+	template := x509.Certificate{
+		SerialNumber: big.NewInt(time.Now().UnixNano()),
+		Subject:      pkix.Name{CommonName: sni},
+		NotBefore:    time.Now().Add(-time.Hour),
+		NotAfter:    time.Now().Add(time.Hour * 24),
+		KeyUsage:     x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+		DNSNames:     []string{sni},
+	}
+	certDER, _ := x509.CreateCertificate(rand.Reader, &template, caCert, &serverKey.PublicKey, caKey)
+	keyPEM := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(serverKey)})
+	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER})
+	return tls.X509KeyPair(certPEM, keyPEM)
+}
+
+func handleConn(clientConn net.Conn) {
+	defer clientConn.Close()
+	buf := make([]byte, 4096)
+	clientConn.SetReadDeadline(time.Now().Add(5 * time.Second))
+	n, err := clientConn.Read(buf)
+	if err != nil || n < 5 { return }
+
+	sni := "mail.163.com"
+	// 简单解析SNI
+	data := buf[5:n]
+	if len(data) > 37+5 {
+		offset := 2 + 32 // version + random
+		if offset < len(data) {
+			sidLen := int(data[offset])
+			offset += 1 + sidLen
+			if offset+1 < len(data) {
+				csLen := int(data[offset])<<8 | int(data[offset+1])
+				offset += 2 + csLen
+				if offset < len(data) {
+					compLen := int(data[offset])
+					offset += 1 + compLen
+					if offset+1 < len(data) {
+						extLen := int(data[offset])<<8 | int(data[offset+1])
+						offset += 2
+						extEnd := offset + extLen
+						for offset+4 <= extEnd && offset+4 <= len(data) {
+							extType := int(data[offset])<<8 | int(data[offset+1])
+							el := int(data[offset+2])<<8 | int(data[offset+3])
+							if extType == 0 && el > 5 && offset+4+el <= len(data) {
+								sniLen := int(data[offset+7])<<8 | int(data[offset+8])
+								if offset+9+sniLen <= len(data) {
+									sni = string(data[offset+9 : offset+9+sniLen])
+								}
+							}
+							offset += 4 + el
+						}
+					}
+				}
+			}
+		}
 	}
 
-	uConn := utls.UClient(rawConn, config, utls.HelloCustom)
+	cert, err := signCert(sni)
+	if err != nil { return }
+	bc := &bufferedConn{Conn: clientConn, buf: buf[:n]}
+	tlsConn := tls.Server(bc, &tls.Config{Certificates: []tls.Certificate{cert}})
+	if err := tlsConn.Handshake(); err != nil { return }
+	defer tlsConn.Close()
 
-	// 完全模拟APP的ClientHello
-	spec := &utls.ClientHelloSpec{
+	// 从SNI推断后端
+	// 后端地址从APP的连接目标获取
+	// 这里用固定的后端
+	backend, err := tls.Dial("tcp", "8.163.42.186:30139", &tls.Config{
+		InsecureSkipVerify: true,
+		ServerName:         sni,
+		MinVersion:         tls.VersionTLS12,
+		MaxVersion:         tls.VersionTLS12,
 		CipherSuites: []uint16{
 			0xc00a, 0xc014, 0x0039, 0x006b, 0x0035, 0x003d,
 			0xc007, 0xc009, 0xc023, 0xc011, 0xc013, 0xc027,
 			0x0033, 0x0067, 0x0032, 0x0005, 0x0004, 0x002f,
 			0x003c, 0x000a,
 		},
-		CompressionMethods: []byte{0x01, 0x00}, // DEFLATE + NULL
-		Extensions: []utls.TLSExtension{
-			&utls.SNIExtension{ServerName: sni},
-			&utls.RenegotiationInfoExtension{Renegotiation: utls.RenegotiateOnceAsClient},
-			&utls.SupportedCurvesExtension{Curves: []utls.CurveID{0x001d, 0x0017, 0x0018, 0x0019}},
-			&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}},
-			&utls.SessionTicketExtension{},
-			// 自定义扩展0x3374 (空)
-			&utls.GenericExtension{Id: 0x3374},
-			// ALPN
-			&utls.ALPNExtension{AlpnProtocols: []string{"spdy/2", "spdy/3", "spdy/3.1", "http/1.1"}},
-			// 自定义扩展0x754f (空)
-			&utls.GenericExtension{Id: 0x754f},
-			&utls.SCTExtension{},
-			&utls.SignatureAlgorithmsExtension{SupportedSignatureAlgorithms: []utls.SignatureScheme{
-				0x0401, 0x0501, 0x0201, 0x0403, 0x0503, 0x0203,
-				0x0402, 0x0202,
-			}},
-		},
-	}
-
-	if err := uConn.ApplyPreset(spec); err != nil {
-		fmt.Printf("ApplyPreset失败: %v\n", err)
-		return
-	}
-
-	if err := uConn.Handshake(); err != nil {
-		fmt.Printf("TLS握手失败: %v\n", err)
-		return
-	}
-	defer uConn.Close()
-
-	state := uConn.ConnectionState()
-	fmt.Printf("TLS成功! cipher=0x%04x version=0x%04x\n", state.CipherSuite, state.Version)
-
-	uConn.SetDeadline(time.Now().Add(5 * time.Second))
-	uConn.Write(data)
-
-	buf := make([]byte, 8192)
-	n, err := uConn.Read(buf)
+	})
 	if err != nil {
-		fmt.Printf("读取: %v\n", err)
+		fmt.Printf("后端失败: %v\n", err)
 		return
 	}
-	s := string(buf[:n])
-	if len(s) > 200 {
-		s = s[:200]
+	defer backend.Close()
+
+	fmt.Printf("--- 连接 SNI=%s ---\n", sni)
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		b := make([]byte, 16384)
+		for {
+			n, err := tlsConn.Read(b)
+			if err != nil { break }
+			data := b[:n]
+			hexStr := hex.EncodeToString(data[:min(n, 200)])
+			if len(data) > 4 && data[0] == 0xDE && data[1] == 0xAD {
+				fmt.Printf("APP→DEADBEEF %d字节: %s...\n", n, hexStr[:min(len(hexStr), 80)])
+			} else {
+				// 检查是否是JSON
+				isJSON := len(data) > 0 && data[0] == '{'
+				if isJSON {
+					fmt.Printf("APP→JSON %d字节: %s\n", n, string(data[:min(n, 300)]))
+				} else if n < 100 && isPrintable(data) {
+					fmt.Printf("APP→TEXT %d字节: %s\n", n, string(data))
+				} else {
+					fmt.Printf("APP→BIN %d字节: %s\n", n, hexStr)
+				}
+			}
+			backend.Write(data)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		b := make([]byte, 16384)
+		for {
+			n, err := backend.Read(b)
+			if err != nil { break }
+			data := b[:n]
+			hexStr := hex.EncodeToString(data[:min(n, 200)])
+			if len(data) > 4 && data[0] == 0xDE && data[1] == 0xAD {
+				fmt.Printf("SRV→DEADBEEF %d字节: %s...\n", n, hexStr[:min(len(hexStr), 80)])
+			} else {
+				if n < 100 && isPrintable(data) {
+					fmt.Printf("SRV→TEXT %d字节: %s\n", n, string(data))
+				} else {
+					fmt.Printf("SRV→BIN %d字节: %s\n", n, hexStr)
+				}
+			}
+			tlsConn.Write(data)
+		}
+	}()
+	wg.Wait()
+}
+
+func isPrintable(data []byte) bool {
+	for _, b := range data {
+		if b < 32 && b != '\n' && b != '\r' && b != '\t' {
+			return false
+		}
 	}
-	fmt.Printf("收到 %d: %s\n", n, s)
+	return true
 }
 
-func randomNonce() string {
-	buf := make([]byte, 16)
-	rand.Read(buf)
-	return hex.EncodeToString(buf) + strconv.FormatInt(time.Now().UnixNano(), 36)
+type bufferedConn struct {
+	net.Conn
+	buf []byte
 }
 
-func hmacHex(key, message string) string {
-	mac := hmac.New(sha256.New, []byte(key))
-	mac.Write([]byte(message))
-	return hex.EncodeToString(mac.Sum(nil))
+func (bc *bufferedConn) Read(b []byte) (int, error) {
+	if len(bc.buf) > 0 {
+		n := copy(b, bc.buf)
+		bc.buf = bc.buf[n:]
+		return n, nil
+	}
+	return bc.Conn.Read(b)
 }
