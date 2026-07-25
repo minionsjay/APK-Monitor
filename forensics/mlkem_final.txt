@@ -49,3 +49,24 @@ SNI不是关键区别
   auth_key来自ML-KEM+ECDHE组合
   需要完全按照sendRequest的流程加密
   两次HMAC-SHA256 + 两次AES-256
+=== 去掉ALPN测试 ===
+
+去掉ALPN: cipher=0xc013 ALPN空
+结果: 直接req_pq→302, DB+short→timeout, DB+req_pq→EOF
+ALPN不是关键区别
+
+=== 最终逆向总结 ===
+
+auth_key来源: ML-KEM-768+ECDHE组合
+加密流程: 2次HMAC-SHA256 + 2次AES-256-ECB
+DEADBEEF格式: magic(4)+sublen(2)+payload_len(2)+pad_len(1)+padding+inner
+inner格式: auth_key_id(8)+msg_key(16)+pad1(1)+enc_data(16k)
+服务端证书: CN=sdk.01hd1.com (Let's Encrypt)
+device_uuid: 94字符hex
+constructor: req_pq=0x60469778
+
+无法自行发送DH握手消息:
+  1. auth_key_id=0 → EOF (服务端拒绝)
+  2. auth_key_id=永久key → timeout (服务端不响应)
+  3. 无auth_key_id → timeout (被接受但不响应)
+  4. ML-KEM交换在TLS或DEADBEEF中(未确定)
