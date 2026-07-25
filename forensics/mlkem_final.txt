@@ -214,3 +214,16 @@ APK结构:
   libBeoWtwvbyJzC.so = 23MB(完整代码)
   libgojni.so = 8.5MB(Go SDK)
   assets/tmnbdwt/ctpseh = 14MB加密文件
+=== 字段逐个测试 ===
+
+规律:
+  device_uuid=真实UUID(94字符) → EOF
+  device_uuid=短值(3字符) → timeout
+  nonce+timestamp → EOF
+  timestamp单独 → timeout
+
+结论:
+  服务端检查device_uuid格式(94字符被识别但验证失败)
+  device_uuid可能格式不对(包含FF)
+  或者nonce格式不对(test太短)
+  需要正确格式的nonce和device_uuid
