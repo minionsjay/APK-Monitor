@@ -204,3 +204,54 @@ Go版本: 1.25.0 (Windows AMD64)
   - healthCheckLoop → 检查节点健康
   - fixedFailoverProbeLoop → 故障转移探测
   - resumeRecoveryLoop → 恢复
+
+=== SDK错误消息和关键线索 ===
+
+forwarder control:
+- "decode computed mac: %w" → 计算MAC后解码
+- "decode response mac: %w" → 解码响应MAC  
+- "parse response json: %w" → 解析响应JSON
+- "response mac mismatch" → MAC不匹配
+- "forwarder control not configured" → 未配置
+- "forwarder control throttled" → 被限流
+- "head 304 but no cache payload" → HTTP 304无缓存
+
+控制面:
+- "resolve control plane failed: %v" → 解析失败
+- "no control plane address" → 无地址
+- "empty aes key for app_domain txt" → AES key为空
+- "no valid ip in app_domain txt" → DNS TXT无IP
+
+密钥:
+- "invalid private key pem" → 无效RSA私钥
+- "read sdk config file: %w" → 读取配置
+- "decode secret base64: %w" → 解码secret
+- "crypto/tls: reserved ExportKeyingMaterial label: %s" → 保留EKM label!
+
+DEADBEEF:
+- "obfs: buf too small (%d < %d)" → 缓冲区太小
+- "obfs: bad magic 0x%08X" → 错误的magic
+
+状态:
+- "sdk data dir: %v" → 数据目录
+- "start failed: %v" → 启动失败
+- "proxy is already running" → 已运行
+- "app line must be IP only" → 必须是IP
+
+路由:
+- "route_recover_primary" → 恢复主节点
+- "route_recover_fixed_set" → 恢复固定集
+- "primary_failback" → 主节点回退
+- "fixed_set_switch" → 固定集切换
+- "bucket_entry_fallback" → 桶条目回退
+- "prepare_discovery_entry" → 准备发现入口
+
+PSK/TLS:
+- "tls: shouldWriteBinders failed: unimplemented state" → PSK binder未实现
+- "tls: updateBinders failed: shouldn't update binders" → 更新失败
+- "tls: server sent application settings without ALPN" → 无ALPN
+
+关键发现:
+- "crypto/tls: reserved ExportKeyingMaterial label" → SDK用了保留的EKM label
+- 这可能是auth_key的来源！
+- 保留的label可能是 "auth_key" 或 "mtproto" 或 "EXTRA"
