@@ -70,3 +70,11 @@ constructor: req_pq=0x60469778
   2. auth_key_id=永久key → timeout (服务端不响应)
   3. 无auth_key_id → timeout (被接受但不响应)
   4. ML-KEM交换在TLS或DEADBEEF中(未确定)
+=== Chrome115_PQ_PSK + OmitEmptyPsk ===
+
+成功! cipher=0x1301 TLS1.3
+KeyShareKeys: Ecdhe+Mlkem(set)+MlkemEcdhe
+MasterSecret获取成功
+DEADBEEF+req_pq → timeout(被接受)
+
+需要限制TLS 1.2 + ML-KEM
