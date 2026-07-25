@@ -368,3 +368,13 @@ forwarder control流程:
   webestim.me返回404(路径不对)
   需要找到正确的HTTP路径
   可能需要特定HTTP头
+=== 完整流程确认 ===
+
+0x441390循环调用FetchForwarderFixedTuple:
+  1. 调用FetchForwarderFixedTuple(TLS+JSON+MAC)
+  2. 检查返回值: not_modified(304缓存)/fixed_tuple(结果)
+  3. 否则重试
+
+forwarder control用TLS+JSON+MAC不是HTTP
+目标: Cloudflare(2606:4700:20::681a:d1f:443)
+需要: PSK TLS + 正确的MAC(8字段)
