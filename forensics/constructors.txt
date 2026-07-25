@@ -1,0 +1,14 @@
+=== Constructor发现 ===
+
+在tgnet.so中找到的constructor:
+  req_pq = 0x60469778 (at 0xdc49c0)
+  resPQ = 0x05162463 (at 0xdc208c)
+
+标准但不在二进制中的:
+  req_pq_multi = 0xbe6261f9 ❌
+  req_DH_params = 0xd712e2d8 ❌
+  server_DH_params_ok = 0x79cb0edc ❌
+
+结论:
+  SDK可能只用req_pq而不是req_pq_multi
+  其他constructor可能运行时计算
