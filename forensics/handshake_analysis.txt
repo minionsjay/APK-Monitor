@@ -1,0 +1,48 @@
+=== MTProto DH握手逆向分析 ===
+
+关键函数:
+1. encryptKeyWithSecret(00ed3cd4) - 70行
+   param_2=0 → 不加密
+   param_2=2 → 用this+0x210(永久密钥)
+   else → 用this+0x58(临时密钥)
+   也引用ConnectionsManager+0x1d0(全局密钥)
+
+2. onHandshakeComplete(00ebe83c) - 53行
+   this+0x168 = ByteArray*(auth_key数据)
+   this+0x170 = long(auth_key_id)
+   this+0x180 = long
+   this+0x190 = long
+
+3. processHandshakeResponse(00ebd8e4) - 30行
+   调用:
+   - processHandshakeResponse_resPQ(579行)
+   - processHandshakeResponse_serverDHParams
+   - processHandshakeResponse_serverDHParamsAnswer
+
+4. processHandshakeResponse_resPQ - 579行
+   处理标准MTProto DH握手
+   RSA公钥: MIIBCgKCAQEAvKLEOWTzt9Hn3/9Kdp/RdHcEhzmd8xXeLSpHIIza...
+   错误消息确认标准DH流程:
+   - "invalid DH nonce"
+   - "invalid DH server nonce"
+   - "can't decode DH params"
+   - "server declined DH params"
+   - "server declined DH params"
+   - "invalid DH answer nonce hash"
+
+5. 其他关键函数:
+   - beginHandshake(00ebd280)
+   - clearAuthKey(00ebbf14)
+   - getAuthKey(00ebd9d4)
+   - hasPermanentAuthKey(00ebe48c)
+   - getPermanentAuthKeyId(00ebe49c)
+   - Handshake(00ed45e0)
+   - TL_bind_auth_key_inner
+   - TL_auth_bindTempAuthKey
+
+结论:
+- auth_key通过标准MTProto DH握手生成
+- 不是从TLS密钥派生
+- 但constructor值被SDK修改(标准值不在二进制中)
+- DH握手可能在DEADBEEF通道中完成
+- 但没有截获到auth_key_id=0的握手消息
