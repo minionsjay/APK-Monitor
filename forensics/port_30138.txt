@@ -1,0 +1,14 @@
+=== 30138端口流量分析 ===
+
+tcpdump抓取(无MITM):
+  18个AppData全部不是DEADBEEF
+  大小: 144-688字节
+  说明30138不走DEADBEEF协议
+
+MITM代理截获:
+  30138端口的DEADBEEF消息(可能来自30139转发)
+
+结论:
+  30138端口用标准TLS+加密数据(非DEADBEEF)
+  可能是加密的forwarder control JSON
+  30139端口用DEADBEEF+MTProto
