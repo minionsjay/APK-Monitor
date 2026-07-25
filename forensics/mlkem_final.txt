@@ -126,3 +126,12 @@ auth_key_id可能不是SHA1派生:
 auth_key不从任何TLS密钥派生
 可能是服务端通过DEADBEEF消息发送的
 或者通过未发现的密钥交换方式
+=== 最终测试 ===
+
+所有SNI(空/sdk.01hd1.com/IP) → 302
+DB+空JSON → timeout(被接受)
+DB+JSON(带MAC) → EOF(MAC验证失败)
+
+关键: forwarder control JSON需要用auth_key加密
+通过DEADBEEF发送加密的JSON
+但没有auth_key
