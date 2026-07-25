@@ -1,0 +1,19 @@
+=== sendRequestData分析 ===
+
+sendRequestData流程:
+1. writeInt64(?) → 写auth_key_id?
+2. writeInt64(msg_id)
+3. writeInt32(msg_len)
+4. serializeToStream → constructor+nonce
+5. type==2 → getPermanentKey / type!=2 → getTempKey
+
+sendRequest(0xdd2e08)中的加密:
+1. encryptKeyWithSecret(this, data+0x28c, type) ← 第一次
+2. hash(data+0x28c, 256) → 0x89f158
+3. 从data[7..55]读8字节 → auth_key_id
+4. encryptKeyWithSecret(this, data+0x28c, type) ← 第二次
+5. hash(data+0x28c, 256) → 0x89f158
+6. bl 0x89f320(data, 256, 64, ...) → HMAC?
+
+关键: encryptKeyWithSecret加密256字节块
+data+0x28c = 256字节的数据缓冲区
