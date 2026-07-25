@@ -1,0 +1,11 @@
+=== DEADBEEF+req_pq测试 ===
+
+结果:
+  DEADBEEF+msg_len+constructor+nonce(24B) → timeout(被接受!)
+  DEADBEEF+auth_key_id(0)+msg_id+msg_len+constructor+nonce(40B) → EOF
+  DEADBEEF空+req_pq → EOF
+
+结论:
+  握手消息格式: msg_len(4) + constructor(4) + data
+  不需要auth_key_id和msg_id
+  timeout说明服务端在等待更多数据
