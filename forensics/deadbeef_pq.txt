@@ -9,3 +9,11 @@
   握手消息格式: msg_len(4) + constructor(4) + data
   不需要auth_key_id和msg_id
   timeout说明服务端在等待更多数据
+=== req_pq格式测试 ===
+
+所有带msg_len的DEADBEEF+req_pq → timeout(被接受)
+大payload(256B) → EOF
+不带msg_len → timeout
+
+可能服务端在等待完整的握手序列
+需要发送多个DEADBEEF消息
