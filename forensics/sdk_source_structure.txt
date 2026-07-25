@@ -1,0 +1,139 @@
+=== SDK完整源码结构 ===
+
+SDK路径: D:/im_sdk2/sdk_app2/sdk/
+Go版本: 1.25.0 (Windows AMD64)
+编译: gomobile (Android ARM64)
+依赖: utls v1.8.2, crypto/ecdh, crypto/mlkem
+
+源码文件（20+个）：
+
+1. bootstrap.go - SDK启动/初始化
+   - NewSDKBootstrap, Init, Prepare, Start, Stop
+   - autoRefreshLoop, healthCheckLoop, resumeRecoveryLoop
+   - syncProxyTLSConfigLocked, configureStateMachine, configureCircuitBreaker
+
+2. bucket_refresh.go - 桶刷新
+   - bucketRefreshMaxPerMinOrDefault, shouldFetchBucketNowLocked
+   - claimBucketResolve, pruneBucketResolveTimesLocked
+   - collectBucketControlPlaneTargets
+
+3. cache.go - 缓存管理
+   - saveSDKCache, loadSDKCache
+   - nodeGroupsFromSDKCache, sanitizeNodeGroups
+   - sdkCacheFile (结构体)
+
+4. controlplane.go - 控制面解析
+   - resolveControlPlane, resolveControlPlaneClaimed
+   - buildNodeDataURLs, decryptNodeData
+   - normalizeAESKey, tryDecryptGCM, tryDecryptCBC
+   - normalizeControlRefreshAddr
+
+5. datadir_android.go - Android数据目录
+   - autoSDKDataDirCandidates, applyAutoDataDirLocked
+
+6. domain_entry.go - 域名入口配置
+   - loadDomainEntryConfig
+
+7. domain_txt.go - DNS TXT记录
+   - resolveAppDomainHost, lookupAppDomainTXT
+   - lookupTXTViaDNS, decryptDomainTXT
+
+8. failover.go - 故障转移
+   - fixedFailoverProbeLoop, runFixedFailoverProbeOnce
+   - startFixedFailoverProbeLocked, scheduleImmediateFixedProbeLocked
+   - StableFallbackOrder, StableFallbackOrderFromList
+   - fixedEndpointTryOrder, endpointTryOrderFromList
+
+9. fixed_tuple_store.go - 固定元组存储
+   - FetchForwarderFixedTuple
+   - entriesToFixedNodeSet, SelectFixedNodeSet
+   - PickReachableFixedEndpoint, PickReachableFromEndpointList
+   - PrimaryFixedEndpoint, PrimaryFromEndpointList
+   - nonEmptyFixedSlots, FixedFailoverTryOrderFromList
+
+10. forwarder_control.go - forwarder控制
+    - fetchForwarderControlPlane, doForwarderControlFetch
+    - refreshControlPlaneOnce, refreshControlPlaneOnceImpl
+    - tryForwarderControlEndpoints
+    - signForwarderHelloMAC, verifyForwarderResponseMAC
+    - hmacSHA256Hex, randomForwarderNonce, randomLabel
+    - fwdHelloRequest, fwdControlResponse (结构体)
+    - fwdControlResponseToFixedSet
+    - sdkDebugLogForwarderControlResponse
+
+11. local_listener_recovery.go - 本地监听恢复
+    - ensureLocalListenerRunning, restartLocalListener
+    - localListenerReachable
+
+12. net_conn_health.go - 网络连接健康检查
+    - connLikelyAlive, isEndpointReachable
+    - endpointQuickReachable, probeAnyTCP, probeTCP
+    - checkBaiduReachable
+
+13. nodes.go - 节点管理
+    - normalizeAppLineIPs, parseAppLineIP, parseEndpoint
+    - sanitizeNodeList, effectivePoolContains
+    - mergeEffectiveEndpoints, anyEndpointReachable
+    - primaryPoolAnyReachable, primaryPoolAnyReachableLocked
+    - routeTierForNode
+
+14. obfs.go - DEADBEEF封装
+    - obfsConn (Write/Read/writeFrame/Close)
+    - DEADBEEF(4B) + sublen(2B) + payload_len(2B) + padding_len(1B) + padding + payload
+
+15. policy.go - 策略管理
+    - loadRuntimePolicy, LoadRuntimePolicyFile
+    - normalizeStateMachineConfig, defaultStateMachineConfig
+    - normalizePrepareNetworkProbeAddrs
+
+16. pool.go - 连接池
+    - connPool (dial/get/put/discard/evict/refill/close/maintainLoop)
+    - newConnPool, poolConn, expired
+
+17. pool_tls.go - TLS配置
+    - syncProxyTLSConfigLocked
+    - TLS ClientHelloMode (hash/psk)
+    - pickHelloIDForDevice, pickSNIForHost, pickTLSClientHello
+
+18. prepare_network_probe.go - 网络探测准备
+    - prepareNetworkProbeConfigLocked
+    - prepareWithAppDomainLocked
+    - waitForPrepareNetwork
+
+19. resume_recovery.go - 恢复
+    - resumeRecoveryLoop, resumeRecoveryWatchTick
+    - triggerResumeRecovery, startResumeRecoveryLocked
+
+20. secret.go - 密钥管理
+    - DecodeSecretPayload, decodeSecretPayloadWithKey
+    - DecodeSecretPayloadJSON, DecodeSecretPayloadJSONWithKey
+    - tryParsePlainSecretPayload
+    - SetEmbeddedPrivateKeyPEM, getEmbeddedPrivateKeyPEM
+    - LoadEmbeddedPrivateKeyFromConfigFile
+    - parseRSAPrivateKey, pkcs7Unpad
+
+21. selfcheck.go - 自检
+    - PreflightSelfCheck
+    - SelfCheckReport (结构体)
+
+22. proxy.go - 代理处理（可能在其他文件中）
+    - ProxyClient (Start/Stop/handleConn/acceptLoop)
+    - relay, relayObfs
+    - SetBeforeRelayHook, SetConnectResultHook, SetOnAcceptHook
+    - reportConnectResult, waitForRemoteReadyIfNeeded
+    - remoteReadyLocked, markRouteReady
+
+通信协议：
+- forwarder control: TLS + JSON + "\n" (发送), 4B长度 + JSON (响应)
+- DEADBEEF: magic(4B) + sublen(2B) + payload_len(2B) + padding_len(1B) + padding + payload
+- .dat文件: AES-CBC(key=AES_key, IV=key[:16]) 解密 → JSON{nodesA, nodesB}
+- DNS TXT: AES解密 → 控制面地址
+- RSA私钥: 内嵌在编译参数中
+
+密钥体系：
+- AES-key: 32字节字符串 (如 htHtoU17cKxTjwVh1m2iyHfEI39RG1Cw)
+- RSA私钥: PEM格式, 编译时嵌入
+- device_uuid: hex(rand16B) + FormatInt(UnixNano, 36)
+- nonce: hex(rand16B) + FormatInt(UnixNano, 36)
+- label: hex(rand) + FormatInt(UnixNano, 10)
+- MAC: HMAC-SHA256(AES_key, strings.Join(8字段, "."))
