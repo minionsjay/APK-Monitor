@@ -78,3 +78,11 @@ MasterSecret获取成功
 DEADBEEF+req_pq → timeout(被接受)
 
 需要限制TLS 1.2 + ML-KEM
+=== X25519MLKEM768 + TLS 1.2 ===
+
+cipher=0xc013 ver=0x0303 (TLS 1.2!) ✅
+MasterSecret: 获取成功
+DEADBEEF+req_pq → timeout(被接受)
+
+关键: X25519MLKEM768在TLS 1.2中工作!
+preMasterSecret可能包含ML-KEM+ECDHE组合
