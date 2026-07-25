@@ -110,3 +110,12 @@ MasterSecret(TLS1.2+X25519MLKEM768): 不匹配
   用Decapsulate计算共享密钥
   可能需要用Chrome120_PQ(TLS1.3)获取KeyShareKeys
   然后从ServerHello的key_share提取ML-KEM密文
+=== ServerHello分析 ===
+
+服务端选择X25519(0x001d)不是X25519MLKEM768(0x11ec)
+ML-KEM不通过TLS key_share
+
+auth_key_id可能不是SHA1派生:
+  从sendRequest: data[8:55]提取
+  可能是HMAC-SHA256(key[:16], data)[8:16]
+  而不是SHA1(auth_key)[:8]
