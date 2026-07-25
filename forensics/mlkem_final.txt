@@ -119,3 +119,10 @@ auth_key_id可能不是SHA1派生:
   从sendRequest: data[8:55]提取
   可能是HMAC-SHA256(key[:16], data)[8:16]
   而不是SHA1(auth_key)[:8]
+
+=== 最终结论 ===
+966个preMS × 所有HMAC/SHA组合 = 不匹配
+44个AKID全部分析完毕
+auth_key不从任何TLS密钥派生
+可能是服务端通过DEADBEEF消息发送的
+或者通过未发现的密钥交换方式
