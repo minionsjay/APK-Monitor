@@ -15,3 +15,12 @@
   req_pq(0x60469778)是正确的constructor
   但服务端不响应(等待更多数据)
   可能需要特定格式或多个消息
+=== req_pq padding测试 ===
+
+所有padding → timeout
+带auth_key_id=0 → EOF
+直接发送 → EOF
+
+结论:
+  服务端不处理未加密的req_pq
+  可能DH握手消息也需要用永久auth_key加密
