@@ -242,3 +242,14 @@ DEADBEEF+空JSON → timeout(被接受)
 PSK来自RuntimePolicy.forwarderControlPSK
 RuntimePolicy通过loadRuntimePolicyFile加载
 但文件不存在
+=== signForwarderHelloMAC反汇编 ===
+
+重大发现:
+  version = 'v1' (字符串，不是数字)
+  分隔符 = '|'
+  type = 'hello'
+
+之前用version=0(数字) → EOF
+应该用version='v1'(字符串)
+
+MAC = HMAC-SHA256(AES_key, join([v1, hello, nonce, uuid, ts, ...], '|'))
