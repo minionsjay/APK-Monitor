@@ -30,3 +30,12 @@ ML-KEM-768:
 4. 共享密钥作为auth_key(补齐到256字节)
 5. 用auth_key做MTProto加密
 6. auth_key_id = 某种hash(auth_key)
+=== auth_key = HKDF(ECDHE+ML-KEM) ===
+
+关键发现:
+  auth_key不是单独的preMasterSecret或ML-KEM
+  auth_key = HKDF(ECDHE_shared + ML-KEM_shared)
+  MlkemEcdhe = ML-KEM + ECDHE组合
+  GetEcdheKey从ServerHello获取ECDHE
+  GetKemKey获取ML-KEM
+  这就是为什么preMasterSecret单独不匹配
