@@ -1,8 +1,11 @@
 package main
 
 import (
+	"crypto/hmac"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha1"
+	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
@@ -21,6 +24,8 @@ import (
 var caCert *x509.Certificate
 var caKey *rsa.PrivateKey
 
+const aesKey = "htHtoU17cKxTjwVh1m2iyHfEI39RG1Cw"
+
 func main() {
 	caPemData, _ := os.ReadFile("/data/local/tmp/mitmproxy-ca.pem")
 	caTLSCert, _ := tls.X509KeyPair(caPemData, caPemData)
@@ -32,26 +37,28 @@ func main() {
 		caKey, _ = k2.(*rsa.PrivateKey)
 	}
 
-	serverKL, _ := os.Create("/sdcard/server_keylog.txt")
-	clientKL, _ := os.Create("/sdcard/client_keylog.txt")
-	defer serverKL.Close()
-	defer clientKL.Close()
+	klFile, _ := os.Create("/sdcard/merge_keylog.txt")
+	defer klFile.Close()
+	dataFile, _ := os.Create("/sdcard/merge_data.txt")
+	defer dataFile.Close()
+	ekmFile, _ := os.Create("/sdcard/merge_ekm.txt")
+	defer ekmFile.Close()
 
 	ln, err := net.Listen("tcp", "127.0.0.1:30139")
 	if err != nil {
-		fmt.Printf("listen failed: %v\n", err)
+		fmt.Printf("listen: %v\n", err)
 		return
 	}
-	fmt.Println("MITM代理启动 (双向KeyLog)")
+	fmt.Println("MITM merge proxy started")
 
 	for {
 		conn, err := ln.Accept()
 		if err != nil { continue }
-		go handleConn(conn, serverKL, clientKL)
+		go handleConn(conn, klFile, dataFile, ekmFile)
 	}
 }
 
-func handleConn(clientConn net.Conn, serverKL, clientKL *os.File) {
+func handleConn(clientConn net.Conn, klFile, dataFile, ekmFile *os.File) {
 	defer clientConn.Close()
 	buf := make([]byte, 4096)
 	clientConn.SetReadDeadline(time.Now().Add(5 * time.Second))
@@ -65,12 +72,43 @@ func handleConn(clientConn net.Conn, serverKL, clientKL *os.File) {
 	bc := &bufferedConn{Conn: clientConn, buf: buf[:n]}
 	serverConfig := &tls.Config{
 		Certificates: []tls.Certificate{cert},
-		KeyLogWriter: serverKL,
+		KeyLogWriter: klFile,
 	}
 	tlsConn := tls.Server(bc, serverConfig)
 	if err := tlsConn.Handshake(); err != nil { return }
 	defer tlsConn.Close()
 
+	state := tlsConn.ConnectionState()
+
+	// EKM values
+	labels := []string{
+		"auth_key", "mtproto", "EXTRA", "key", "exporter",
+		"forwarder", "proxy", "secret", "shared_secret",
+		"binder", "binder_key", "psk", "session",
+		"forwarderControlPSK", "control",
+		"client_finished", "server_finished",
+		"ExporterMasterSecret", "master_secret",
+		"traffic", "application", "handshake",
+	}
+
+	ekmResults := make(map[string][]byte)
+	for _, label := range labels {
+		ekm, err := state.ExportKeyingMaterial(label, nil, 256)
+		if err == nil {
+			ekmResults[label] = ekm
+			h := sha1.Sum(ekm)
+			ekmFile.WriteString(fmt.Sprintf("EKM(%s,ctx=nil) sha1[:8]=%s\n", label, hex.EncodeToString(h[:8])))
+		}
+		// context=AES_key
+		ekm2, err := state.ExportKeyingMaterial(label, []byte(aesKey), 256)
+		if err == nil {
+			h := sha1.Sum(ekm2)
+			ekmFile.WriteString(fmt.Sprintf("EKM(%s,ctx=aesKey) sha1[:8]=%s\n", label, hex.EncodeToString(h[:8])))
+			ekmResults[label+":ctx"] = ekm2
+		}
+	}
+
+	// Backend
 	rawBackend, err := net.DialTimeout("tcp", "43.248.2.74:30139", 10*time.Second)
 	if err != nil { return }
 	defer rawBackend.Close()
@@ -78,7 +116,6 @@ func handleConn(clientConn net.Conn, serverKL, clientKL *os.File) {
 	backendConfig := &utls.Config{
 		InsecureSkipVerify: true, ServerName: sni,
 		MinVersion: utls.VersionTLS12, MaxVersion: utls.VersionTLS12,
-		KeyLogWriter: clientKL,
 	}
 	backend := utls.UClient(rawBackend, backendConfig, utls.HelloCustom)
 	spec := &utls.ClientHelloSpec{
@@ -102,8 +139,7 @@ func handleConn(clientConn net.Conn, serverKL, clientKL *os.File) {
 	if err := backend.Handshake(); err != nil { return }
 	defer backend.Close()
 
-	fmt.Printf("--- SNI=%s ---\n", sni)
-
+	var mu sync.Mutex
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
@@ -112,8 +148,53 @@ func handleConn(clientConn net.Conn, serverKL, clientKL *os.File) {
 		for {
 			n, err := tlsConn.Read(b)
 			if err != nil { break }
-			if b[0] == 0xDE {
-				fmt.Printf("APP→DEADBEEF %d: %s...\n", n, hex.EncodeToString(b[:min(n,40)]))
+			mu.Lock()
+			dataFile.WriteString(fmt.Sprintf("APP %d %s\n", n, hex.EncodeToString(b[:n])))
+			mu.Unlock()
+			if b[0] == 0xDE && n > 9 {
+				padLen := int(b[8])
+				innerStart := 9 + padLen
+				if innerStart+8 <= n {
+					akid := hex.EncodeToString(b[innerStart : innerStart+8])
+					mu.Lock()
+					dataFile.WriteString(fmt.Sprintf("AKID %s\n", akid))
+					mu.Unlock()
+					// Match with EKM
+					for label, ekm := range ekmResults {
+						h := sha1.Sum(ekm)
+						eid := hex.EncodeToString(h[:8])
+						if eid == akid {
+							mu.Lock()
+							dataFile.WriteString(fmt.Sprintf("MATCH EKM(%s) sha1[:8]=%s\n", label, eid))
+							mu.Unlock()
+						}
+						h2 := sha256.Sum256(ekm)
+						eid2 := hex.EncodeToString(h2[:8])
+						if eid2 == akid {
+							mu.Lock()
+							dataFile.WriteString(fmt.Sprintf("MATCH EKM(%s) sha256[:8]=%s\n", label, eid2))
+							mu.Unlock()
+						}
+						// HMAC
+						mac := hmac.New(sha256.New, []byte(aesKey))
+						mac.Write(ekm)
+						d := mac.Sum(nil)
+						h3 := sha1.Sum(d)
+						eid3 := hex.EncodeToString(h3[:8])
+						if eid3 == akid {
+							mu.Lock()
+							dataFile.WriteString(fmt.Sprintf("MATCH HMAC(AES,EKM(%s)) sha1[:8]=%s\n", label, eid3))
+							mu.Unlock()
+						}
+						// ekm[:8]
+						eid4 := hex.EncodeToString(ekm[:8])
+						if eid4 == akid {
+							mu.Lock()
+							dataFile.WriteString(fmt.Sprintf("MATCH EKM(%s)[:8]=%s\n", label, eid4))
+							mu.Unlock()
+						}
+					}
+				}
 			}
 			backend.Write(b[:n])
 		}
@@ -124,9 +205,9 @@ func handleConn(clientConn net.Conn, serverKL, clientKL *os.File) {
 		for {
 			n, err := backend.Read(b)
 			if err != nil { break }
-			if b[0] == 0xDE {
-				fmt.Printf("SRV→DEADBEEF %d: %s...\n", n, hex.EncodeToString(b[:min(n,40)]))
-			}
+			mu.Lock()
+			dataFile.WriteString(fmt.Sprintf("SRV %d %s\n", n, hex.EncodeToString(b[:n])))
+			mu.Unlock()
 			tlsConn.Write(b[:n])
 		}
 	}()
@@ -192,9 +273,4 @@ func (bc *bufferedConn) Read(b []byte) (int, error) {
 		return n, nil
 	}
 	return bc.Conn.Read(b)
-}
-
-func min(a, b int) int {
-	if a < b { return a }
-	return b
 }
