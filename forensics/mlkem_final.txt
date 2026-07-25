@@ -194,3 +194,23 @@ PSK相关函数:
   3. setPskToUConn → 设置PSK到utls连接
   4. PSK用于TLS PSK认证
   5. PSK可能就是auth_key
+=== MAC测试 ===
+
+所有MAC计算方式 → EOF
+DB+空JSON({}) → timeout(被接受)
+可能JSON格式不对或缺少字段
+需要包含sdk_version字段
+
+SDK文件位置:
+  /storage/emulated/0/Android/data/<pkg>/files/
+  sdk_cache.json(3个.dat URL)
+  sdk_device_uuid.txt(94字符)
+  sdk_forwarder_fixed.json(14个IP)
+  没有runtime_policy.json
+  RuntimePolicy可能通过forwarder control获取
+
+APK结构:
+  classes.dex = 壳(只加载so)
+  libBeoWtwvbyJzC.so = 23MB(完整代码)
+  libgojni.so = 8.5MB(Go SDK)
+  assets/tmnbdwt/ctpseh = 14MB加密文件
