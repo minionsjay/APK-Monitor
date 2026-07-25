@@ -1,0 +1,9 @@
+=== 永久auth_key测试 ===
+
+结果: 所有节点返回timeout(不是EOF)
+说明: DEADBEEF帧格式被接受, 但消息内容需要正确
+
+对比:
+  DEADBEEF空消息 → timeout (被接受, 等待数据)
+  DEADBEEF+req_pq_multi → EOF (格式不对)
+  DEADBEEF+MTProto(永久key) → timeout (格式被接受, 等待响应)
