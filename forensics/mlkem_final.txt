@@ -1,0 +1,32 @@
+=== ML-KEM密钥交换确认 ===
+
+证据:
+1. GetKemKey, AddKemKeypair → KEM密钥管理
+2. *mlkem.DecapsulationKey768 → ML-KEM-768
+3. EncapsulatedKey, EncapsulationKey, Decapsulate → ML-KEM封装/解封装
+4. Chrome115_PQ_PSK → PQ+PSK指纹
+5. forwarderControlPSK → forwarder control的PSK
+6. initPskExt → 初始化PSK TLS扩展
+7. psk_dhe_ke → PSK+DHE密钥交换
+8. base_nonce, kem_id → KEM参数
+
+结论:
+auth_key来自ML-KEM-768密钥交换
+不是从TLS密钥(master_secret/preMasterSecret/EKM)派生
+ML-KEM交换可能在DEADBEEF消息中或TLS自定义扩展中
+自定义扩展0x3374/0x754f可能携带ML-KEM数据
+但在截获的ClientHello中为空
+
+ML-KEM-768:
+- 公钥大小: 1184字节
+- 密文大小: 1088字节
+- 共享密钥: 32字节
+- 这就是为什么auth_key_id是32字节的派生
+
+完整加密流程:
+1. TLS握手(标准TLS 1.2, cipher=0xc013)
+2. ML-KEM交换(可能通过自定义扩展或DEADBEEF)
+3. 获取32字节共享密钥
+4. 共享密钥作为auth_key(补齐到256字节)
+5. 用auth_key做MTProto加密
+6. auth_key_id = 某种hash(auth_key)
