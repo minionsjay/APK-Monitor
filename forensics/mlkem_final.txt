@@ -135,3 +135,34 @@ DB+JSON(带MAC) → EOF(MAC验证失败)
 关键: forwarder control JSON需要用auth_key加密
 通过DEADBEEF发送加密的JSON
 但没有auth_key
+=== RuntimePolicy完整字段 ===
+
+RuntimePolicy JSON字段:
+  control_refresh_addr → 控制刷新地址
+  app_line_endpoints → 代理节点
+  dns_refresh_short_sec/long_sec
+  dns_persist_failures
+  network_switch_protect_sec
+  auto_refresh_interval_sec
+  fixed_failover_probe_sec
+  health_check_interval_sec
+
+关键发现:
+  1. RuntimePolicy不包含auth_key
+  2. forwarderControlPSK是RuntimePolicy的字段
+  3. app_line_endpoints在RuntimePolicy中
+  4. 可能通过control_refresh_addr获取RuntimePolicy
+
+forwarderControlPSK位置:
+  在networkSwitchLastAt和fixedStartupProbeMs之间
+  是RuntimePolicy的配置字段
+
+重要错误消息:
+  'forwarder control not configured' → 需要配置
+  'resolve control plane failed: %v'
+  'empty aes key for app_domain txt'
+  'app_domain bootstrap failed: %v'
+  'no txt record for app_domain'
+  'load runtime policy failed: %v'
+  'forwarder control throttled'
+  'get 304 but no cache payload'
