@@ -269,3 +269,22 @@ MAC = HMAC-SHA256(AES_key, join(8字段, '|'))
 
 可能的版本号: v0.0.1, v1.0.6, v1.17.4, v1.8.2
 app_name: dh139
+=== FetchForwarderFixedTuple参数 ===
+
+函数签名:
+  FetchForwarderFixedTuple(this, conn, x2, x3, aesKey, nonce, deviceUUID, sdkVersion, version, flag)
+
+参数映射:
+  x4/x5 = AES_key + output
+  x6/x7 = nonce (ptr+len)
+  x8/x9 = device_uuid (ptr+len)
+  x10/x11 = sdk_version (ptr+len)
+  x12 = version (uint64)
+  x13 = flag (bool)
+
+MAC 8字段(确认):
+  join([v1, hello, nonce, uuid, sdkVersion, version_str, ts_str, nanoDiff], '|')
+  version_str = FormatUint(version, 10)
+  nanoDiff = nanos - 0xe7791f700
+
+源码路径: D:/im_sdk2/sdk_app2/sdk/forwarder_control.go:166
