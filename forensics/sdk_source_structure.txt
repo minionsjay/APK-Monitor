@@ -137,3 +137,70 @@ Go版本: 1.25.0 (Windows AMD64)
 - nonce: hex(rand16B) + FormatInt(UnixNano, 36)
 - label: hex(rand) + FormatInt(UnixNano, 10)
 - MAC: HMAC-SHA256(AES_key, strings.Join(8字段, "."))
+
+=== 完整加密体系 ===
+
+1. SecretPayload (secret.go:78-99)
+   - 输入: base64编码的RSA加密数据
+   - 解密: base64解码 → RSA私钥解密 → JSON解析
+   - RSA私钥: 编译时嵌入(-ldflags="-X sdk.EmbeddedPrivateKeyB64=...")
+   - 输出: app_domain, app_domain_port, app_name, sdk_version, AES-key, SNI, .dat URL, Port
+
+2. .dat文件 (controlplane.go:195-279)
+   - 输入: 80字节加密数据
+   - 解密流程:
+     a. tryPlainJSON → 直接解析
+     b. base64解码 → tryPlainJSON
+     c. tryDecryptGCM(AES_key, data) → AES-GCM解密
+     d. tryDecryptCBC(AES_key, data) → AES-CBC解密(IV=key[:16])
+     e. pkcs7Unpad → 去除padding
+   - 输出: {nodesA: ["ip:port",...], nodesB: ["ip:port",...]}
+
+3. DNS TXT记录 (domain_txt.go:23-93)
+   - 输入: DNS TXT记录
+   - 解密: AES解密 → 控制面地址
+   - resolveAppDomainHost → lookupAppDomainTXT → decryptDomainTXT
+
+4. normalizeAESKey (controlplane.go:229-235)
+   - 检查AES key长度: 16/24/32字节
+   - 不足32字节 → 补零到32字节
+
+5. forwarder control (forwarder_control.go:70-213)
+   - 发送: json.Marshal(fwdHelloRequest) + "\n"
+   - 响应: 4字节大端长度 + JSON(fwdControlResponse)
+   - MAC = hmacSHA256Hex(AES_key, strings.Join(8字段, "."))
+   - 字段: ["2", "hello", nonce, device_uuid, tsStr, verStr, label, ""]
+   - nonce = hex(rand16B) + FormatInt(UnixNano, 36)
+   - label = hex(rand) + FormatInt(UnixNano, 10)
+   - device_uuid = hex(rand16B) + FormatInt(UnixNano, 36)
+
+6. DEADBEEF协议 (obfs.go)
+   - 格式: magic(4B,0xDEADBEEF) + sublen(2B) + payload_len(2B) + padding_len(1B) + padding + payload
+   - obfsConn.Write → writeFrame
+   - obfsConn.Read → readFrame
+   - padding_len = random(0-63)
+
+7. MTProto加密 (tgnet.so)
+   - auth_key_id(8B) + msg_key(16B) + encrypted_data
+   - AES-IGE加密
+   - auth_key来源: 标准MTProto DH握手(但不可见)
+
+=== SDK状态机 ===
+
+状态: prepared → running → route_ready
+  - prepare: 获取控制面节点(.dat/forwarder control)
+  - running: 启动VPN代理(60139端口)
+  - route_ready: 连接到代理节点(30139端口)
+
+配置:
+  - tls_client_hello_mode: "hash" (或"psk")
+  - tls_hello_for_device: "360Browser"
+  - tls_sni_for_current_host: 动态选择
+  - local_port: 60000 + app_port后3位
+  - app_line_port: 30139等
+
+自动刷新:
+  - autoRefreshLoop → 定期刷新控制面
+  - healthCheckLoop → 检查节点健康
+  - fixedFailoverProbeLoop → 故障转移探测
+  - resumeRecoveryLoop → 恢复
