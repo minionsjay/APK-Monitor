@@ -17,3 +17,20 @@
 
 可能服务端在等待完整的握手序列
 需要发送多个DEADBEEF消息
+=== req_pq最终测试 ===
+
+所有格式的req_pq都返回timeout
+服务端不响应任何格式的握手消息
+
+测试的格式:
+  1. DEADBEEF+msg_len+constructor+nonce → timeout
+  2. 小端msg_len+小端constructor → timeout
+  3. 分两次发送 → timeout
+  4. 不同SNI → timeout
+  5. 带padding → timeout
+  6. 多消息 → timeout
+
+结论:
+  DH握手可能不走DEADBEEF通道
+  或服务端需要特定认证才能响应
+  auth_key来源仍然无法破解
