@@ -288,3 +288,7 @@ MAC 8字段(确认):
   nanoDiff = nanos - 0xe7791f700
 
 源码路径: D:/im_sdk2/sdk_app2/sdk/forwarder_control.go:166
+=== nanoDiff计算方式 ===
+nanoDiff = (nanotime + 0xd7b17f80) - 0xe7791f700
+所有8个字段都是字符串
+nanoDiff也需要FormatInt(nanoDiff, 10)
