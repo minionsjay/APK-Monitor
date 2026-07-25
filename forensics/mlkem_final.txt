@@ -352,3 +352,19 @@ fetchByHeadThenGet → 先HEAD再GET
 需要正确的路径
 
 可能需要从Java层搜索完整URL
+=== 最终分析 ===
+
+APK名称: WkNAvY (Telegram clone)
+域名: WkNAvY.net, WkNAvY.bet, WkNAvY.me
+linkPrefix: webestim.me (从shared_prefs)
+
+forwarder control流程:
+  1. DNS TXT → AES-CBC → 控制面IP/域名
+  2. fetchForwarderControlPlane → singleflight
+  3. fetchByHeadThenGet → HEAD/GET HTTP请求
+  4. URL = https://webestim.me/ (404)
+
+阻塞:
+  webestim.me返回404(路径不对)
+  需要找到正确的HTTP路径
+  可能需要特定HTTP头
