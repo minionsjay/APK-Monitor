@@ -1,0 +1,25 @@
+=== auth_key最终结论 ===
+
+1. 永久auth_key
+   - 存储在tgnet.dat offset 0x88 (256字节)
+   - auth_key_id存储在0x188 = 9a3541affa34f95f
+   - 不用于DEADBEEF消息加密
+   - 可能用于DH握手
+
+2. 临时auth_key
+   - 用于DEADBEEF消息加密
+   - 通过MTProto DH握手生成
+   - 握手在VPN API内部完成
+   - 无法截获或推导
+
+3. 验证
+   - 用永久auth_key发送DEADBEEF消息 → EOF
+   - 所有EKM label → 不匹配
+   - master_secret → 不匹配
+   - AES_key → 不匹配
+   - 144字节参数 → 不匹配
+
+4. 自己开发APK的方案
+   - 用3个.dat节点做代理转发
+   - 不需要DEADBEEF+MTProto
+   - 直接用TLS+SOCKS5代理
