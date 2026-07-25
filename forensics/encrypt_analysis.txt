@@ -38,3 +38,11 @@ sendRequest中的加密流程:
   是HMAC-SHA256(密钥前16字节, data前32字节) → 覆盖data
   用HMAC结果修改data，然后再AES加密
   auth_key_id从加密后的data中提取(不是SHA1(auth_key))
+=== 直接发送加密req_pq测试 ===
+
+直接发送(加密, 永久key) → 收到93字节(HTTP 302)
+直接发送(未加密) → EOF
+DEADBEEF+加密 → timeout
+
+加密消息被当作HTTP处理
+可能需要正确的SNI或先发HTTP header
