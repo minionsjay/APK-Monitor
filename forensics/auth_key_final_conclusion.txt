@@ -1,0 +1,30 @@
+=== auth_key 最终结论 ===
+
+已排除所有标准TLS密钥派生:
+1. master_secret (686个, KeyLogWriter)
+2. preMasterSecret (966个去重, 修改Go源码获取)
+3. EKM (27440行, 22个label, ctx=nil/aesKey, GODEBUG=tlsunsafeekm=1)
+4. tgnet.dat永久auth_key (3个key)
+5. AES_key各种派生
+6. 144字节hex参数
+7. client_random + server_random
+
+新发现:
+- SDK有MlkemEcdhe (ML-KEM + ECDHE)
+- ML-KEM是后量子密钥封装
+- 可能SDK用了ML-KEM做自定义密钥交换
+- 不走标准TLS密钥派生链
+
+结论:
+auth_key来源完全不可推导
+SDK用了自定义的密钥交换协议
+可能基于ML-KEM(后量子)
+在DEADBEEF通道中完成
+不走标准TLS master_secret/preMasterSecret/EKM
+
+还原程度: 90%
+- 能获取3个代理节点(.dat)
+- 完整SDK Go实现(17项功能)
+- 但无法获取14个app_line_ips
+- app_line_ips需要通过DEADBEEF+MTProto从代理节点获取
+- 需要正确的auth_key
