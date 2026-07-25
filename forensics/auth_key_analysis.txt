@@ -1,0 +1,41 @@
+=== auth_key 分析 ===
+
+数据:
+  master_secret数: 327
+  DEADBEEF消息数: 208
+  不重复auth_key_id数: 10
+
+auth_key_ids:
+  9f0917f094ec84a2 (size=592)
+  b52cf829ee36e94d (size=1163)
+  48a6b9e7c85e78c1 (size=224)
+  ddc3b739d5bc2069 (size=264)
+  6704f9e10bf68665 (size=620)
+  8e5c33692a1e8821 (size=817)
+  63c817f2a41f3400 (size=789)
+  1c6ac1d7511b7ccc (size=818)
+  1b51cd144d16443c (size=318)
+  b69af6fbf1bd999a (size=856)
+
+试过的派生方式（都不匹配）:
+  1. SHA1(master_secret)[:8]
+  2. SHA1(ms+padding)[:8]
+  3. SHA256(ms)[:8]
+  4. HMAC(AES_key, ms)→SHA1[:8]
+  5. HMAC(ms, AES_key)→SHA1[:8]
+  6. ms[:8]直接
+  7. SHA1(client_random+ms)[:8]
+  8. SHA1(ms+client_random)[:8]
+  9. MD5(ms)[:8]
+  10. EKM(22个label, context=nil/aesKey)→SHA1[:8]
+  11. HMAC派生→SHA1[:8]
+
+结论:
+  auth_key不从TLS master_secret直接派生
+  auth_key不从EKM派生(22个label都不匹配)
+  可能来源:
+  1. MTProto DH握手(在DEADBEEF通道中完成)
+  2. 标准MTProto req_pq_multi握手(但被服务端拒绝)
+  3. SDK自定义密钥交换
+  4. 可能auth_key在VPN API内部通道中交换
+  5. 可能需要先发送auth_key_id=0的握手消息
