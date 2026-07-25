@@ -1,104 +1,113 @@
 package main
 
 import (
-	"crypto/aes"
-	"crypto/sha256"
-	"encoding/binary"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/tls"
+	"crypto/x509"
+	"crypto/x509/pkix"
 	"encoding/hex"
+	"encoding/pem"
 	"fmt"
+	"math/big"
 	"net"
 	"os"
+	"sync"
 	"time"
 
 	utls "github.com/refraction-networking/utls"
 )
 
+var caCert *x509.Certificate
+var caKey *rsa.PrivateKey
+
 func main() {
-	tgnet, _ := os.ReadFile("/data/local/tmp/tgnet.dat")
-	authKey := make([]byte, 256)
-	copy(authKey, tgnet[0x88:0x188])
-	authKeyID := tgnet[0x188:0x190]
-	
-	fmt.Printf("auth_key: %s...\n", hex.EncodeToString(authKey[:8]))
-	fmt.Printf("auth_key_id: %s\n", hex.EncodeToString(authKeyID))
-	
-	// 试不同大小的plaintext
-	// 从截获消息推断的plaintext大小
-	sizes := []struct {
-		name string
-		plainLen int
-		pad1 byte
-	}{
-		{"224B-msg", 144, 0xd6},  // enc=144
-		{"264B-msg", 224, 0xe3},  // enc=224
-		{"318B-msg", 240, 0x30},  // enc=240
-		{"592B-msg", 521, 0x62},  // enc=521
+	caPemData, _ := os.ReadFile("/data/local/tmp/mitmproxy-ca.pem")
+	caTLSCert, _ := tls.X509KeyPair(caPemData, caPemData)
+	caCert, _ = x509.ParseCertificate(caTLSCert.Certificate[0])
+	block, _ := pem.Decode(caPemData)
+	if k, err := x509.ParsePKCS1PrivateKey(block.Bytes); err == nil {
+		caKey = k
+	} else if k2, err := x509.ParsePKCS8PrivateKey(block.Bytes); err == nil {
+		caKey, _ = k2.(*rsa.PrivateKey)
 	}
-	
-	node := "43.248.2.74:30139"
-	sni := "mail.163.com"
-	
-	for _, s := range sizes {
-		fmt.Printf("\n=== %s (plain=%d pad1=0x%02x) ===\n", s.name, s.plainLen, s.pad1)
-		
-		// 构建plaintext
-		plaintext := make([]byte, s.plainLen)
-		// 填充一些数据
-		for i := range plaintext {
-			plaintext[i] = byte(i)
-		}
-		// 补齐到16字节
-		if len(plaintext)%16 != 0 {
-			padding := 16 - len(plaintext)%16
-			plaintext = append(plaintext, make([]byte, padding)...)
-		}
-		
-		// MTProto v2加密
-		msgKeySrc := append(authKey[88:96], plaintext...)
-		msgKeySum := sha256.Sum256(msgKeySrc)
-		msgKey := msgKeySum[:16]
-		
-		keySrc := append(append([]byte{}, msgKey...), authKey[0:32]...)
-		keySrc = append(keySrc, authKey[64:96]...)
-		aesKey := sha256.Sum256(keySrc)
-		
-		ivSrc := append(append([]byte{}, authKey[32:64]...), msgKey...)
-		ivSrc = append(ivSrc, authKey[96:128]...)
-		aesIV := sha256.Sum256(ivSrc)
-		
-		encData, err := aesIGEEncrypt(aesKey[:], aesIV[:], plaintext)
-		if err != nil {
-			fmt.Printf("加密错误: %v\n", err)
-			continue
-		}
-		
-		// 构建inner
-		inner := make([]byte, 0, 8+16+1+len(encData))
-		inner = append(inner, authKeyID...)
-		inner = append(inner, msgKey...)
-		inner = append(inner, s.pad1)
-		inner = append(inner, encData...)
-		
-		frame := buildDeadBEEFFrame(inner)
-		fmt.Printf("帧: %d字节 inner: %d enc: %d\n", len(frame), len(inner), len(encData))
-		
-		err = sendFrame(node, sni, frame)
-		if err != nil {
-			fmt.Printf("结果: %v\n", err)
-		}
+
+	klFile, _ := os.Create("/sdcard/dual_keylog.txt")
+	defer klFile.Close()
+	dataFile, _ := os.Create("/sdcard/dual_data.txt")
+	defer dataFile.Close()
+
+	// 监听30138和30139
+	ln38, err := net.Listen("tcp", "127.0.0.1:30138")
+	if err != nil {
+		fmt.Printf("listen 30138: %v\n", err)
+		return
+	}
+	ln39, err := net.Listen("tcp", "127.0.0.1:30139")
+	if err != nil {
+		fmt.Printf("listen 30139: %v\n", err)
+		return
+	}
+	fmt.Println("Dual MITM proxy started (30138+30139)")
+
+	go acceptLoop(ln38, "30138", klFile, dataFile)
+	acceptLoop(ln39, "30139", klFile, dataFile)
+}
+
+func acceptLoop(ln net.Listener, port string, klFile, dataFile *os.File) {
+	for {
+		conn, err := ln.Accept()
+		if err != nil { return }
+		go handleConn(conn, port, klFile, dataFile)
 	}
 }
 
-func sendFrame(node, sni string, frame []byte) error {
-	conn, err := net.DialTimeout("tcp", node, 10*time.Second)
-	if err != nil { return err }
-	defer conn.Close()
-	
-	config := &utls.Config{
+func handleConn(clientConn net.Conn, port string, klFile, dataFile *os.File) {
+	defer clientConn.Close()
+	buf := make([]byte, 4096)
+	clientConn.SetReadDeadline(time.Now().Add(5 * time.Second))
+	n, err := clientConn.Read(buf)
+	if err != nil || n < 5 { return }
+
+	sni := parseSNI(buf[5:n])
+	if sni == "" { sni = "mail.163.com" }
+
+	cert, _ := signCert(sni)
+	bc := &bufferedConn{Conn: clientConn, buf: buf[:n]}
+	tlsConn := tls.Server(bc, &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		KeyLogWriter: klFile,
+	})
+	if err := tlsConn.Handshake(); err != nil { return }
+	defer tlsConn.Close()
+
+	// 后端用标准TLS连接（不做MITM，直接转发）
+	// 用客户端的目标地址
+	clientAddr := clientConn.RemoteAddr().String()
+	_ = clientAddr
+
+	// 从SNI确定后端
+	// 30138的后端是193.112.75.147:30138
+	// 30139的后端是43.248.2.74:30139
+	var backendAddr string
+	if port == "30138" {
+		backendAddr = "193.112.75.147:30138"
+	} else {
+		backendAddr = "43.248.2.74:30139"
+	}
+
+	rawBackend, err := net.DialTimeout("tcp", backendAddr, 10*time.Second)
+	if err != nil {
+		fmt.Printf("[%s] backend dial failed: %v\n", port, err)
+		return
+	}
+	defer rawBackend.Close()
+
+	backendConfig := &utls.Config{
 		InsecureSkipVerify: true, ServerName: sni,
 		MinVersion: utls.VersionTLS12, MaxVersion: utls.VersionTLS12,
 	}
-	uConn := utls.UClient(conn, config, utls.HelloCustom)
+	backend := utls.UClient(rawBackend, backendConfig, utls.HelloCustom)
 	spec := &utls.ClientHelloSpec{
 		CipherSuites: []uint16{0xc00a, 0xc014, 0x0039, 0x006b, 0x0035, 0x003d,
 			0xc007, 0xc009, 0xc023, 0xc011, 0xc013, 0xc027,
@@ -116,64 +125,97 @@ func sendFrame(node, sni string, frame []byte) error {
 				0x0401, 0x0501, 0x0201, 0x0403, 0x0503, 0x0203, 0x0402, 0x0202}},
 		},
 	}
-	if err := uConn.ApplyPreset(spec); err != nil { return err }
-	if err := uConn.Handshake(); err != nil { return err }
-	defer uConn.Close()
-	
-	uConn.SetDeadline(time.Now().Add(5 * time.Second))
-	uConn.Write(frame)
-	
-	buf := make([]byte, 16384)
-	n, err := uConn.Read(buf)
-	if err != nil {
-		return fmt.Errorf("读取: %w", err)
-	}
-	
-	if n > 0 {
-		if buf[0] == 0xDE {
-			fmt.Printf("✅ 收到DEADBEEF %d字节!\n", n)
-			fmt.Printf("hex: %s\n", hex.EncodeToString(buf[:min(n, 40)]))
-		} else {
-			fmt.Printf("收到 %d字节: %s\n", n, hex.EncodeToString(buf[:min(n, 40)]))
+	if err := backend.ApplyPreset(spec); err != nil { return }
+	if err := backend.Handshake(); err != nil { return }
+	defer backend.Close()
+
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		b := make([]byte, 16384)
+		for {
+			n, err := tlsConn.Read(b)
+			if err != nil { break }
+			mu.Lock()
+			dataFile.WriteString(fmt.Sprintf("APP_%s %d %s\n", port, n, hex.EncodeToString(b[:n])))
+			mu.Unlock()
+			backend.Write(b[:n])
 		}
+	}()
+	go func() {
+		defer wg.Done()
+		b := make([]byte, 16384)
+		for {
+			n, err := backend.Read(b)
+			if err != nil { break }
+			mu.Lock()
+			dataFile.WriteString(fmt.Sprintf("SRV_%s %d %s\n", port, n, hex.EncodeToString(b[:n])))
+			mu.Unlock()
+			tlsConn.Write(b[:n])
+		}
+	}()
+	wg.Wait()
+}
+
+func parseSNI(data []byte) string {
+	if len(data) < 37 { return "" }
+	offset := 2 + 32
+	if offset >= len(data) { return "" }
+	sidLen := int(data[offset])
+	offset += 1 + sidLen
+	if offset+1 >= len(data) { return "" }
+	csLen := int(data[offset])<<8 | int(data[offset+1])
+	offset += 2 + csLen
+	if offset >= len(data) { return "" }
+	compLen := int(data[offset])
+	offset += 1 + compLen
+	if offset+1 >= len(data) { return "" }
+	extLen := int(data[offset])<<8 | int(data[offset+1])
+	offset += 2
+	extEnd := offset + extLen
+	for offset+4 <= extEnd && offset+4 <= len(data) {
+		extType := int(data[offset])<<8 | int(data[offset+1])
+		el := int(data[offset+2])<<8 | int(data[offset+3])
+		if extType == 0 && el > 5 && offset+4+el <= len(data) {
+			sniLen := int(data[offset+7])<<8 | int(data[offset+8])
+			if offset+9+sniLen <= len(data) {
+				return string(data[offset+9 : offset+9+sniLen])
+			}
+		}
+		offset += 4 + el
 	}
-	return nil
+	return ""
 }
 
-func buildDeadBEEFFrame(payload []byte) []byte {
-	buf := make([]byte, 0, 4+2+2+1+len(payload))
-	buf = append(buf, 0xDE, 0xAD, 0xBE, 0xEF)
-	buf = append(buf, 0x00, 0x00)
-	buf = append(buf, byte(len(payload)>>8), byte(len(payload)))
-	buf = append(buf, 0x00)
-	buf = append(buf, payload...)
-	return buf
-}
-
-func aesIGEEncrypt(key, iv, data []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil { return nil, err }
-	bs := block.BlockSize()
-	if len(iv) < 2*bs { return nil, fmt.Errorf("iv short") }
-	
-	prevC := make([]byte, bs)
-	copy(prevC, iv[:bs])
-	prevP := make([]byte, bs)
-	copy(prevP, iv[bs:2*bs])
-	
-	out := make([]byte, len(data))
-	for i := 0; i < len(data); i += bs {
-		chunk := data[i:i+bs]
-		var xored [16]byte
-		for j := 0; j < bs; j++ { xored[j] = chunk[j] ^ prevC[j] }
-		var enc [16]byte
-		block.Encrypt(enc[:], xored[:])
-		for j := 0; j < bs; j++ { out[i+j] = enc[j] ^ prevP[j] }
-		copy(prevC, out[i:i+bs])
-		copy(prevP, chunk)
+func signCert(sni string) (tls.Certificate, error) {
+	serverKey, _ := rsa.GenerateKey(rand.Reader, 2048)
+	template := x509.Certificate{
+		SerialNumber: big.NewInt(time.Now().UnixNano()),
+		Subject:      pkix.Name{CommonName: sni},
+		NotBefore:    time.Now().Add(-time.Hour),
+		NotAfter:     time.Now().Add(time.Hour * 24),
+		KeyUsage:     x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment,
+		ExtKeyUsage:  []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+		DNSNames:     []string{sni},
 	}
-	return out, nil
+	certDER, _ := x509.CreateCertificate(rand.Reader, &template, caCert, &serverKey.PublicKey, caKey)
+	certPEM := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: certDER})
+	keyPEM := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(serverKey)})
+	return tls.X509KeyPair(certPEM, keyPEM)
 }
 
-func min(a, b int) int { if a < b { return a }; return b }
-var _ = binary.BigEndian
+type bufferedConn struct {
+	net.Conn
+	buf []byte
+}
+
+func (bc *bufferedConn) Read(b []byte) (int, error) {
+	if len(bc.buf) > 0 {
+		n := copy(b, bc.buf)
+		bc.buf = bc.buf[n:]
+		return n, nil
+	}
+	return bc.Conn.Read(b)
+}
