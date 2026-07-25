@@ -253,3 +253,19 @@ RuntimePolicy通过loadRuntimePolicyFile加载
 应该用version='v1'(字符串)
 
 MAC = HMAC-SHA256(AES_key, join([v1, hello, nonce, uuid, ts, ...], '|'))
+=== signForwarderHelloMAC 8字段 ===
+
+MAC = HMAC-SHA256(AES_key, join(8字段, '|'))
+
+字段列表:
+  [0]: 'v1' (协议版本)
+  [1]: 'hello' (type)
+  [2]: nonce
+  [3]: device_uuid
+  [4]: ??? (可能是app_name或sdk_version)
+  [5]: version_str (FormatUint)
+  [6]: timestamp_str (FormatInt)
+  [7]: ??? (纳秒时间戳-基准)
+
+可能的版本号: v0.0.1, v1.0.6, v1.17.4, v1.8.2
+app_name: dh139
