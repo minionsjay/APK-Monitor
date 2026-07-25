@@ -306,3 +306,8 @@ version=0/1/2 二进制LE/BE → EOF
 nanoDiff 二进制/字符串 → EOF
 
 需要完整反编译FetchForwarderFixedTuple确认参数传递
+=== 最终MAC测试 ===
+所有8字段组合 → EOF
+nonce拆分(hex/[7]=ts) → EOF
+version=0/v1 + 各种sdk_version → EOF
+需要更深入分析signForwarderHelloMAC的参数传递
