@@ -339,3 +339,16 @@ IPv6连接:
 forwarder control可能通过HTTPS POST发送JSON
 但所有路径返回404/403/400
 需要找到正确的路径
+=== webestim.me测试 ===
+
+URL: https://webestim.me/
+GET/POST/HEAD → 404 Not Found
+
+APP配置:
+  linkPrefix = webestim.me
+  dcDomainName2 = apv3.stel.com
+
+fetchByHeadThenGet → 先HEAD再GET
+需要正确的路径
+
+可能需要从Java层搜索完整URL
