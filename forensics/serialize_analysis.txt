@@ -1,0 +1,15 @@
+=== serializeToStream分析 ===
+
+req_pq::serializeToStream:
+  只写: constructor(0x60469778) + nonce(16)
+  不写: auth_key_id, msg_id, msg_len
+
+完整消息格式(sendRequestData包装):
+  未加密: auth_key_id(0)+msg_id+msg_len+constructor+nonce
+  加密: auth_key_id+msg_key+enc_data
+
+req_pq_multi(?): constructor=0xbe7e8ef1
+
+关键:
+  SDK可能用永久auth_key加密DH握手
+  不用auth_key_id=0的明文格式
