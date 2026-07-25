@@ -1,0 +1,42 @@
+=== Forwarder Control 完整分析 ===
+
+完整节点获取流程：
+1. DNS TXT查询: _dns.{app_domain} → base64加密数据
+   例: _dns.sdkghug139.cwenku.com → "O6HpUY1e9zYbqhqm2DnHqw=="
+   
+2. AES-CBC解密(key=AES_key, IV=key[:16]) → 控制面IP
+   例: 43.248.2.74
+   
+3. OSS下载.dat文件 → AES-CBC解密 → 代理节点列表
+   例: {"nodesA":["8.134.180.186:30139","8.138.152.138:30139","8.148.148.131:30139"]}
+   
+4. 连接控制面IP:app_domain_port → TLS + JSON → forwarder control
+   目标: 获取真正的代理节点（可能包含华为云IP等）
+   
+5. 代理节点用于VPN转发（DEADBEEF+MTProto加密）
+
+当前状态：
+- DNS TXT解密成功 ✅ (43.248.2.74)
+- .dat文件解密成功 ✅ (3个代理节点)
+- TLS握手成功 ✅ (cipher=0xc013)
+- JSON发送失败 ❌ (服务端返回EOF)
+
+测试过的所有JSON格式：
+- 标准crypto/tls + JSON + \n → EOF
+- utls TLS1.2 + 0x3374/0x754f + JSON + \n → EOF
+- 空JSON + \n → EOF
+- 空行 → EOF
+- 无MAC → EOF
+- 多种MAC计算方式 → EOF
+- 多种字段顺序 → EOF
+- 多种SNI → EOF
+- 多种ALPN → EOF/302
+- 2B/4B长度前缀 → EOF/302
+- DEADBEEF封装 → EOF
+
+结论：
+- 服务端在收到任何数据后关闭连接
+- 可能需要特定的TLS特征（如Session ID或自定义扩展内容）
+- 或者需要先完成某种握手/认证
+- 或者控制面IP不对（需要从其他渠道获取）
+- 或者端口不对（不是30139而是其他端口）
