@@ -227,3 +227,18 @@ APK结构:
   device_uuid可能格式不对(包含FF)
   或者nonce格式不对(test太短)
   需要正确格式的nonce和device_uuid
+=== PSK TLS测试 ===
+
+Chrome115_PQ_PSK → 93B HTTP 302
+Chrome120_PQ → 93B HTTP 302
+FakePreSharedKeyExtension → panic(必须是最后一个扩展)
+
+=== 最终结论 ===
+forwarder control JSON需要通过DEADBEEF发送
+但DEADBEEF+JSON(含nonce 32+字符) → EOF
+DEADBEEF+空JSON → timeout(被接受)
+说明JSON格式或字段值不对
+可能需要正确的PSK密钥
+PSK来自RuntimePolicy.forwarderControlPSK
+RuntimePolicy通过loadRuntimePolicyFile加载
+但文件不存在
