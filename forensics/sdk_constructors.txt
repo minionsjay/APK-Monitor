@@ -1,0 +1,17 @@
+=== SDK自定义Constructor ===
+
+从tgnet.so中通过MOV+MOVK+BL(writeInt32)模式提取:
+
+已知:
+  req_pq = 0x60469778 (标准相同)
+  req_pq_multi? = 0xbe7e8ef1 (标准0xbe6261f9, 可能不是req_pq_multi)
+  req_DH_params? = 0xd712e4be (标准0xd712e2d8)
+
+测试结果:
+  req_pq(0x60469778) 通过DEADBEEF → timeout (被接受)
+  req_pq_multi(0xbe7e8ef1) → EOF (被拒绝)
+  
+结论:
+  req_pq(0x60469778)是正确的constructor
+  但服务端不响应(等待更多数据)
+  可能需要特定格式或多个消息
