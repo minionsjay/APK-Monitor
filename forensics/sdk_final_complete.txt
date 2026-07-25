@@ -1,0 +1,118 @@
+=== SDK逆向最终完整报告 ===
+
+SDK完整源码结构（20+个文件）：
+1. bootstrap.go - 启动/初始化 (3155行Prepare函数)
+2. bucket_refresh.go - 桶刷新
+3. cache.go - 缓存管理
+4. controlplane.go - 控制面解析 (含shortMD5, decryptNodeData)
+5. datadir_android.go - Android数据目录
+6. domain_entry.go - 域名入口
+7. domain_txt.go - DNS TXT记录 (resolveAppDomainHost, lookupAppDomainTXT)
+8. failover.go - 故障转移
+9. fixed_tuple_store.go - 固定元组存储 (FetchForwarderFixedTuple)
+10. forwarder_control.go - forwarder控制
+11. local_listener_recovery.go - 本地监听恢复
+12. net_conn_health.go - 网络健康检查
+13. nodes.go - 节点管理 (含hash64/FNV)
+14. obfs.go - DEADBEEF封装
+15. policy.go - 策略管理
+16. pool.go - 连接池
+17. pool_tls.go - TLS配置
+18. prepare_network_probe.go - 网络探测
+19. resume_recovery.go - 恢复
+20. secret.go - 密钥管理 (RSA私钥)
+21. selfcheck.go - 自检
+
+完整节点获取流程：
+
+阶段1: 获取控制面地址
+  1. DNS TXT查询: _dns.{app_domain} → base64加密数据
+  2. AES-CBC解密(key=AES_key, IV=key[:16]) → 控制面IP
+     例: 43.248.2.74
+
+阶段2: 获取代理节点
+  方式A: .dat文件下载（主要方式）
+    1. buildNodeDataURLs: 用域名+日期+shortMD5构建URL
+    2. fetchByHeadThenGet: HTTP HEAD(检查ETag) → HTTP GET(下载)
+    3. decryptNodeData: AES-CBC/GCM解密 → JSON{nodesA, nodesB}
+  
+  方式B: forwarder control（备选方式）
+    1. collectBucketControlPlaneTargets: 随机选择控制面节点
+    2. tryForwarderControlEndpoints: 尝试连接
+    3. FetchForwarderFixedTuple: TLS+JSON+\n → 4B长度+JSON响应
+    4. 需要配置forwarderControlPSK才能使用
+
+阶段3: VPN代理转发
+  1. APP用Android VPN API拦截所有流量
+  2. 本地监听60139端口
+  3. DEADBEEF封装: magic(4B)+sublen(2B)+payload_len(2B)+padding_len(1B)+padding+payload
+  4. MTProto加密: auth_key_id(8B)+msg_key(16B)+encrypted_data (AES-IGE)
+  5. TLS 1.2 (cipher=0xc013, SNI伪装)
+  6. 连接到代理节点:30139
+
+密钥体系：
+  - AES-key: 32字节字符串 (如 htHtoU17cKxTjwVh1m2iyHfEI39RG1Cw)
+  - RSA私钥: PEM格式, 编译时嵌入
+  - device_uuid: hex(rand16B) + FormatInt(UnixNano, 36)
+  - nonce: hex(rand16B) + FormatInt(UnixNano, 36)
+  - label: hex(rand) + FormatInt(UnixNano, 10)
+  - MAC: HMAC-SHA256(AES_key, strings.Join(8字段, 分隔符))
+
+shortMD5算法:
+  hex(md5(data))[:16] → 16字符hex
+
+.dat URL构建:
+  https://{shortMD5(domain+date)}.gz.bceos.com/{shortMD5(app_domain+AES_key)}.dat
+
+DNS TXT解密:
+  AES-CBC(key=AES_key, IV=key[:16]) → 明文IP地址
+
+.dat文件解密:
+  AES-CBC/GCM(key=AES_key) → JSON{nodesA, nodesB, nodesC, nodesD, nodesE}
+
+TLS配置:
+  - utls v1.8.2
+  - HelloChrome_100 (可被自定义ClientHelloSpec替换)
+  - TLSClientHelloMode: "hash" 或 "psk"
+  - TLSHelloForDevice: "360Browser"
+  - 自定义扩展: 0x3374 和 0x754f (空值)
+  - ALPN: spdy/2, spdy/3, spdy/3.1, http/1.1
+  - 压缩: DEFLATE(1) + NULL(0)
+  - cipher列表: 0xc00a, 0xc014, 0xc013, 0x002f 等
+
+forwarder control:
+  - 发送: json.Marshal(fwdHelloRequest) + "\n"
+  - 响应: 4字节大端长度 + JSON(fwdControlResponse)
+  - MAC = HMAC-SHA256(AES_key, strings.Join(8字段, "."))
+  - 字段: ["2", "hello", nonce, device_uuid, ts, ver_str, label, ""]
+  - nonce = hex(rand16B) + FormatInt(UnixNano, 36)
+  - label = hex(rand) + FormatInt(UnixNano, 10)
+  - fwdHelloRequest字段: version, type, nonce, mac, device_uuid?, sdk_version?, timestamp_unix, A?, B?, C?, D?, E?
+  - fwdControlResponse字段: version?, message?, nodesA, nodesB, nodesC, nodesD, nodesE, fixed, saved_at_unix
+  - "not_modified"错误 → 使用缓存(304 Not Modified机制)
+
+当前状态:
+  ✅ DNS TXT解密 → 控制面IP (43.248.2.74)
+  ✅ .dat下载+解密 → 代理节点 (8.134.180.186:30139等)
+  ✅ TLS握手成功 (cipher=0xc013)
+  ✅ SDK完整逆向 (20+源码文件, 336+函数)
+  ❌ forwarder control JSON返回EOF
+  ❌ MTProto auth_key来源未知
+
+forwarder control EOF原因:
+  1. 可能APK未配置forwarderControlPSK
+  2. 可能需要特定TLS特征(如session_id)
+  3. 可能控制面地址不对
+  4. 可能服务端检查客户端证书
+
+可以自己开发的APK功能:
+  ✅ DNS TXT解密获取控制面IP
+  ✅ .dat文件下载+AES-CBC解密获取代理节点
+  ✅ DEADBEEF协议封装
+  ✅ VPN API流量拦截
+  ✅ TLS配置(utls+自定义扩展)
+  ✅ 状态机管理
+  ✅ 故障转移
+  ✅ 健康检查
+  ❌ forwarder control客户端
+  ❌ MTProto加密
