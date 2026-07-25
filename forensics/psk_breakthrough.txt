@@ -1,0 +1,31 @@
+=== PSK重大突破 ===
+
+发现：30138端口forwarder control用TLS PSK认证！
+
+证据(from strings):
+1. "forwarderControlPSK" → PSK配置
+2. "initPskExt" → 初始化PSK TLS扩展
+3. "psk_dhe_ke" → PSK+DHE密钥交换
+4. "psk_id_hash" → PSK identity hash
+5. "unknown PSK identity" → 服务端验证PSK identity
+6. "empty control psk" → 空的PSK错误
+7. "empty device uuid" → device_uuid为空错误
+8. "hello too large" → hello消息错误
+9. "write hello: %w" → 写hello
+10. "read length: %w" → 读长度
+11. "parse app line ips json: %w" → 解析app_line_ips!
+12. "decode response mac: %w" → 验证响应MAC
+13. "app_line_update" → app_line更新
+
+结论:
+- 30138端口用TLS PSK(不是标准TLS)
+- PSK identity = device_uuid
+- PSK密钥 = AES_key的某种派生
+- 发送JSON返回EOF因为没有PSK认证
+- 需要在TLS ClientHello中包含PSK扩展
+
+PSK相关TLS指纹:
+- Firefox100_PSK
+- 112_PSK  
+- 114_PSK
+- 115_PQ_PSK
