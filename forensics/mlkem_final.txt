@@ -39,3 +39,13 @@ ML-KEM-768:
   GetEcdheKey从ServerHello获取ECDHE
   GetKemKey获取ML-KEM
   这就是为什么preMasterSecret单独不匹配
+=== SNI=sdk.01hd1.com测试 ===
+
+SNI=sdk.01hd1.com → 仍返回302
+服务端证书: CN=sdk.01hd1.com (Let's Encrypt)
+SNI不是关键区别
+
+最终结论:
+  auth_key来自ML-KEM+ECDHE组合
+  需要完全按照sendRequest的流程加密
+  两次HMAC-SHA256 + 两次AES-256
