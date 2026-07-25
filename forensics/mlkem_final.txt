@@ -86,3 +86,15 @@ DEADBEEF+req_pq → timeout(被接受)
 
 关键: X25519MLKEM768在TLS 1.2中工作!
 preMasterSecret可能包含ML-KEM+ECDHE组合
+=== MLKEM代理测试 ===
+
+代理用X25519MLKEM768后端连接:
+  APP消息: 181
+  AKID: 9个唯一
+  SRV消息: 0 (后端可能没收到APP数据)
+  PREMS/CPREMS: 未获取
+  MATCH: 0
+
+问题:
+  Go标准库不支持X25519MLKEM768
+  utls的MasterSecret不是标准preMasterSecret
