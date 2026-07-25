@@ -292,3 +292,11 @@ MAC 8字段(确认):
 nanoDiff = (nanotime + 0xd7b17f80) - 0xe7791f700
 所有8个字段都是字符串
 nanoDiff也需要FormatInt(nanoDiff, 10)
+=== 二进制MAC字段 ===
+
+从Ghidra反编译确认:
+  第4字段: version(uint64)作为8字节slice
+  第7字段: nanoDiff(int64)作为8字节slice
+  不是十进制字符串！
+
+MAC = HMAC-SHA256(AES_key, join([v1, hello, nonce, uuid, version_bin, version_str, ts_str, nanoDiff_bin], '|'))
