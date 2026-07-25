@@ -150,3 +150,55 @@ forwarder control EOF原因:
 2. 计算SHA1(master_secret)[:8]
 3. 和APP的auth_key_id比较
 4. 如果匹配 → auth_key = master_secret
+
+=== auth_key 完整链路突破 ===
+
+SDK密钥层级（从strings确认）：
+1. TLS 1.3层:
+   - tls13.EarlySecret
+   - tls13.HandshakeSecret  
+   - tls13.MasterSecret
+   - tls13.ExporterMasterSecret
+   - ExporterMasterSecret.Exporter()
+
+2. TLS 1.2层:
+   - masterSecret (48字节)
+   - extMasterSecret (Extended Master Secret)
+   - preMasterSecret (premaster secret)
+   - SetMasterSecret (设置master_secret)
+   - ExporterMasterSecret (导出master_secret)
+   - ekmFromMasterSecret (从master_secret派生EKM)
+
+3. SDK自定义层:
+   - "crypto/tls: reserved ExportKeyingMaterial label" → 保留label检查
+   - GODEBUG=tlsunsafeekm=1 → 绕过EKM限制
+   - SDK修改了crypto/tls添加了直接访问master_secret的功能
+
+4. tgnet.so层:
+   - Connection::encryptKeyWithSecret(param)
+     - param=0 → 不加密
+     - param=2 → 用this+0x210(永久密钥=master_secret)
+     - 其他 → 用this+0x58(临时密钥)
+   - tgvoip_openssl_aes_ige_encrypt/decrypt
+   - TL_bind_auth_key_inner → 绑定auth_key
+
+5. auth_key_id计算:
+   auth_key_id = SHA1(auth_key)[:8] (MTProto标准)
+   auth_key = master_secret (48字节) 或其派生
+
+6. 144字节hex参数:
+   b3312fa7e23ee7e4988e056be3f82d19181d9c6efe8141120314088f5013875a...
+   可能是某种固定参数或种子
+
+验证方案:
+1. 在MITM代理中用KeyLogWriter获取APP→代理的master_secret
+2. auth_key_id_app = SHA1(master_secret)[:8]
+3. 和MITM日志中的APP auth_key_id比较
+4. 如果匹配 → auth_key = master_secret
+5. 如果不匹配 → auth_key = EKM(some_label) 或其他派生
+
+forwarder control EOF突破:
+1. 可能APK未配置forwarderControlPSK
+2. 可能需要用正确的控制面地址
+3. 可能需要特定的TLS特征
+4. 需要在MITM代理中截获APP的实际forwarder control流量
