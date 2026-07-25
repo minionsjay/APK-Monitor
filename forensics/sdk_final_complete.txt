@@ -116,3 +116,37 @@ forwarder control EOF原因:
   ✅ 健康检查
   ❌ forwarder control客户端
   ❌ MTProto加密
+
+=== auth_key 突破分析 ===
+
+关键发现：
+1. auth_key_id = SHA1(master_secret)[:8]
+   - 每次TLS连接master_secret不同 → auth_key_id不同
+   - 这解释了为什么APP每次连接auth_key_id不同
+   - MTProto标准: auth_key_id = lower64(SHA1(auth_key))
+
+2. auth_key = TLS master_secret (48字节)
+   - 从TLS握手的premaster_secret派生
+   - 用KeyLogWriter可以获取
+   - 格式: CLIENT_RANDOM <client_random> <master_secret>
+
+3. SDK使用GODEBUG=tlsunsafeekm=1
+   - 因为服务端不协商Extended Master Secret
+   - 需要GODEBUG绕过EKM限制
+
+4. SDK检查"reserved ExportKeyingMaterial label"
+   - 某些EKM label被保留（不能使用）
+   - 但auth_key可能直接用master_secret而不是EKM
+
+5. MTProto加密流程：
+   a. TLS握手 → 获取master_secret(48字节)
+   b. auth_key = master_secret(或其变换)
+   c. auth_key_id = SHA1(auth_key)[:8]
+   d. AES-IGE加密: msg_key = SHA256(auth_key[0:32] + data)[0:16]
+   e. encrypted = AES_IGE_Encrypt(auth_key, msg_key, data)
+
+验证方法：
+1. 在MITM代理中用KeyLogWriter获取APP的master_secret
+2. 计算SHA1(master_secret)[:8]
+3. 和APP的auth_key_id比较
+4. 如果匹配 → auth_key = master_secret
