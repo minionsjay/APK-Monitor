@@ -4,17 +4,14 @@ import (
 	"crypto/aes"
 	"crypto/sha1"
 	"crypto/sha256"
-	"encoding/binary"
+	"encoding/hex"
 	"errors"
-	"hash"
 )
 
-// AESIGEEncrypt AES-IGE加密
 func AESIGEEncrypt(key, iv, data []byte) ([]byte, error) {
 	return aesIGE(key, iv, data, true)
 }
 
-// AESIGEDecrypt AES-IGE解密
 func AESIGEDecrypt(key, iv, data []byte) ([]byte, error) {
 	return aesIGE(key, iv, data, false)
 }
@@ -35,59 +32,37 @@ func aesIGE(key, iv, data []byte, encrypt bool) ([]byte, error) {
 		return nil, err
 	}
 
-	// IGE: prevCipher = iv[0:16], prevPlain = iv[16:32]
-	prevCipher := make([]byte, 16)
-	prevPlain := make([]byte, 16)
-	copy(prevCipher, iv[0:16]) // first 16 bytes of IV
-	copy(prevPlain, iv[16:32]) // last 16 bytes of IV
+	prevC := make([]byte, 16)
+	prevP := make([]byte, 16)
+	copy(prevC, iv[:16])
+	copy(prevP, iv[16:32])
 
 	result := make([]byte, len(data))
 
 	for i := 0; i < len(data); i += 16 {
-		chunk := make([]byte, 16)
-		copy(chunk, data[i:i+16])
+		chunk := data[i : i+16]
 
-		// XOR with prevCipher
-		xored := make([]byte, 16)
+		var xored, enc [16]byte
 		if encrypt {
 			for j := 0; j < 16; j++ {
-				xored[j] = chunk[j] ^ prevCipher[j]
+				xored[j] = chunk[j] ^ prevC[j]
 			}
+			block.Encrypt(enc[:], xored[:])
+			for j := 0; j < 16; j++ {
+				result[i+j] = enc[j] ^ prevP[j]
+			}
+			copy(prevP, chunk)
+			copy(prevC, result[i:i+16])
 		} else {
 			for j := 0; j < 16; j++ {
-				xored[j] = chunk[j] ^ prevPlain[j]
+				xored[j] = chunk[j] ^ prevP[j]
 			}
-		}
-
-		// AES encrypt
-		enc := make([]byte, 16)
-		if encrypt {
-			block.Encrypt(enc, xored)
-		} else {
-			block.Decrypt(enc, xored)
-		}
-
-		// XOR with prevPlain (encrypt) or prevCipher (decrypt)
-		out := make([]byte, 16)
-		if encrypt {
+			block.Decrypt(enc[:], xored[:])
 			for j := 0; j < 16; j++ {
-				out[j] = enc[j] ^ prevPlain[j]
+				result[i+j] = enc[j] ^ prevC[j]
 			}
-		} else {
-			for j := 0; j < 16; j++ {
-				out[j] = enc[j] ^ prevCipher[j]
-			}
-		}
-
-		copy(result[i:i+16], out)
-
-		// Update prev values
-		if encrypt {
-			copy(prevPlain, chunk)
-			copy(prevCipher, out)
-		} else {
-			copy(prevCipher, chunk)
-			copy(prevPlain, out)
+			copy(prevC, chunk)
+			copy(prevP, result[i:i+16])
 		}
 	}
 
@@ -95,41 +70,33 @@ func aesIGE(key, iv, data []byte, encrypt bool) ([]byte, error) {
 }
 
 // MTProtoEncrypt MTProto v2加密
-// authKey: 256字节auth_key (master_secret的某种派生)
-// data: 明文数据(需要16字节对齐)
-// 返回: auth_key_id(8B) + msg_key(16B) + encrypted_data
 func MTProtoEncrypt(authKey, data []byte) ([]byte, error) {
 	if len(authKey) < 256 {
-		// 如果auth_key不足256字节，补零
 		padded := make([]byte, 256)
 		copy(padded, authKey)
 		authKey = padded
 	}
 
-	// 1. 计算msg_key (MTProto v2)
-	// msg_key = SHA256(authKey[88:96] + data)
-	msgKeySrc := make([]byte, 8+len(data))
-	copy(msgKeySrc, authKey[88:96])
-	copy(msgKeySrc[8:], data)
+	// msg_key = SHA256(auth_key[88:96] + data)
+	msgKeySrc := append(append([]byte{}, authKey[88:96]...), data...)
 	h := sha256.Sum256(msgKeySrc)
-	msgKey := h[:16]
+	msgKey := make([]byte, 16)
+	copy(msgKey, h[:16])
 
-	// 2. 计算AES key和IV
-	// key = SHA256(msgKey + authKey[0:32])
-	// iv = SHA256(msgKey + authKey[32:64])
-	aesKey := sha256.Sum256(append(msgKey, authKey[0:32]...))
-	aesIV := sha256.Sum256(append(msgKey, authKey[32:64]...))
+	// aes_key = SHA256(msg_key + auth_key[0:32] + auth_key[64:96])
+	keySrc := append(append(msgKey, authKey[0:32]...), authKey[64:96]...)
+	aesKey := sha256.Sum256(keySrc)
 
-	// 3. AES-IGE加密
+	// aes_iv = SHA256(auth_key[32:64] + msg_key + auth_key[96:128])
+	ivSrc := append(append(authKey[32:64], msgKey...), authKey[96:128]...)
+	aesIV := sha256.Sum256(ivSrc)
+
 	encrypted, err := AESIGEEncrypt(aesKey[:], aesIV[:], data)
 	if err != nil {
 		return nil, err
 	}
 
-	// 4. auth_key_id = SHA1(authKey)[:8]
 	authKeyHash := sha1.Sum(authKey)
-
-	// 5. 构建: auth_key_id(8B) + msg_key(16B) + encrypted_data
 	result := make([]byte, 0, 8+16+len(encrypted))
 	result = append(result, authKeyHash[:8]...)
 	result = append(result, msgKey...)
@@ -149,21 +116,24 @@ func MTProtoDecrypt(authKey, encrypted []byte) ([]byte, error) {
 		return nil, errors.New("encrypted data too short")
 	}
 
-	// 提取auth_key_id和msg_key
-	// authKeyID := encrypted[:8]
-	msgKey := encrypted[8:24]
+	msgKey := make([]byte, 16)
+	copy(msgKey, encrypted[8:24])
 	encData := encrypted[24:]
 
-	// 计算AES key和IV
-	aesKey := sha256.Sum256(append(msgKey, authKey[0:32]...))
-	aesIV := sha256.Sum256(append(msgKey, authKey[32:64]...))
+	// aes_key = SHA256(msg_key + auth_key[0:32] + auth_key[64:96])
+	keySrc := append(append([]byte{}, msgKey...), authKey[0:32]...)
+	keySrc = append(keySrc, authKey[64:96]...)
+	aesKey := sha256.Sum256(keySrc)
 
-	// AES-IGE解密
+	// aes_iv = SHA256(auth_key[32:64] + msg_key + auth_key[96:128])
+	ivSrc := append(append([]byte{}, authKey[32:64]...), msgKey...)
+	ivSrc = append(ivSrc, authKey[96:128]...)
+	aesIV := sha256.Sum256(ivSrc)
+
 	return AESIGEDecrypt(aesKey[:], aesIV[:], encData)
 }
 
-// MTProtoEncryptV1 MTProto v1加密 (旧版本)
-// msg_key = SHA1(data + authKey[0:32])[0:16]
+// MTProtoEncryptV1 MTProto v1加密
 func MTProtoEncryptV1(authKey, data []byte) ([]byte, error) {
 	if len(authKey) < 256 {
 		padded := make([]byte, 256)
@@ -171,26 +141,28 @@ func MTProtoEncryptV1(authKey, data []byte) ([]byte, error) {
 		authKey = padded
 	}
 
-	// msg_key = SHA1(data + authKey[0:32])[0:16]
-	msgKeySrc := make([]byte, len(data)+32)
-	copy(msgKeySrc, data)
-	copy(msgKeySrc[len(data):], authKey[0:32])
+	msgKeySrc := append(data, authKey[0:32]...)
 	h := sha1.Sum(msgKeySrc)
-	msgKey := h[:16]
+	msgKey := make([]byte, 16)
+	copy(msgKey, h[:16])
 
-	// key = SHA1(msgKey + authKey[0:16]) + SHA1(msgKey + authKey[16:32])[0:16]
-	keyPart1 := sha1.Sum(append(msgKey, authKey[0:16]...))
-	keyPart2 := sha1.Sum(append(msgKey, authKey[16:32]...))
+	// key = SHA1(msg_key + auth_key[0:16])[:16] + SHA1(auth_key[0:16] + msg_key)[:16]
+	// 等等，MTProto v1的key计算:
+	// aes_key = SHA1(msg_key + auth_key[0:16]) + SHA1(auth_key[0:16] + msg_key)
+	// 只取前16字节
+	kp1 := sha1.Sum(append(msgKey, authKey[0:16]...))
+	kp2 := sha1.Sum(append(authKey[0:16], msgKey...))
 	aesKey := make([]byte, 32)
-	copy(aesKey[:16], keyPart1[:16])
-	copy(aesKey[16:], keyPart2[:16])
+	copy(aesKey[:16], kp1[:16])
+	copy(aesKey[16:], kp2[:16])
 
-	// iv = SHA1(authKey[32:48] + msgKey) + SHA1(msgKey + authKey[48:64])[0:16]
-	ivPart1 := sha1.Sum(append(authKey[32:48], msgKey...))
-	ivPart2 := sha1.Sum(append(msgKey, authKey[48:64]...))
+	// iv = SHA1(auth_key[32:48] + msg_key) + SHA1(msg_key + auth_key[48:64])
+	// 只取前16字节
+	ip1 := sha1.Sum(append(authKey[32:48], msgKey...))
+	ip2 := sha1.Sum(append(msgKey, authKey[48:64]...))
 	aesIV := make([]byte, 32)
-	copy(aesIV[:16], ivPart1[:16])
-	copy(aesIV[16:], ivPart2[:16])
+	copy(aesIV[:16], ip1[:16])
+	copy(aesIV[16:], ip2[:16])
 
 	encrypted, err := AESIGEEncrypt(aesKey, aesIV, data)
 	if err != nil {
@@ -206,6 +178,7 @@ func MTProtoEncryptV1(authKey, data []byte) ([]byte, error) {
 	return result, nil
 }
 
-// helper: for testing
-var _ hash.Hash // ensure hash import used
-var _ = binary.BigEndian
+func AuthKeyID(masterSecret []byte) string {
+	h := sha1.Sum(masterSecret)
+	return hex.EncodeToString(h[:8])
+}

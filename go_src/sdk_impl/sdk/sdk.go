@@ -7,7 +7,6 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
@@ -261,7 +260,3 @@ func (s *SDK) TLSConfig(sni string) *tls.Config {
 	}
 }
 
-func AuthKeyID(masterSecret []byte) string {
-	h := sha1.Sum(masterSecret)
-	return hex.EncodeToString(h[:8])
-}
