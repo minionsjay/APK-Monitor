@@ -1,0 +1,40 @@
+=== encryptKeyWithSecret 逆向 ===
+
+函数地址: 0xdd3cd4
+
+参数:
+  x0 = Connection*this
+  x1 = data (256字节缓冲区)
+  w2 = type (0=不加密, 2=永久key, 其他=临时key)
+
+流程:
+1. type==2 → 密钥 = this+0x210 (永久auth_key)
+   type!=2 → 密钥 = this+0x58 (临时auth_key)
+   如果临时key不存在 → ConnectionsManager+0x1d0 (全局key)
+
+2. 从密钥对象读取前16字节作为HMAC密钥
+
+3. HMAC-SHA256_init(ctx)
+4. HMAC-SHA256_update(ctx, data, 32)  ← 对data前32字节
+5. 循环: HMAC-SHA256_update(ctx, key_byte, 1)  ← 逐字节更新密钥
+6. HMAC-SHA256_final(ctx) → 输出32字节覆盖data
+
+函数调用:
+  0x8c413c = HMAC-SHA256 init
+  0x8c4178 = HMAC-SHA256 update (块大小=64字节)
+  0x8c4290 = HMAC-SHA256 final
+  0x89f158 = AES加密 (keylen=128/192/256)
+
+sendRequest中的加密流程:
+1. encryptKeyWithSecret(this, data, type) → HMAC-SHA256(key[:16], data[:32]) → data[:32]
+2. AES(data, 256, output) → 加密
+3. data[7..55] → auth_key_id (8字节)
+4. encryptKeyWithSecret(this, data, type) → 再次HMAC
+5. AES(data, 256, output)
+6. HMAC?(data, 256, 64) → 0x89f320
+
+关键发现:
+  encryptKeyWithSecret不是AES加密！
+  是HMAC-SHA256(密钥前16字节, data前32字节) → 覆盖data
+  用HMAC结果修改data，然后再AES加密
+  auth_key_id从加密后的data中提取(不是SHA1(auth_key))
