@@ -1,0 +1,30 @@
+=== tgnet.dat 分析 ===
+
+文件: /data/data/.../files/tgnet.dat (996字节)
+
+结构:
+  0x000: int32(992) 总大小
+  0x004: int32(5) datacenter数
+  0x008: int32(0x379779bc) 时间戳
+  0x010: "zh-cn" 语言
+  0x028-0x060: "127.0.0.1" 本地地址
+  0x080: 时间戳 + datacenter_id=1
+  0x088-0x187: 256字节 永久auth_key
+    SHA1[:8] = 71a764f189bc6a68
+    前8字节 = 3466cf85512f2193
+  0x190-0x293: 260字节 第二密钥(可能也是auth_key)
+  0x294: 端口 0x2070
+  0x2a0-0x3e3: msg_id列表
+
+结论:
+  - tgnet.dat存储了永久auth_key(256字节)
+  - 永久auth_key_id = SHA1(永久auth_key)[:8] = 71a764f189bc6a68
+  - 截获的DEADBEEF消息的auth_key_id不同 → 使用临时密钥
+  - 临时密钥可能通过MTProto DH握手生成
+  - 永久密钥可能用于DH握手
+
+其他文件:
+  - dc1conf.dat (40字节): Datacenter配置
+  - exid.dat (57字节): {"appkey":"68e5299364...","channel":"Unknown"}
+  - stats2.dat (612字节): 统计数据
+  - cache4.db: 缓存数据库
