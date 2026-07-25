@@ -300,3 +300,9 @@ nanoDiff也需要FormatInt(nanoDiff, 10)
   不是十进制字符串！
 
 MAC = HMAC-SHA256(AES_key, join([v1, hello, nonce, uuid, version_bin, version_str, ts_str, nanoDiff_bin], '|'))
+=== 二进制MAC测试结果 ===
+所有二进制格式 → EOF
+version=0/1/2 二进制LE/BE → EOF
+nanoDiff 二进制/字符串 → EOF
+
+需要完整反编译FetchForwarderFixedTuple确认参数传递
