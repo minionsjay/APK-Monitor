@@ -1,0 +1,24 @@
+=== PSK实现方案 ===
+
+已获取:
+1. device_uuid = 740176FFFFFFEEFFFFFFF8FFFFFFB8FFFFFFF414FFFFFFA561FFFFFFA66A52FFFFFFADFFFFFF9B7E544861FFFFFFAD
+2. AES_key = htHtoU17cKxTjwVh1m2iyHfEI39RG1Cw
+3. app_line_ips = 14个IP (在sdk_forwarder_fixed.json中)
+4. sdk_cache.json = 3个.dat URL + payload
+
+文件路径:
+  /storage/emulated/0/Android/data/<包名>/files/
+  不是 /data/data/<包名>/files/
+
+下一步:
+1. 用device_uuid作为PSK identity
+2. 用AES_key的某种派生作为PSK密钥
+3. 在utls中添加PSK扩展
+4. 连接30138端口
+5. 发送forwarder control JSON
+6. 获取app_line_ips响应
+
+PSK密钥派生:
+  可能用HMAC-SHA256(AES_key, device_uuid)
+  或直接用AES_key[:32]
+  或用HKDF(AES_key, "psk", 32)
