@@ -1,11 +1,9 @@
 package main
 
 import (
-	"crypto/hmac"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha1"
-	"crypto/sha256"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
@@ -18,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	tlsinternal "crypto/tls"
 	utls "github.com/refraction-networking/utls"
 )
 
@@ -35,30 +34,26 @@ func main() {
 		caKey, _ = k2.(*rsa.PrivateKey)
 	}
 
-	klFile, _ := os.Create("/sdcard/ekm38_keylog.txt")
-	defer klFile.Close()
-	dataFile, _ := os.Create("/sdcard/ekm38_data.txt")
+	dataFile, _ := os.Create("/sdcard/prems2_data.txt")
 	defer dataFile.Close()
-	ekmFile, _ := os.Create("/sdcard/ekm38_values.txt")
-	defer ekmFile.Close()
 
 	ln38, _ := net.Listen("tcp", "127.0.0.1:30138")
 	ln39, _ := net.Listen("tcp", "127.0.0.1:30139")
-	fmt.Println("EKM38 proxy started")
+	fmt.Println("PreMS2 proxy started")
 
-	go acceptLoop(ln38, "30138", klFile, dataFile, ekmFile)
-	acceptLoop(ln39, "30139", klFile, dataFile, ekmFile)
+	go acceptLoop(ln38, "30138", dataFile)
+	acceptLoop(ln39, "30139", dataFile)
 }
 
-func acceptLoop(ln net.Listener, port string, klFile, dataFile, ekmFile *os.File) {
+func acceptLoop(ln net.Listener, port string, dataFile *os.File) {
 	for {
 		conn, err := ln.Accept()
 		if err != nil { return }
-		go handleConn(conn, port, klFile, dataFile, ekmFile)
+		go handleConn(conn, port, dataFile)
 	}
 }
 
-func handleConn(clientConn net.Conn, port string, klFile, dataFile, ekmFile *os.File) {
+func handleConn(clientConn net.Conn, port string, dataFile *os.File) {
 	defer clientConn.Close()
 	buf := make([]byte, 4096)
 	clientConn.SetReadDeadline(time.Now().Add(5 * time.Second))
@@ -70,42 +65,16 @@ func handleConn(clientConn net.Conn, port string, klFile, dataFile, ekmFile *os.
 
 	cert, _ := signCert(sni)
 	bc := &bufferedConn{Conn: clientConn, buf: buf[:n]}
-	serverConfig := &tls.Config{
-		Certificates: []tls.Certificate{cert},
-		KeyLogWriter: klFile,
-	}
+	serverConfig := &tls.Config{Certificates: []tls.Certificate{cert}}
 	tlsConn := tls.Server(bc, serverConfig)
 	if err := tlsConn.Handshake(); err != nil { return }
 	defer tlsConn.Close()
 
-	state := tlsConn.ConnectionState()
-
-	// EKM values
-	labels := []string{
-		"auth_key", "mtproto", "EXTRA", "key", "exporter",
-		"forwarder", "proxy", "secret", "shared_secret",
-		"binder", "binder_key", "psk", "session",
-		"forwarderControlPSK", "control",
-		"client_finished", "server_finished",
-		"traffic", "application", "handshake",
-	}
-
-	ekmResults := make(map[string][]byte)
-	for _, label := range labels {
-		// context=nil
-		ekm, err := state.ExportKeyingMaterial(label, nil, 256)
-		if err == nil {
-			ekmResults[label] = ekm
-			h := sha1.Sum(ekm)
-			ekmFile.WriteString(fmt.Sprintf("EKM(%s,nil) sha1[:8]=%s\n", label, hex.EncodeToString(h[:8])))
-		}
-		// context=AES_key
-		ekm2, err := state.ExportKeyingMaterial(label, []byte("htHtoU17cKxTjwVh1m2iyHfEI39RG1Cw"), 256)
-		if err == nil {
-			ekmResults[label+":aes"] = ekm2
-			h2 := sha1.Sum(ekm2)
-			ekmFile.WriteString(fmt.Sprintf("EKM(%s,aes) sha1[:8]=%s\n", label, hex.EncodeToString(h2[:8])))
-		}
+	// 服务端preMasterSecret (APP→代理)
+	serverPreMS := tlsinternal.SavedPreMasterSecret
+	if serverPreMS != nil {
+		h := sha1.Sum(serverPreMS)
+		dataFile.WriteString(fmt.Sprintf("SPREMS %s %d %s %s\n", port, len(serverPreMS), hex.EncodeToString(serverPreMS), hex.EncodeToString(h[:8])))
 	}
 
 	// Backend
@@ -146,6 +115,13 @@ func handleConn(clientConn net.Conn, port string, klFile, dataFile, ekmFile *os.
 	if err := backend.Handshake(); err != nil { return }
 	defer backend.Close()
 
+	// 客户端preMasterSecret (代理→后端)
+	clientPreMS := tlsinternal.SavedPreMasterSecretClient
+	if clientPreMS != nil {
+		h := sha1.Sum(clientPreMS)
+		dataFile.WriteString(fmt.Sprintf("CPREMS %s %d %s %s\n", port, len(clientPreMS), hex.EncodeToString(clientPreMS), hex.EncodeToString(h[:8])))
+	}
+
 	var mu sync.Mutex
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -166,38 +142,32 @@ func handleConn(clientConn net.Conn, port string, klFile, dataFile, ekmFile *os.
 					mu.Lock()
 					dataFile.WriteString(fmt.Sprintf("AKID_%s %s\n", port, akid))
 					mu.Unlock()
-					// Match with EKM
-					for label, ekm := range ekmResults {
-						h := sha1.Sum(ekm)
+					// 匹配
+					for _, preMS := range [][]byte{serverPreMS, clientPreMS} {
+						if preMS == nil { continue }
+						// SHA1(preMS)
+						h := sha1.Sum(preMS)
 						eid := hex.EncodeToString(h[:8])
 						if eid == akid {
 							mu.Lock()
-							dataFile.WriteString(fmt.Sprintf("MATCH EKM(%s) sha1[:8]=%s\n", label, eid))
+							dataFile.WriteString(fmt.Sprintf("MATCH! SHA1(preMS)[:8]=%s\n", eid))
 							mu.Unlock()
 						}
-						h2 := sha256.Sum256(ekm)
+						// preMS+zeros
+						ak := make([]byte, 256)
+						copy(ak, preMS)
+						h2 := sha1.Sum(ak)
 						eid2 := hex.EncodeToString(h2[:8])
 						if eid2 == akid {
 							mu.Lock()
-							dataFile.WriteString(fmt.Sprintf("MATCH EKM(%s) sha256[:8]=%s\n", label, eid2))
+							dataFile.WriteString(fmt.Sprintf("MATCH! SHA1(preMS+zeros)[:8]=%s\n", eid2))
 							mu.Unlock()
 						}
-						// HMAC
-						mac := hmac.New(sha256.New, []byte("htHtoU17cKxTjwVh1m2iyHfEI39RG1Cw"))
-						mac.Write(ekm)
-						d := mac.Sum(nil)
-						h3 := sha1.Sum(d)
-						eid3 := hex.EncodeToString(h3[:8])
+						// preMS[:8]
+						eid3 := hex.EncodeToString(preMS[:8])
 						if eid3 == akid {
 							mu.Lock()
-							dataFile.WriteString(fmt.Sprintf("MATCH HMAC(AES,EKM(%s)) sha1[:8]=%s\n", label, eid3))
-							mu.Unlock()
-						}
-						// ekm[:8]
-						eid4 := hex.EncodeToString(ekm[:8])
-						if eid4 == akid {
-							mu.Lock()
-							dataFile.WriteString(fmt.Sprintf("MATCH EKM(%s)[:8]=%s\n", label, eid4))
+							dataFile.WriteString(fmt.Sprintf("MATCH! preMS[:8]=%s\n", eid3))
 							mu.Unlock()
 						}
 					}
