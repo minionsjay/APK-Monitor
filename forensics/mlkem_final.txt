@@ -98,3 +98,15 @@ preMasterSecret可能包含ML-KEM+ECDHE组合
 问题:
   Go标准库不支持X25519MLKEM768
   utls的MasterSecret不是标准preMasterSecret
+=== MasterSecret解密测试 ===
+
+MasterSecret(TLS1.2+X25519MLKEM768): 不匹配
+158条消息0匹配
+
+最终结论:
+  auth_key来自ML-KEM交换
+  但ML-KEM交换在TLS握手过程中
+  需要获取服务端的ML-KEM密文
+  用Decapsulate计算共享密钥
+  可能需要用Chrome120_PQ(TLS1.3)获取KeyShareKeys
+  然后从ServerHello的key_share提取ML-KEM密文
