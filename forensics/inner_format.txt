@@ -1,0 +1,9 @@
+=== DEADBEEF inner格式确认 ===
+
+完整格式:
+  DEADBEEF(4B) + sublen=0(2B) + payload_len(2B) + obfs_pad_len(1B) + obfs_padding(NB)
+  + auth_key_id(8B) + msg_key(16B) + pad1(1B) + encrypted_data(16k)
+
+验证: 所有消息的encrypted_data长度都是16的倍数 ✅
+
+pad1值: 0xd6, 0xe3, 0x30 (可能是padding_len或data_len)
