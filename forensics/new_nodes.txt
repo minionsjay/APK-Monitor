@@ -1,0 +1,23 @@
+=== 新发现的节点 ===
+
+从APP的/proc/PID/net/tcp发现6个ESTABLISHED连接:
+
+30139端口（代理转发）:
+  8.134.207.154:30139 (在app_line_ips中)
+  8.138.210.90:30139 (不在app_line_ips中)
+  8.148.251.123:30139 (在app_line_ips中)
+
+30138端口（可能是forwarder control）:
+  193.112.75.147:30138 (新IP)
+  8.163.38.119:30138 (新IP)
+  8.134.187.61:30138 (新IP)
+
+测试:
+  30138端口 TLS 1.2 cipher=0xc013 成功
+  JSON+newline → EOF
+  需要正确的MAC和device_uuid
+
+结论:
+  30138端口是新的forwarder control端口
+  这些IP是动态获取的（不在.dat或app_line_ips缓存中）
+  APP通过某种方式获取了这些新IP
