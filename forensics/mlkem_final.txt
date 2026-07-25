@@ -321,3 +321,21 @@ forwarder control不通过DEADBEEF/30138/30139!
 
 之前所有DEADBEEF+JSON测试返回EOF是正常的
 因为30138/30139端口不是forwarder control!
+=== ProxyConfig ===
+
+ProxyConfig字段:
+  ServerHost/ServerPort → forwarder control服务器
+  LocalHost/LocalPort → 本地代理
+  TLSClientHelloMode → TLS模式
+
+SetForwarderControl → Java层设置forwarder control配置
+可能传入ServerHost=webestim.me
+
+IPv6连接:
+  2001:4860:4840::960 (Google Cloud/App Engine)
+  端口443
+  证书CN=*.google.com
+
+forwarder control可能通过HTTPS POST发送JSON
+但所有路径返回404/403/400
+需要找到正确的路径
