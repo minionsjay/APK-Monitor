@@ -1,0 +1,15 @@
+=== TLS cipher对比 ===
+
+APP: cipher=0xc013 (TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA)
+标准crypto/tls: cipher=0xc02f (TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256)
+utls(指定0xc013): cipher=0xc013
+
+结果:
+  标准crypto/tls(0xc02f) → EOF
+  utls(0xc013) → timeout或EOF
+  APP(0xc013) → 成功
+
+结论:
+  cipher不是关键区别
+  可能APP不发送明文req_pq
+  可能用永久auth_key加密后发送DH握手
