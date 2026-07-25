@@ -1,7 +1,6 @@
 package sdk
 
 import (
-	"crypto/rand"
 	"crypto/tls"
 	"encoding/binary"
 	"fmt"
@@ -206,12 +205,6 @@ func (p *ProxyServer) SetAuthKey(masterSecret []byte) {
 	copy(p.authKey, masterSecret)
 }
 
-// GenerateDeviceUUID 生成设备UUID
-func GenerateDeviceUUID() string {
-	buf := make([]byte, 16)
-	rand.Read(buf)
-	return fmt.Sprintf("%x%d", buf, time.Now().UnixNano())
-}
 
 // StateMachine 状态机
 type StateMachine struct {
