@@ -1,0 +1,31 @@
+=== 最终状态 ===
+
+已完全搞懂:
+1. DNS TXT → AES-CBC解密 → 控制面IP ✅
+2. .dat下载 → AES-CBC解密 → 3个代理节点 ✅
+3. AES-IGE加密/解密 ✅
+4. MTProto v2加密/解密 ✅
+5. DEADBEEF帧封装 ✅
+6. HMAC-SHA256 MAC ✅
+7. RSA私钥解密SecretPayload ✅
+8. SDK完整逆向: 20+源码文件, 336函数 ✅
+9. SDK Go实现: 17项功能验证 ✅
+10. Android VPN Service ✅
+11. RSA公钥指纹: 0xa9e071c1771060cd ✅
+12. DEADBEEF inner格式: akid(8)+msgkey(16)+pad1(1)+enc(16k) ✅
+13. tgnet.dat永久auth_key(256B) ✅
+14. SecretPayload有app_line_endpoints字段 ✅
+15. RuntimePolicy存储14个代理节点 ✅
+
+未搞懂:
+1. 临时auth_key来源: 通过MTProto DH握手生成, 但握手消息走VPN API不可见
+2. forwarder control JSON返回EOF: 可能APK未配置PSK
+3. RuntimePolicy获取方式: 可能通过forwarder control或某种密钥交换
+
+自己开发APK的可行性:
+- 能获取3个代理节点(.dat) ✅
+- 能获取控制面IP(DNS TXT) ✅
+- 能做MTProto加密/解密 ✅
+- 能做DEADBEEF封装 ✅
+- 但无法获取14个代理节点(需要auth_key做DH握手)
+- 可以用3个.dat节点做基本代理转发
