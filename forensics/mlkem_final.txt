@@ -311,3 +311,13 @@ nanoDiff 二进制/字符串 → EOF
 nonce拆分(hex/[7]=ts) → EOF
 version=0/v1 + 各种sdk_version → EOF
 需要更深入分析signForwarderHelloMAC的参数传递
+=== Forwarder Control通过Cloudflare CDN ===
+
+IPv6: 2606:4700:20::681a:d1f (Cloudflare)
+端口: 443 (HTTPS)
+
+forwarder control不通过DEADBEEF/30138/30139!
+通过Cloudflare CDN的HTTPS请求发送JSON+MAC
+
+之前所有DEADBEEF+JSON测试返回EOF是正常的
+因为30138/30139端口不是forwarder control!
