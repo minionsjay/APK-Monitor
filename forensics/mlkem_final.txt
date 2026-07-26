@@ -1014,3 +1014,22 @@ Connection对象3 at 0x70625fa0:
 问题: auth_key的ptr不在合理范围
   可能auth_key不是内联存储而是ptr指向外部
   或者Go字符串格式理解有误
+=== Connection对象+正确offset 0x10(0x220) ===
+
+从0x15cb8fc确认: Go字符串指针在offset 0x10(不是0x08)
+
+Connection1 at 0x705a5618:
+  +0x210 keyByte=0x65(len=50), +0x220 keyPtr=0x48c27395
+  auth_key全0(nonZero=0) → 不是有效auth_key
+
+Connection2 at 0x705c9658:
+  +0x210 keyByte=0x41(len=32), +0x220 keyPtr=0x20000000704e2848
+  keyPtr不在合理范围(太大)
+
+Connection3-5: keyPtr=0或不在合理范围
+
+可能原因:
+  1. Connection对象不是按8字节对齐
+  2. auth_key的Go字符串格式不同(不是标准Go字符串)
+  3. auth_key不在+0x210(可能在+0x168)
+  4. 或者这些不是真正的Connection对象(误报)
