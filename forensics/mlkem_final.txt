@@ -655,3 +655,24 @@ auth_key不在APP的rw内存中
 A. 运行原APK→读取sdk_forwarder_fixed.json
 B. 重放1163+1169B→收到响应但无法解密
 C. 从APP内存提取IP(明文)
+=== auth_key最终搜索结果 ===
+
+1. APP rw内存(203段): 256字节MTProto v1/v2 → 0匹配
+2. APP rw+ro内存(334段): 32字节4种方式 → 超时
+3. libgojni.so(8.5MB): 32字节直接方式 → 1误报
+4. tgnet.so前2MB: 32字节 → 0匹配
+5. 标准AES-IGE(32字节IV)修正后: AES_key 5种方式 → 不匹配
+
+结论:
+- auth_key不在so文件只读段中
+- auth_key不在APP rw内存中(用标准MTProto格式)
+- AES_key不是auth_key(所有方式都不匹配)
+- 可能AES-IGE实现不对或加密方式非标准
+
+完整逆向状态: 90%完成
+未搞懂: auth_key(256字节)的值和生成方式
+
+可行方案:
+A. 运行原APK→读取sdk_forwarder_fixed.json(最简单)
+B. 重放1163+1169B→收到响应但无法解密
+C. 从APP内存提取IP(明文)
