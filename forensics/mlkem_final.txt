@@ -728,3 +728,19 @@ RSA私钥可能用途:
 1. can_decode_secret(解密SecretPayload)
 2. 签名/验证(不是解密DEADBEEF)
 3. 解密某个加密的secret字段
+=== SecretPayload发现 ===
+
+SecretPayload结构包含AppLineIPs字段!
+  - AppLineIPs (json:"app_line_ips,omitempty")
+  - AppLineEndpoints (json:"app_line_endpoints,omitempty")
+  - AppLinePort (json:"app_line_port,omitempty")
+
+RSA私钥是编译时嵌入的(EmbeddedPrivateKeyB64)
+DecodeSecretPayload用RSA私钥解密SecretPayload
+SecretPayload从Java层传入(不在文件中)
+
+tgnet.dat暴力搜索(1092偏移)→0匹配
+RSA私钥n/d/p+q做auth_key→不匹配
+
+逆向95%完成
+核心: auth_key不来自RSA/AES_key/tgnet.dat/TLS
