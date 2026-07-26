@@ -1195,3 +1195,35 @@ writeFrame反编译确认(obfs.go:48-60):
 
   padding不包含IV! padding是随机的!
   IV在payload中(payload=akid+msgkey+encrypted)
+=== relayObfs.func1反编译(proxy.go:345-359) ===
+
+调用obfsConn.Write的函数: relayObfs.func1 at 0x549c30
+源码: D:/im_sdk2/sdk_app2/sdk/proxy.go:345-359
+
+关键代码(proxy.go:345-359):
+  L347: makeslice(0x40000) → 分配256KB缓冲区
+  L348: 循环读取
+    L348: (**func)(conn+0x28)(conn, buf, 0x40000) → 从连接读取数据!
+    L350: 如果读取了数据:
+    L351: obfsConn.Write(conn, buf, n, 0x40000) → 写入obfsConn!
+    L352: mutex lock
+    L354: mutex unlock
+    L355: defer cleanup
+
+重大发现!
+  relayObfs.func1是中继函数!
+  从一个连接读取 → 写入obfsConn
+  不加密! 只是中继!
+
+完整数据流:
+  1. APP(FetchForwarderFixedTuple) → JSON+\n → crypto/tls.Conn.Write
+  2. VPN拦截 → 转发到本地代理(60139)
+  3. 本地代理接受连接(onLocalAccept)
+  4. relayObfs.func1 → 从连接读取 → 写入obfsConn
+  5. obfsConn.Write → writeFrame → DEADBEEF帧封装
+  6. 通过TLS连接发送到代理节点
+
+数据没有加密! DEADBEEF帧的payload是明文!
+  TLS加密在底层(net.Conn是TLS连接)
+  但MITM解密了TLS层!
+  MITM看到的是DEADBEEF帧(明文payload)!
