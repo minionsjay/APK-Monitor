@@ -1353,3 +1353,18 @@ FetchForwarderFixedTuple发送明文JSON+\n(kem_decomp.c行644)
   不通过obfsConn!
   响应是4B长度+JSON(行666)
   不是DEADBEEF!
+=== raw JSON测试结果 ===
+
+从kem_decomp.c行644确认: FetchForwarderFixedTuple用crypto/tls.Conn.Write发送明文JSON+\n
+从kem_decomp.c行666确认: 响应是4B长度+JSON(不是DEADBEEF)
+
+测试123.207.40.186:30139:
+  测试1: DEADBEEF认证→raw JSON → 空响应
+  测试2: DEADBEEF认证→4Blen+JSON → 空响应
+  测试3: 无认证 raw JSON → 302(HTTP重定向)
+  测试4: DEADBEEF认证→等响应→raw JSON → DEADBEEF响应(133B)
+
+关键:
+  认证后发送raw JSON → 收到DEADBEEF(不是4B+JSON)!
+  说明服务端用DEADBEEF封装所有响应!
+  FetchForwarderFixedTuple的响应也走DEADBEEF!
