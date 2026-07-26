@@ -1368,3 +1368,18 @@ FetchForwarderFixedTuple发送明文JSON+\n(kem_decomp.c行644)
   认证后发送raw JSON → 收到DEADBEEF(不是4B+JSON)!
   说明服务端用DEADBEEF封装所有响应!
   FetchForwarderFixedTuple的响应也走DEADBEEF!
+=== auth_key SHA1暴力搜索最终结果 ===
+
+搜索所有rw内存段(471个段):
+  16B块: SHA1(candidate)[:8]==8c01b731e516801b → 0匹配
+  32B块: → 0匹配
+  256B块: → 0匹配
+  共检查1050万个候选
+
+tgnet.dat暴力搜索:
+  1100字节,所有偏移×SHA1 → 0匹配
+  偏移0xa0-0x1a0有256B高entropy数据(但SHA1不匹配)
+
+结论: auth_key不在任何可访问位置!
+  可能auth_key_id不是SHA1(auth_key)[:8]
+  SDK可能用不同的hash算法计算auth_key_id
