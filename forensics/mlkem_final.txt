@@ -1313,3 +1313,21 @@ auth_key/tgnet.so/sendRequest不是用于forwarder control!
   2. JSON发送成功! 收到DEADBEEF响应!
   3. 响应也是DEADBEEF格式(payload=105B)
   4. payload包含文本(可能是加密的MTProto或JSON)
+=== 响应解析结果 ===
+
+重放1163+1169→等响应→发送DEADBEEF+JSON:
+  认证响应: 172B = 1个DEADBEEF帧(105B payload)
+  JSON响应: 158B = 1个DEADBEEF帧(105B payload)
+
+payload内容(105B,看起来是加密的):
+  认证: a6=*WDlR,FNDZ$W@)lZW;KX|Moj1*<Hl
+  JSON: =%(T\I 8_BewQD!pw;}EetwHeuL$Oux'f!hG
+
+结论:
+  请求不需要auth_key(重放认证+明文JSON)
+  但响应是MTProto加密的! 需要auth_key解密!
+
+从writeFrame确认: relayObfs不加密(中继原始数据)
+  请求: APP发送MTProto加密消息(1163B) + 明文JSON
+  响应: 服务端返回MTProto加密消息
+  解密响应需要auth_key!
