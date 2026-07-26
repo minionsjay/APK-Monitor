@@ -1168,3 +1168,30 @@ obfsConn(libgojni.so)负责DEADBEEF帧封装
 
 IV可能在obfsConn中生成!
 auth_key可能在obfsConn中!
+=== writeFrame反编译成功! ===
+
+Ghidra找到函数地址:
+  writeFrame = 0x544d60 (obfs.go:48-60)
+  getPayload = 0x538270
+
+writeFrame反编译确认(obfs.go:48-60):
+  L52: 大端序转换payload_len
+  L102: pad=0 → 生成1字节随机padding值
+  L103: crypto/rand.Read(1字节) → 随机padding
+  L104: bVar4 = 随机字节
+  L49: bVar4 & 0x3f → padding大小(0-63)
+  L50: total = pad_size + payload_len + 9
+  L53: *buf = 0xefbeadde → DEADBEEF magic(小端序)!
+  L54: buf[1] = sublen
+  L55: buf[2] = pad值
+  L56: crypto/rand.Read(padding) → 随机padding!
+
+关键发现:
+  1. DEADBEEF magic = 0xefbeadde(小端序=DEADBEEF)
+  2. padding是随机的(crypto/rand.Read)
+  3. payload_len和sublen从参数传入
+  4. writeFrame只负责帧封装!
+  5. 加密在调用writeFrame之前完成!
+
+  padding不包含IV! padding是随机的!
+  IV在payload中(payload=akid+msgkey+encrypted)
