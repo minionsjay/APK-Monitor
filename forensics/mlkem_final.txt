@@ -936,3 +936,28 @@ APP内存0x40002a2798找到control_refresh_addr:
   1. 服务端根据TLS指纹区分forwarder control和HTTP
   2. 标准crypto/tls的ClientHello被识别为非APP客户端
   3. APP用utls(Chrome115_PQ_PSK),我们用标准crypto/tls
+=== utls测试结果+VPN分析 ===
+
+测试123.207.40.186:30139(从APP内存确认的control_refresh_addr):
+  utls Chrome115_PQ_PSK + raw/4Blen/emptyJSON → 302
+  utls Chrome120 + raw/4Blen → 302
+  utls HelloRandomized + raw → 302
+  所有TLS指纹直接连接→302!
+
+有理有据的分析:
+  证据1: APP内存0x40002a2798: control_refresh_addr=123.207.40.186:30139
+  证据2: kem_decomp.c行644: crypto/tls.Conn.Write发送JSON+\n
+  证据3: kem_decomp.c行707: net.Dialer.DialContext连接到control_refresh_addr
+  证据4: 所有TLS指纹直接连接→302
+  证据5: APP有本地代理60138/60139(/proc/net/tcp)
+  证据6: APP用VPN API(之前确认)
+
+推理链:
+  FetchForwarderFixedTuple → DialContext(123.207.40.186:30139)
+  → VPN API拦截TCP连接 → 转发到本地代理(60139)
+  → 本地代理用DEADBEEF封装JSON+\n → 发送到123.207.40.186:30139
+
+结论:
+  APP发送的是DEADBEEF(本地代理封装的),不是明文JSON!
+  FetchForwarderFixedTuple发送JSON+\n到VPN
+  VPN/本地代理负责DEADBEEF封装+TLS连接
