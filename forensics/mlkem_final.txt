@@ -634,3 +634,24 @@ auth_key不来自AES_key(各种AES-IGE解密都不匹配)
 A. 用原APK: 运行APK→读取sdk_forwarder_fixed.json
 B. 重放+不解密: 收到响应但无法解密
 C. 从APP内存直接提取IP(已确认IP是明文)
+=== auth_key内存搜索结果 ===
+
+搜索APP所有rw内存段(203个段)
+用MTProto v1/v2解密395B消息
+结果: 0个匹配!
+
+auth_key不在APP的rw内存中
+可能原因:
+1. auth_key在只读段(.rodata)
+2. auth_key在栈中
+3. AES-IGE实现不对
+4. 加密方式不是标准MTProto
+
+完整逆向状态:
+已搞懂90%: DNS→.dat→TLS→DEADBEEF→MAC→加密流程
+未搞懂10%: auth_key(256字节)的值和生成方式
+
+可行方案:
+A. 运行原APK→读取sdk_forwarder_fixed.json
+B. 重放1163+1169B→收到响应但无法解密
+C. 从APP内存提取IP(明文)
