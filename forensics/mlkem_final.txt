@@ -1066,3 +1066,25 @@ Go字符串格式(从0x15cb8c8确认):
   2. Connection对象布局在WkNAvY中不同
   3. Go字符串格式理解和实际不同
   4. 需要从已知的AES_key位置反推Connection对象
+=== AES_key位置+entropy搜索 ===
+
+AES_key新位置: 0x40000d0520 (之前0x40001ba000变了)
+AES_key在段0x4000000000 (SecretPayload区域)
+AES_key附近64KB无256B高entropy块
+
+在0x704b4000-0x7185c000段搜索:
+  256B高entropy: 4个!
+  0x705c1790: 00010000637c777bf26b6fc5...(SHA256常量?)
+  0x705c18a0: 0001000052096ad53036a538...(SHA256常量?)
+  32B高entropy: 2754个
+
+256B块分析:
+  0x705c1790: 以00010000637c777b开头
+  63 7c 77 7b f2 6b 6f c5 30 01 67 2b fe d7 ab 76
+  这是SHA256的K常量!(K[0]=0x428a2f98不对)
+  可能是AES S-box或SHA256常量表
+
+结论: 没有找到256字节的auth_key!
+  auth_key可能不是256字节!
+  从encryptKeyWithSecret确认: 只用前16字节!
+  auth_key可能是16字节!
