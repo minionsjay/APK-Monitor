@@ -445,3 +445,21 @@ auth_key_id是全局的(所有连接相同):
 550个MasterSecret + 1250个DEADBEEF消息
 EKM(ExportKeyingMaterial)全部失败
 MTProto v1解密(MasterSecret as auth_key)不匹配
+=== FetchForwarderFixedTuple完整反编译 ===
+
+FetchForwarderFixedTuple流程(forwarder_control.go:130-208):
+  L134: net.SplitHostPort → 解析地址
+  L149: runtime.newobject(&tls.Config) → 创建TLS配置
+  L153: *(config+0x108)=0x303 → TLS版本=TLS1.2
+  L159: crypto/tls.Conn.ConnectionState → TLS已建立
+  L166-169: 设置fwdHelloRequest字段(nonce/uuid/sdk_version/version)
+  L170-171: time.Now + randomForwarderNonce → 生成nonce
+  L174-175: convT + signForwarderHelloMAC → 计算MAC
+  L181-193: JSON序列化+\n → 通过TLS发送
+  L198-199: fwdControlResponse + json.Unmarshal → 解析响应
+  L208: verifyForwarderResponseMAC → 验证响应MAC
+
+关键: 使用标准crypto/tls(不是utls)
+DEADBEEF消息可能是TLS AppData(加密的JSON)
+1163B消息去掉前3字节后=1120B=16倍数(AES加密)
+auth_key_id全局固定=8c01b731e516801b
