@@ -715,3 +715,16 @@ RSA私钥可能用于:
 1. 解密服务端返回的响应
 2. 解密SecretPayload
 3. 签名请求(不是解密)
+=== RSA私钥测试结果 ===
+
+RSA私钥(2048bit)不是auth_key:
+- 用n(256B)做auth_key → 不匹配
+- 用d(256B)做auth_key → 不匹配
+- 用p+q(256B)做auth_key → 不匹配
+- 1163B的4个256B块都不是RSA加密
+- 响应消息(<256B)不是RSA加密
+
+RSA私钥可能用途:
+1. can_decode_secret(解密SecretPayload)
+2. 签名/验证(不是解密DEADBEEF)
+3. 解密某个加密的secret字段
