@@ -531,3 +531,20 @@ FetchForwarderFixedTuple确认用标准crypto/tls:
 
 标准crypto/tls+DEADBEEF→EOF(指纹被拒绝)
 必须用utls(Chrome115_PQ_PSK指纹)
+=== 最终突破: DEADBEEF payload是加密的! ===
+
+之前发送的DEADBEEF payload是明文JSON → 服务端解密失败 → EOF
+
+正确发送流程:
+  1. JSON序列化+\n
+  2. encryptKeyWithSecret(AES-IGE) → 第一次加密
+  3. hash → 生成msg_key
+  4. 提取auth_key_id
+  5. encryptKeyWithSecret → 第二次加密
+  6. hash
+  7. HMAC
+  8. DEADBEEF帧封装
+
+235B消息验证: payload=185B, pad=41, akid+msgkey+encrypted(160=10*16)
+所有DEADBEEF消息都是加密的
+需要auth_key才能加密/解密
