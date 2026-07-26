@@ -483,3 +483,18 @@ randomForwarderNonce返回两个值:
 正确: [2]只用hex(32字符)
 分隔符 = '|'
 HMAC-SHA256(AES_key, join(8字段, '|'))
+=== SDKVersion发现 ===
+
+SecretPayload.SDKVersion → 从Java层传入
+版本号列表: v0.0.0, v0.0.1, v0.20.0, v0.43.0, v0.50.0, v1.0.6, v1.17.4, v1.8.2
+JSON字段: sdk_version,omitempty
+
+nonce_ts计算:
+  time.Now()返回wall和ext
+  如果wall<0(hasMonotonic):
+    iVar2 = (wall>>30 & 0x1ffffffff) + 0xdd7b17f80
+  nonce_ts = FormatInt((wall&0x3fffffff) + iVar2*1e9 - 0x5e4dfc14c2e60000, 36)
+  这不是标准UnixNano()
+
+raw JSON→302, DEADBEEF+JSON→EOF
+需要DEADBEEF封装, MAC验证失败
