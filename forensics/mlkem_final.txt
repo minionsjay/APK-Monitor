@@ -1443,3 +1443,26 @@ auth_key_id=0x200000007072dcd8 不是8c01b731e516801b!
 但auth_key的数据看起来像指针(0x70xxxxxx)不是密钥!
 可能+0x168不是直接指向auth_key数据
   或者Datacenter对象布局不同
+=== NativeByteBuffer分析 ===
+
+Datacenter+0x168=0x7066b648 → NativeByteBuffer对象
+NativeByteBuffer结构(8字节字段,都有0x20 GC标记前缀):
+  offset 0: bufferStart=0x70abdb28
+  offset 8: bufferEnd=0x70c18ea0
+  offset 16: bufferCurrent=0x70abde30
+
+buffer数据(776B)测试:
+  SHA1(776B)→不匹配
+  SHA1(256B)→不匹配
+  所有长度都不匹配auth_key_id
+  entropy很低(unique=57/256B)
+
+结论:
+  NativeByteBuffer数据不是auth_key!
+  可能这个Datacenter对象是误报
+  或者+0x170的值不是auth_key_id
+
+当前状态: auth_key仍无法获取
+  从tgnet.so确认: auth_key_id=Datacenter+0x170(不是SHA1)
+  auth_key=Datacenter+0x168(NativeByteBuffer*)
+  但搜索Datacenter对象→误报(数据不是密钥)
