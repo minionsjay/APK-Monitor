@@ -916,3 +916,23 @@ msg_key和akid不在so文件中→1163B不是硬编码
   control_refresh_addr → 可能不是30139端口
   raw JSON→302是因为连到了30139(代理端口)
   forwarder control可能用不同的端口!
+=== control_refresh_addr找到! ===
+
+APP内存0x40002a2798找到control_refresh_addr:
+  123.207.40.186:30139
+  123.207.40.186是sdk_forwarder_fixed.json中的第12个IP
+
+从kem_decomp.c行529-557确认:
+  行529: strings.TrimSpace(param_5/param_6) → control_refresh_addr
+  行557: net.SplitHostPort → 解析host:port
+  行608: strconv.Atoi → 解析端口号
+  行707: net.Dialer.DialContext → TCP连接到host:port
+
+测试结果: 123.207.40.186:30139 raw/4Blen/emptyJSON → 302
+  所有格式都→302(被当HTTP)
+  标准crypto/tls的TLS指纹被服务端当HTTP处理!
+
+可能原因:
+  1. 服务端根据TLS指纹区分forwarder control和HTTP
+  2. 标准crypto/tls的ClientHello被识别为非APP客户端
+  3. APP用utls(Chrome115_PQ_PSK),我们用标准crypto/tls
