@@ -620,3 +620,17 @@ fwdControlResponse字段名也在内存中
 2. 重放方案: 重放1163+1169B→收到响应→从APP内存提取IP
 
 不需要解密DEADBEEF响应!
+=== 能否自己做APK? ===
+
+重放1163+1169B→收到1835B响应(成功!)
+但响应是加密的DEADBEEF(需要auth_key解密)
+auth_key不来自AES_key(各种AES-IGE解密都不匹配)
+
+自己做APK需要:
+1. 生成1163B和1169B(需要auth_key加密)
+2. 解密响应(需要auth_key)
+
+可行方案:
+A. 用原APK: 运行APK→读取sdk_forwarder_fixed.json
+B. 重放+不解密: 收到响应但无法解密
+C. 从APP内存直接提取IP(已确认IP是明文)
