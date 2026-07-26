@@ -463,3 +463,23 @@ FetchForwarderFixedTuple流程(forwarder_control.go:130-208):
 DEADBEEF消息可能是TLS AppData(加密的JSON)
 1163B消息去掉前3字节后=1120B=16倍数(AES加密)
 auth_key_id全局固定=8c01b731e516801b
+=== signForwarderHelloMAC完整反编译 ===
+
+MAC 8字段(从Ghidra反编译确认):
+  [0] = 'v1' (硬编码, len=2, 0x1d65f3)
+  [1] = 'hello' (硬编码, len=5)
+  [2] = hex(16字节随机) → 32字符 (不含FormatInt!)
+  [3] = device_uuid
+  [4] = sdk_version (可能为空)
+  [5] = version_str (FormatUint(version,10), version==0→空)
+  [6] = timestamp_str (FormatInt(秒,10))
+  [7] = nonce_ts (FormatInt(纳秒时间戳,36))
+
+randomForwarderNonce返回两个值:
+  1. nonce = hex(16字节随机) → 32字符
+  2. nonce_ts = FormatInt(纳秒时间, 36)
+
+之前错误: [2]用了hex+FormatInt
+正确: [2]只用hex(32字符)
+分隔符 = '|'
+HMAC-SHA256(AES_key, join(8字段, '|'))
