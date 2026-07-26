@@ -1331,3 +1331,25 @@ payload内容(105B,看起来是加密的):
   请求: APP发送MTProto加密消息(1163B) + 明文JSON
   响应: 服务端返回MTProto加密消息
   解密响应需要auth_key!
+=== 13帧响应完整解析 ===
+
+完整响应: 1729B = 11个DEADBEEF帧
+帧0-9: 每帧105B payload(加密)
+帧10: 315B payload(更大的帧,加密)
+合并payload: 1365B(全部加密)
+
+所有payload都是高entropy(加密的MTProto数据)
+没有明文IP地址!
+没有JSON!
+
+关键分析:
+  1163B是MTProto消息(payload=auth_key_id+msg_key+encrypted)
+  重放1163+1169+395B是重放Telegram MTProto消息!
+  服务端返回的是MTProto加密响应!
+  不是forwarder control的JSON响应!
+
+FetchForwarderFixedTuple发送明文JSON+\n(kem_decomp.c行644)
+  但通过crypto/tls.Conn.Write直接发送!
+  不通过obfsConn!
+  响应是4B长度+JSON(行666)
+  不是DEADBEEF!
