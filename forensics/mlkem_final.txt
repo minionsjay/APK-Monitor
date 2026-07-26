@@ -433,3 +433,15 @@ mitmmlkem后端: 43.248.2.74:30139 + 193.112.75.147:30138
 mitmmlkem有MATCH解密功能
 4700行数据(有SRV响应) vs 2254行(无SRV响应)
 可能是后端连接不稳定
+=== auth_key_id全局发现 ===
+
+auth_key_id是全局的(所有连接相同):
+  1163B消息: akid=8c01b731e516801b
+  395B消息: akid=c5d78c35f5048b77
+  msg_key也相同(相同DEADBEEF消息)
+  MasterSecret每连接不同(但和auth_key无关)
+  auth_key可能来自ML-KEM-768(不是TLS)
+
+550个MasterSecret + 1250个DEADBEEF消息
+EKM(ExportKeyingMaterial)全部失败
+MTProto v1解密(MasterSecret as auth_key)不匹配
