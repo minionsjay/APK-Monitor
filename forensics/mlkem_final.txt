@@ -498,3 +498,17 @@ nonce_ts计算:
 
 raw JSON→302, DEADBEEF+JSON→EOF
 需要DEADBEEF封装, MAC验证失败
+=== 发送格式测试 ===
+
+标准crypto/tls测试:
+  raw JSON→302(被当HTTP)
+  4B_len+JSON→302
+  DB+JSON→EOF
+  DB+空JSON→EOF(之前是timeout,现在EOF)
+
+utls+X25519MLKEM768测试:
+  DB+任何→EOF
+  raw JSON→302
+
+从反编译L185: 4字节数组(可能是长度前缀或IV)
+可能需要PSK认证或特定TLS配置
