@@ -609,3 +609,14 @@ DH握手流程:
 
 下一步: 解密响应(需要auth_key)
 或者: 从APP读取sdk_forwarder_fixed.json(已确认可行)
+=== 重大突破: IP在内存中是明文! ===
+
+重放1163+1169+395B成功收到1835B响应(12个DEADBEEF)
+APP内存中所有15个IP是明文字符串!
+fwdControlResponse字段名也在内存中
+
+两个可行方案:
+1. 设备方案: 运行APK→读取sdk_forwarder_fixed.json
+2. 重放方案: 重放1163+1169B→收到响应→从APP内存提取IP
+
+不需要解密DEADBEEF响应!
