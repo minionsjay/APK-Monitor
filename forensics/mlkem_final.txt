@@ -1227,3 +1227,25 @@ writeFrame反编译确认(obfs.go:48-60):
   TLS加密在底层(net.Conn是TLS连接)
   但MITM解密了TLS层!
   MITM看到的是DEADBEEF帧(明文payload)!
+=== 重大修正: DEADBEEF帧格式! ===
+
+从writeFrame反编译(obfs.go:48-60)确认:
+  writeFrame(obfsConn, data, len, cap)
+  帧格式: DEADBEEF(4)+sublen(2)+payload_len(2)+pad(1)+padding(pad)+payload
+  payload = 原始TCP数据(不加密!)
+
+之前认为payload = akid(8)+msgkey(16)+pad1(1)+encrypted
+这个格式是错误的!
+
+relayObfs.func1(proxy.go:345-359):
+  从conn读取 → 写入obfsConn → writeFrame封装DEADBEEF
+  中继的是APP的所有TCP流量(不只是forwarder control)!
+
+APP内存中的DEADBEEF帧证实:
+  有的含明文(30139, 127.0.0.1, http/1.1)
+  有的含TLS数据(ContentType=0x17)
+  有的含高entropy(Telegram MTProto)
+
+auth_key/tgnet.so/sendRequest不是用于forwarder control!
+  tgnet.so的sendRequest用于Telegram MTProto(不是DEADBEEF)!
+  DEADBEEF只是obfs封装(不加密)!
