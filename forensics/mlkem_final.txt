@@ -378,3 +378,20 @@ forwarder control流程:
 forwarder control用TLS+JSON+MAC不是HTTP
 目标: Cloudflare(2606:4700:20::681a:d1f:443)
 需要: PSK TLS + 正确的MAC(8字段)
+=== 完整分析 ===
+
+.dat文件提供3个初始代理节点:
+  8.134.180.186:30139
+  8.138.152.138:30139
+  8.148.148.131:30139
+
+sdk_forwarder_fixed.json有15个最终节点(与.dat不同)
+forwarder control = DEADBEEF消息(通过30138端口)
+tcpdump只看到TLS握手(无AppData)
+可能APP检测到tcpdump后不发送DEADBEEF
+
+端口统计:
+  30118: TLS健康检查(119.91.122.79, 8.138.213.143)
+  30138: TLS健康检查(193.112.75.147, 8.163.38.119)
+  30157: TLS健康检查(8.138.108.97, 8.138.104.222)
+  443: SYN但无响应(GFW阻断或Cloudflare拒绝)
