@@ -1145,3 +1145,26 @@ IV1可能在padding中(62字节padding)
   auth_key的值仍无法确定
   AES key = SHA256(data[:32]+auth_key[:16])
   但data和auth_key都未知
+=== 重大发现: DEADBEEF在libgojni.so中生成! ===
+
+从libgojni.so strings确认:
+  "obfs: bad magic 0x%08X" → DEADBEEF magic检查
+  "obfs: buf too small" → obfs缓冲区检查
+  "obfs: frame too large (%d > %d)" → 帧大小检查
+  "sdk.obfsConn" → obfs连接对象(封装DEADBEEF)
+  "frame_data_stream_0" → 帧数据流
+  "frame_data_pad_too_big" → 帧padding检查
+  "writeFrame" → 写帧函数!
+  "getPayload" → 获取payload函数!
+  "onLocalAccept" → 本地代理接受连接!
+
+DEADBEEF帧不在tgnet.so中!
+DEADBEEF帧在libgojni.go的obfsConn中生成!
+writeFrame函数封装DEADBEEF!
+getPayload函数提取payload!
+
+sendRequest(tgnet.so)只负责AES-CFB/CTR加密
+obfsConn(libgojni.so)负责DEADBEEF帧封装
+
+IV可能在obfsConn中生成!
+auth_key可能在obfsConn中!
