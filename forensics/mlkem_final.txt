@@ -974,3 +974,21 @@ APP内存0x40002a2798找到control_refresh_addr:
 
 需要验证哪个是真正的auth_key
 验证方式: SHA256(data+key)→AES key→AES-CFB/CTR解密
+=== auth_key来源确认! ===
+
+从tgnet.so反编译(0xdd2914)确认:
+0xdd2b7c: add x21, x19, #0x210 → x21=Connection+0x210(auth_key位置)
+0xdd2b80: add x1, x20, #0x20 → x1=session+0x20
+0xdd2b84: mov x0, x21 → 目标=Connection+0x210
+0xdd2b88: bl #0x15cb8c8 → 复制! session+0x20 → Connection+0x210
+
+session对象(x20)从0xdbaf70获取
+0xdbaf70是session查找函数(从session cache)
+
+0x15cb8c8是Go字符串复制函数
+从session+0x20复制Go字符串到Connection+0x210
+
+结论:
+  auth_key来自session对象+0x20
+  session从session cache(0xdbaf70)获取
+  session cache可能来自TLS Session Ticket!
