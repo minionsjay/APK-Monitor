@@ -762,3 +762,17 @@ forwarder control用: TLS+JSON+\n(明文)
 需要: forwarderControlPSK + 控制面节点(从.dat获取)
 
 SecretPayload含AppLineIPs(可能从forwarder control获取)
+=== 节点测试结果 ===
+
+所有节点(43.248.2.74/8.134.180.186等):30138/30139:
+  4Blen+JSON → 302(HTTP重定向)
+  raw JSON → 302
+  DEADBEEF → EOF(被识别)
+  443/80端口 → 连接失败
+
+结论:
+  30138/30139端口只接受DEADBEEF(加密的消息)
+  非DEADBEEF数据被当HTTP→302
+  forwarder control确实用DEADBEEF(不是明文JSON)
+  重放1163B+1169B→收到响应(1835B)
+  需要auth_key加密/解密DEADBEEF
