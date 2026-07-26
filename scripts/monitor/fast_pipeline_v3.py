@@ -10,7 +10,7 @@
 import subprocess, json, os, time, re, csv, zipfile, hashlib, threading, queue
 from datetime import datetime
 
-ADB = "adb -s 192.168.1.5:41123"
+ADB = "adb -s 192.168.1.5:39313"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
 APK_DIR = f"{BASE_DIR}/new_samples"
@@ -56,7 +56,7 @@ def get_storage_gb():
     result = subprocess.run(f'{ADB} shell df /data'.split(), capture_output=True, text=True, timeout=10)
     for line in result.stdout.split('\n'):
         parts = line.split()
-        if len(parts) >= 4 and '/data' in line:
+        if len(parts) >= 4 and ('dm-' in line or '/data' in line):
             return int(parts[3]) // 1024 // 1024
     return 0
 
@@ -106,31 +106,48 @@ def click_button(texts, max_tries=15, wait=2):
     return False
 
 def install_apk(apk_path, timeout=90):
-    """通过 MT管理器安装 APK，绕过一加安装拦截"""
-    # 1. push APK 到公共目录
+    """通过 MT管理器安装 APK，绕过一加安装拦截（带重试）"""
     remote_apk = '/sdcard/Download/install.apk'
     subprocess.run(f'{ADB} push {apk_path} {remote_apk}'.split(),
                    capture_output=True, timeout=60)
     
-    # 2. 用 am start 触发"打开方式"选择
-    subprocess.run(
-        f'{ADB} shell am start -a android.intent.action.VIEW '
-        f'-d "file://{remote_apk}" '
-        f'-t "application/vnd.android.package-archive" -f 0x10000000'.split(),
-        capture_output=True, timeout=10)
-    time.sleep(3)
-    
-    # 3. 在"打开方式"界面选 MT管理器
-    ui = dump_ui()
-    mt_match = re.search(r'text="MT管理器"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
-    if mt_match:
+    for attempt in range(3):
+        # 先回桌面，确保 MT管理器不在前台
+        subprocess.run(f'{ADB} shell input keyevent KEYCODE_HOME'.split(),
+                       capture_output=True, timeout=5)
+        time.sleep(1)
+        
+        # 用 am start 触发"打开方式"选择
+        subprocess.run(
+            f'{ADB} shell am start -a android.intent.action.VIEW '
+            f'-d "file://{remote_apk}" '
+            f'-t "application/vnd.android.package-archive" -f 0x10000000'.split(),
+            capture_output=True, timeout=10)
+        time.sleep(5)
+        
+        # 在"打开方式"界面选 MT管理器
+        ui = dump_ui()
+        mt_match = re.search(r'text="MT管理器"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+        if not mt_match:
+            # 可能直接打开了 MT管理器（上次残留），直接找"安装"按钮
+            install_match = re.search(r'text="安装"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', ui)
+            if install_match:
+                x1, y1, x2, y2 = [int(v) for v in install_match.groups()]
+                subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
+                               capture_output=True, timeout=5)
+                time.sleep(3)
+                break
+            if attempt < 2:
+                time.sleep(2)
+                continue
+            print("MT管理器未找到", end=' ')
+            return False
+        
         x1, y1, x2, y2 = [int(v) for v in mt_match.groups()]
         subprocess.run(f'{ADB} shell input tap {(x1+x2)//2} {(y1+y2)//2}'.split(),
                        capture_output=True, timeout=5)
         time.sleep(3)
-    else:
-        print("MT管理器未找到", end=' ')
-        return False
+        break
     
     # 4. 在 MT管理器 APK 信息页点"安装"
     ui = dump_ui()
@@ -196,12 +213,66 @@ def install_apk(apk_path, timeout=90):
                    capture_output=True, timeout=5)
     return True
 
-def get_proxy_nodes_via_proc(pkg, max_wait=20):
-    """通过 /proc/PID/net/tcp 获取代理节点 IP（不需要 root）"""
+def start_pcapdroid(pkg=None):
+    """启动 PCAPdroid 抓包"""
+    cmd = f'{ADB} shell am broadcast -a com.emanuelef.remote_capture.CaptureCtrl --es action start'
+    if pkg:
+        cmd += f' --es target_app {pkg}'
+    cmd += ' --es pcap_dump_mode PCAP_FILE --es pcap_dir /sdcard/Download/PCAPdroid/'
+    subprocess.run(cmd.split(), capture_output=True, timeout=10)
+    time.sleep(2)
+
+def stop_pcapdroid_and_extract_ips(pkg):
+    """停止 PCAPdroid，从最新 pcap 提取 IP"""
+    subprocess.run(f'{ADB} shell am broadcast -a com.emanuelef.remote_capture.CaptureCtrl --es action stop'.split(),
+                   capture_output=True, timeout=10)
+    time.sleep(2)
+    
+    # 找最新的 pcap 文件
+    r = subprocess.run(f'{ADB} shell ls -t /sdcard/Download/PCAPdroid/*.pcap'.split(),
+                     capture_output=True, text=True, timeout=10)
+    if not r.stdout.strip():
+        return []
+    
+    latest_pcap = r.stdout.strip().split('\n')[0]
+    local_pcap = '/tmp/pcapdroid_latest.pcap'
+    subprocess.run(f'{ADB} pull {latest_pcap} {local_pcap}'.split(),
+                   capture_output=True, timeout=30)
+    
+    if not os.path.exists(local_pcap) or os.path.getsize(local_pcap) < 100:
+        return []
+    
+    # 用 tshark 提取目标 IP 和端口（不用 shell 重定向，用 capture_output）
+    r = subprocess.run(
+        ['tshark', '-r', local_pcap, '-T', 'fields', '-e', 'ip.dst', '-e', 'tcp.dstport'],
+        capture_output=True, text=True, timeout=15)
+    
+    nodes = set()
+    local_ips = {'10.215.173.1', '10.215.173.2', '127.0.0.1', '192.168.1.1', '192.168.1.5', '0.0.0.0', '10.27.93.153', '10.27.93.154'}
+    
+    for line in r.stdout.strip().split('\n'):
+        parts = line.split('\t')
+        if len(parts) >= 2:
+            ip = parts[0].strip()
+            port = parts[1].strip()
+            if not ip or not port or ip in local_ips:
+                continue
+            try:
+                port_num = int(port)
+                if port_num > 100:
+                    nodes.add(f"{ip}:{port}")
+            except:
+                pass
+    
+    return sorted(nodes)
+
+def get_proxy_nodes_via_proc(pkg, max_wait=60):
+    """通过 /proc/PID/net/tcp 多次采样获取代理节点 IP（不需要 root）
+    每 5 秒采样一次，取并集，最多 60 秒"""
+    all_nodes = set()
     for i in range(max_wait // 5):
         time.sleep(5)
         try:
-            # 获取 APP PID
             r = subprocess.run(f'{ADB} shell pidof {pkg}'.split(),
                              capture_output=True, text=True, timeout=5)
             pid = r.stdout.strip()
@@ -209,7 +280,6 @@ def get_proxy_nodes_via_proc(pkg, max_wait=20):
                 continue
             
             # 读取 /proc/PID/net/tcp
-            nodes = set()
             for proto in ['tcp', 'tcp6']:
                 r = subprocess.run(f'{ADB} shell cat /proc/{pid}/net/{proto}'.split(),
                                  capture_output=True, text=True, timeout=5)
@@ -219,7 +289,6 @@ def get_proxy_nodes_via_proc(pkg, max_wait=20):
                         continue
                     remote = parts[2]
                     state = parts[3]
-                    # 只看 ESTABLISHED(01), SYN_SENT(02), TIME_WAIT(06)
                     if state not in ("01", "02", "06"):
                         continue
                     ip_hex, port_hex = remote.split(':')
@@ -227,28 +296,26 @@ def get_proxy_nodes_via_proc(pkg, max_wait=20):
                     if port <= 100:
                         continue
                     
-                    # IPv4
                     if len(ip_hex) == 8:
                         b = bytes.fromhex(ip_hex)
                         ip = f"{b[3]}.{b[2]}.{b[1]}.{b[0]}"
                         if ip.startswith("127.") or ip.startswith("0.0.") or ip.startswith("192.168."):
                             continue
-                        nodes.add(f"{ip}:{port}")
-                    
-                    # IPv4-mapped IPv6
+                        all_nodes.add(f"{ip}:{port}")
                     elif len(ip_hex) == 32 and ip_hex.startswith("00000000000000000000ffff"):
                         hex_ip = ip_hex[24:]
                         b = bytes.fromhex(hex_ip)
                         ip = f"{b[3]}.{b[2]}.{b[1]}.{b[0]}"
                         if ip.startswith("127.") or ip.startswith("0.0.") or ip.startswith("192.168."):
                             continue
-                        nodes.add(f"{ip}:{port}")
+                        all_nodes.add(f"{ip}:{port}")
             
-            if nodes:
-                return sorted(nodes)
+            if all_nodes and i >= 3:
+                # 已经有节点且采样了至少 20 秒，继续采样几次取并集
+                pass
         except:
             pass
-    return []
+    return sorted(all_nodes) if all_nodes else []
 
 def extract_icon(apk_path, apk_id):
     """从APK提取图标"""
@@ -393,20 +460,38 @@ def install_worker():
 
         print(f"  [I] {domain}({label})", end=' ')
 
-        # 存储检查
-        if get_storage_gb() < STORAGE_THRESHOLD_GB:
-            print('存储不足'); os.path.exists(apk_path) and os.remove(apk_path); stats['skipped']+=1; continue
+        # 存储检查：低于 10GB 时卸载最早的 APK
+        storage_gb = get_storage_gb()
+        if storage_gb < 10:
+            print(f'存储不足({storage_gb}GB)，卸载早期 APK...')
+            # 从 state 里找最早安装的 APK 卸载
+            with state_lock:
+                for old_entry in sorted(state, key=lambda x: x.get('first_installed','')):
+                    old_pkg = old_entry.get('package','')
+                    if old_pkg and old_pkg != pkg:
+                        subprocess.run(f'{ADB} uninstall {old_pkg}'.split(),
+                                      capture_output=True, timeout=30)
+                        old_entry['installed_on_device'] = 'false'
+                        save_state(state)
+                        print(f'  卸载 {old_entry["apk_id"]}({old_pkg})')
+                        break
+            # 再检查一次
+            if get_storage_gb() < STORAGE_THRESHOLD_GB:
+                print('存储仍不足'); os.path.exists(apk_path) and os.remove(apk_path); stats['skipped']+=1; continue
 
         # 卸载同包名
         subprocess.run(f'{ADB} uninstall {pkg}'.split(), capture_output=True, timeout=30)
 
-        # 安装（自动点击确认）
+        # 安装 APK（不启动 PCAPdroid，避免干扰安装界面）
         t3 = time.time()
         if not install_apk(apk_path):
             print(f'安装失败'); os.path.exists(apk_path) and os.remove(apk_path); stats['failed']+=1; continue
         t_inst = time.time() - t3
         stats['total_install'] += t_inst
 
+        # 安装完成后启动 PCAPdroid 抓包
+        start_pcapdroid(pkg)
+        
         # 启动+弹窗+获取节点
         t4 = time.time()
         subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(),
@@ -416,6 +501,15 @@ def install_worker():
         click_button(["允许"], max_tries=3, wait=2)
         # 获取节点（通过 /proc/PID/net/tcp）
         nodes = get_proxy_nodes_via_proc(pkg)
+        
+        # 停止 PCAPdroid 并从 pcap 提取 IP（补充 /proc 的结果）
+        pcap_nodes = stop_pcapdroid_and_extract_ips(pkg)
+        # 合并去重
+        all_node_set = set(nodes)
+        for n in pcap_nodes:
+            all_node_set.add(n)
+        nodes = sorted(all_node_set)
+        
         hw_ips = [ip for ip in nodes if get_cloud(ip.split(':')[0]) == "华为云"]
 
         # 截图

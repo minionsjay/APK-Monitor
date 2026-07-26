@@ -1,0 +1,214 @@
+package main
+
+import (
+	"crypto/aes"
+	"crypto/hmac"
+	"crypto/rand"
+	"crypto/rsa"
+	"crypto/sha256"
+	"crypto/tls"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/hex"
+	"fmt"
+	"math/big"
+	"net"
+	"os"
+	"sync"
+	"time"
+
+	tlsinternal "crypto/tls"
+	utls "github.com/refraction-networking/utls"
+)
+
+var caCert *x509.Certificate
+var caKey *rsa.PrivateKey
+
+func main() {
+	caPem, _ := os.ReadFile("/data/local/tmp/mitmproxy-ca.pem")
+	caTLSCert, _ := tls.X509KeyPair(caPem, caPem)
+	caCert, _ = x509.ParseCertificate(caTLSCert.Certificate[0])
+	block, _ := pem.Decode(caPem)
+	caKey, _ = x509.ParsePKCS1PrivateKey(block.Bytes)
+
+	df, _ := os.Create("/sdcard/mlkem_data.txt")
+	defer df.Close()
+
+	ln38, _ := net.Listen("tcp", "127.0.0.1:30138")
+	ln39, _ := net.Listen("tcp", "127.0.0.1:30139")
+	fmt.Println("MLKEM proxy started")
+
+	go acceptAll(ln38, "30138", df)
+	acceptAll(ln39, "30139", df)
+}
+
+func acceptAll(ln net.Listener, port string, df *os.File) {
+	for {
+		c, err := ln.Accept()
+		if err != nil { return }
+		go handle(c, port, df)
+	}
+}
+
+func handle(client net.Conn, port string, df *os.File) {
+	defer client.Close()
+	buf := make([]byte, 4096)
+	client.SetReadDeadline(time.Now().Add(5 * time.Second))
+	n, err := client.Read(buf)
+	if err != nil || n < 5 { return }
+	sni := parseSNI(buf[5:n])
+	if sni == "" { sni = "www.sohu.com" }
+	bc := &bconn{Conn: client, buf: buf[:n]}
+	cert := signCert(sni)
+	sc := &tls.Config{Certificates: []tls.Certificate{cert}, MinVersion: tls.VersionTLS12, MaxVersion: tls.VersionTLS12}
+	tc := tls.Server(bc, sc)
+	if err := tc.Handshake(); err != nil { return }
+	defer tc.Close()
+
+	srvPreMS := tlsinternal.SavedPreMasterSecret
+
+	var backendAddr string
+	if port == "30138" { backendAddr = "193.112.75.147:30138" } else { backendAddr = "43.248.2.74:30139" }
+	raw, err := net.DialTimeout("tcp", backendAddr, 10*time.Second)
+	if err != nil { return }
+	defer raw.Close()
+
+	cfg := &utls.Config{InsecureSkipVerify: true, ServerName: sni, MinVersion: utls.VersionTLS12, MaxVersion: utls.VersionTLS12}
+	be := utls.UClient(raw, cfg, utls.HelloCustom)
+	spec := &utls.ClientHelloSpec{
+		CipherSuites: []uint16{0xc013, 0xc014, 0x0039, 0x006b, 0x0035, 0x003d, 0xc007, 0xc009, 0xc023, 0xc011, 0xc027, 0x0033, 0x0067, 0x0032, 0x0005, 0x0004, 0x002f, 0x003c, 0x000a},
+		CompressionMethods: []byte{0x01, 0x00},
+		Extensions: []utls.TLSExtension{
+			&utls.SNIExtension{ServerName: sni}, &utls.RenegotiationInfoExtension{},
+			&utls.SupportedCurvesExtension{Curves: []utls.CurveID{utls.X25519MLKEM768, utls.X25519, utls.CurveP256, utls.CurveP384, utls.CurveP521}},
+			&utls.SupportedPointsExtension{SupportedPoints: []byte{0x00}},
+			&utls.SessionTicketExtension{}, &utls.GenericExtension{Id: 0x3374},
+			&utls.ALPNExtension{AlpnProtocols: []string{"spdy/2", "spdy/3", "spdy/3.1", "http/1.1"}},
+			&utls.GenericExtension{Id: 0x754f},
+			&utls.SignatureAlgorithmsExtension{SupportedSignatureAlgorithms: []utls.SignatureScheme{0x0401, 0x0501, 0x0201, 0x0403, 0x0503, 0x0203, 0x0402, 0x0202}},
+		},
+	}
+	if err := be.ApplyPreset(spec); err != nil { return }
+	if err := be.Handshake(); err != nil { return }
+	defer be.Close()
+
+	cliPreMS := tlsinternal.SavedPreMasterSecretClient
+
+	var mu sync.Mutex
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		b := make([]byte, 16384)
+		for {
+			n, err := tc.Read(b)
+			if err != nil { break }
+			mu.Lock()
+			df.WriteString(fmt.Sprintf("APP_%s %d %s\n", port, n, hex.EncodeToString(b[:n])))
+			mu.Unlock()
+			if b[0] == 0xDE && n > 9 {
+				pl := int(b[8])
+				is := 9 + pl
+				if is+25 <= n {
+					inner := b[is:n]
+					akid := inner[:8]
+					mk := inner[8:24]
+					ed := inner[25:]
+					mu.Lock()
+					df.WriteString(fmt.Sprintf("AKID_%s %s\n", port, hex.EncodeToString(akid)))
+					mu.Unlock()
+					if srvPreMS != nil { tryDec("SRV", srvPreMS, mk, ed, &mu, df) }
+					if cliPreMS != nil { tryDec("CLI", cliPreMS, mk, ed, &mu, df) }
+				}
+			}
+			be.Write(b[:n])
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		b := make([]byte, 16384)
+		for {
+			n, err := be.Read(b)
+			if err != nil { break }
+			mu.Lock()
+			df.WriteString(fmt.Sprintf("SRV_%s %d %s\n", port, n, hex.EncodeToString(b[:n])))
+			mu.Unlock()
+			tc.Write(b[:n])
+		}
+	}()
+	wg.Wait()
+}
+
+func tryDec(name string, preMS, mk, ed []byte, mu *sync.Mutex, df *os.File) {
+	if len(ed)%16 != 0 { return }
+	ak := make([]byte, 256)
+	copy(ak, preMS)
+	ks := append(append([]byte{}, mk...), ak[0:32]...)
+	ks = append(ks, ak[64:96]...)
+	aesk := sha256.Sum256(ks)
+	ivs := append(append([]byte{}, ak[32:64]...), mk...)
+	ivs = append(ivs, ak[96:128]...)
+	aesiv := sha256.Sum256(ivs)
+	bs := 16
+	pc := aesiv[:bs]
+	pp := aesiv[bs:2*bs]
+	bl, _ := aes.NewCipher(aesk[:])
+	out := make([]byte, len(ed))
+	for j := 0; j < len(ed); j += bs {
+		ch := ed[j:j+bs]
+		dc := make([]byte, bs)
+		bl.Decrypt(dc, ch)
+		for k := 0; k < bs; k++ { out[j+k] = dc[k] ^ pc[k] ^ pp[k] }
+		pc = ch
+		pp = out[j:j+bs]
+	}
+	vs := append(ak[88:96], out...)
+	exp := sha256.Sum256(vs)
+	if string(exp[:16]) == string(mk) {
+		mu.Lock()
+		df.WriteString(fmt.Sprintf("MATCH %s!\n  dec: %s\n", name, hex.EncodeToString(out[:20]))
+		mu.Unlock()
+	}
+}
+
+func parseSNI(d []byte) string {
+	if len(d) < 37 { return "" }
+	o := 34
+	if o >= len(d) { return "" }
+	sl := int(d[o])
+	o += 1 + sl
+	if o+1 >= len(d) { return "" }
+	cs := int(d[o])<<8 | int(d[o+1])
+	o += 2 + cs
+	if o >= len(d) { return "" }
+	cl := int(d[o])
+	o += 1 + cl
+	if o+1 >= len(d) { return "" }
+	el := int(d[o])<<8 | int(d[o+1])
+	o += 2
+	ee := o + el
+	for o+4 <= ee && o+4 <= len(d) {
+		et := int(d[o])<<8 | int(d[o+1])
+		ele := int(d[o+2])<<8 | int(d[o+3])
+		if et == 0 && ele > 5 && o+4+ele <= len(d) {
+			nl := int(d[o+7])<<8 | int(d[o+8])
+			if o+9+nl <= len(d) { return string(d[o+9:o+9+nl]) }
+		}
+		o += 4 + ele
+	}
+	return ""
+}
+
+func signCert(sni string) tls.Certificate {
+	sk, _ := rsa.GenerateKey(rand.Reader, 2048)
+	t := x509.Certificate{SerialNumber: big.NewInt(time.Now().UnixNano()), Subject: pkix.Name{CommonName: sni}, NotBefore: time.Now().Add(-time.Hour), NotAfter: time.Now().Add(time.Hour * 24), KeyUsage: x509.KeyUsageDigitalSignature | x509.KeyUsageKeyEncipherment, ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}, DNSNames: []string{sni}}
+	cd, _ := x509.CreateCertificate(rand.Reader, &t, caCert, &sk.PublicKey, caKey)
+	cp := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: cd})
+	kp := pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(sk)})
+	c, _ := tls.X509KeyPair(cp, kp)
+	return c
+}
+
+type bconn struct{ net.Conn; buf []byte }
+func (b *bconn) Read(p []byte) (int, error) { if len(b.buf) > 0 { n := copy(p, b.buf); b.buf = b.buf[n:]; return n, nil }; return b.Conn.Read(p) }
+func min(a, b int) int { if a < b { return a }; return b }
