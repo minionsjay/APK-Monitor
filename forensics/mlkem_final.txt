@@ -548,3 +548,16 @@ FetchForwarderFixedTuple确认用标准crypto/tls:
 235B消息验证: payload=185B, pad=41, akid+msgkey+encrypted(160=10*16)
 所有DEADBEEF消息都是加密的
 需要auth_key才能加密/解密
+=== auth_key来源分析 ===
+
+tgnet.dat(1636字节)不含auth_key_id
+exid.dat: appkey=68e52993644c9e2c20470472
+AES_key在内存0x40001ba000找到
+后面是ProxyConfig字段(local_listener_running等)
+
+auth_key_id不在APP内存中(动态生成)
+auth_key_id从加密后data[8:55]提取(不是SHA1)
+
+新理论: auth_key = AES_key(32字节)
+encryptKeyWithSecret用AES_key做HMAC-SHA256+AES-IGE
+需要实现完整加密流程
