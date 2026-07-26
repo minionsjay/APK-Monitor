@@ -1270,3 +1270,24 @@ auth_key/tgnet.so/sendRequest不是用于forwarder control!
   新的DEADBEEF payload是明文JSON
   relayObfs中继的是所有TCP流量(包括TLS)
   1163B可能不是forwarder control的JSON!
+=== 1163B是MTProto消息! ===
+
+从writeFrame反编译确认: DEADBEEF payload = 原始TCP数据(不加密)
+但1163B的payload本身就是加密的MTProto消息!
+
+1163B payload分析:
+  前8字节: 8c01b731e516801b → MTProto auth_key_id
+  字节8-24: c6bfe935fddaccc4cb2d4d23aab4acff → MTProto msg_key
+  字节24+: encrypted → MTProto加密数据
+
+1163B不是forwarder control!
+1163B是Telegram MTProto握手消息!
+
+完整流程:
+  1. APP首次连接 → MTProto握手(1163B+1169B) → DEADBEEF封装 → 发送
+  2. 服务端认证 → 返回响应(1835B)
+  3. 建立会话 → JSON+\n → DEADBEEF封装 → 发送
+  4. 服务端返回app_line_ips
+
+之前DEADBEEF+JSON→302: 没有先发送MTProto握手!
+需要先发送1163B+1169B认证 → 然后发送DEADBEEF+JSON!
