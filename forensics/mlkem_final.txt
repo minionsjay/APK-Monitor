@@ -395,3 +395,18 @@ tcpdump只看到TLS握手(无AppData)
   30138: TLS健康检查(193.112.75.147, 8.163.38.119)
   30157: TLS健康检查(8.138.108.97, 8.138.104.222)
   443: SYN但无响应(GFW阻断或Cloudflare拒绝)
+=== MITM新发现(192.168.1.16:39653) ===
+
+19个不同auth_key_id(每TLS连接不同):
+  说明auth_key是每连接动态生成
+
+30个1514B响应(以9cb39157开头):
+  可能包含15个app_line_ips(加密)
+  30次相同数据(keep-alive或重传)
+
+16种DEADBEEF消息大小(150B-1163B)
+  456B(72次), 788B(40次), 1163B(32次)
+
+sdk_forwarder_fixed.json没有重新生成
+说明MITM阻止了forwarder control完成
+但截获了大量DEADBEEF消息和1514B响应
