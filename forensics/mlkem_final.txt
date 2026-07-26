@@ -776,3 +776,20 @@ SecretPayload含AppLineIPs(可能从forwarder control获取)
   forwarder control确实用DEADBEEF(不是明文JSON)
   重放1163B+1169B→收到响应(1835B)
   需要auth_key加密/解密DEADBEEF
+=== auth_key突破方向: 前端MasterSecret! ===
+
+之前搜索的是后端TLS2(MITM→后端)的MasterSecret → 0匹配
+但auth_key应该来自前端TLS1(APP→MITM)的MasterSecret!
+
+从sdk_final_complete.txt:
+  auth_key = TLS master_secret (48字节)
+  auth_key_id = SHA1(master_secret)[:8]
+  SDK修改了crypto/tls添加直接访问master_secret功能
+  GODEBUG=tlsunsafeekm=1
+
+MITM代理前端(APP→MITM)用标准crypto/tls
+Go标准库已修改: handshake_server.go添加SavedPreMasterSecret
+但之前只记录后端MasterSecret,没有记录前端的!
+
+需要: 重新运行MITM代理,记录前端MasterSecret
+然后用MasterSecret作为auth_key解密395B消息
