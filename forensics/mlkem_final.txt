@@ -561,3 +561,19 @@ auth_key_id从加密后data[8:55]提取(不是SHA1)
 新理论: auth_key = AES_key(32字节)
 encryptKeyWithSecret用AES_key做HMAC-SHA256+AES-IGE
 需要实现完整加密流程
+=== auth_key来源最终确认 ===
+
+auth_key来自MTProto DH握手!
+不是AES_key(MasterSecret/EKM也不对)
+
+DH握手流程:
+1. req_pq(0x60469778) → 服务端返回resPQ
+2. req_DH_params → 服务端返回server_DH_inner_data
+3. client_DH_inner_data → 服务端返回dh_gen_ok
+4. auth_key = DH共享密钥(256字节)
+5. 用auth_key加密JSON+\n通过DEADBEEF发送
+
+1163B消息可能是DH握手消息(req_DH_params)
+之前DEADBEEF+req_pq→timeout(被接受但无响应)
+
+需要实现完整MTProto DH握手获取auth_key
