@@ -700,3 +700,18 @@ utls库(utls v1.8.2)有mlkem.DecapsulationKey768
 A. 运行原APK→读取sdk_forwarder_fixed.json(最简单)
 B. 重放1163+1169B→收到1835B响应(但无法解密)
 C. 从APP内存提取IP(明文字符串)
+=== 重大突破: 找到RSA私钥! ===
+
+在APP内存0x4000172705找到RSA私钥(1678字节,RSA-2048)
+SDK有parseRSAPrivateKey/tryParsePlainSecretPayload/can_decode_secret
+SecretPayload包含PrivateKeyPEM字段
+
+用RSA私钥尝试解密1163B:
+- 前256字节: 不是有效PKCS#1格式
+- 所有4个256字节块: 都不是RSA加密
+- 1163B不是RSA加密的(可能是AES-IGE加密)
+
+RSA私钥可能用于:
+1. 解密服务端返回的响应
+2. 解密SecretPayload
+3. 签名请求(不是解密)
