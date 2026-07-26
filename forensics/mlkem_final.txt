@@ -1049,3 +1049,20 @@ Go字符串格式(从0x15cb8c8确认):
 
 需要: 从session对象直接搜索
   session+0x20 = auth_key(从0xdd2b80确认)
+=== ConnectionsManager+session搜索 ===
+
+从9个ConnectionsManager候选读取:
+  CM+0x168: 大部分不在合理范围(像指针被截断)
+  CM+0x178: 同样不在合理范围
+  CM+0x1b8: Go字符串(但数据看起来像指针不是密钥)
+  CM+0x1d0: 全局密钥(同样像指针)
+
+只有CM 0x7111e478的+0x168=0x72179ec0在合理范围
+  session+0x20=0xf7(bit0=1,长字符串)
+  但ptr=0xaa0603e352800006不在合理范围
+
+可能原因:
+  1. 这些不是真正的ConnectionsManager(误报)
+  2. Connection对象布局在WkNAvY中不同
+  3. Go字符串格式理解和实际不同
+  4. 需要从已知的AES_key位置反推Connection对象
