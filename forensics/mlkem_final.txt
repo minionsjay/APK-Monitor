@@ -1107,3 +1107,23 @@ AES_key附近64KB无256B高entropy块
 但1163B固定→不走sendRequest→data固定
   本地代理用固定data封装DEADBEEF
   data和auth_key都不在APP内存中(被GC或只读)
+=== 重大发现: APP内存中有DEADBEEF帧! ===
+
+在APP内存0x4000010b10-0x40000ac5d0找到10个DEADBEEF帧
+这些帧在SecretPayload区域(和AES_key同段)
+
+关键帧:
+  0x4000010d20: plen=73 pad=2 '30139'+'bb75'(48021)+TLS数据(ContentType=0x17)
+  0x40000ac5d0: plen=329 pad=36 '127.0.0.1:60139'
+  0x4000010bb0: plen=556 pad=16 'http/1.1'+嵌套DEADBEEF
+  0x400008fb00: plen=1085 pad=3 加密数据
+  0x4000074f71: plen=5 pad=4 'test\n'
+
+这些DEADBEEF帧包含明文协议数据!
+  - 端口号30139/60139
+  - IP地址127.0.0.1
+  - TLS应用数据(0x17)
+  - HTTP响应(http/1.1)
+
+下一步: 深入分析每个DEADBEEF帧的内容
+  可能包含auth_key或其生成方式!
