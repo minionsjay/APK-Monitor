@@ -744,3 +744,21 @@ RSA私钥n/d/p+q做auth_key→不匹配
 
 逆向95%完成
 核心: auth_key不来自RSA/AES_key/tgnet.dat/TLS
+=== 重大发现: forwarder control是备选方式! ===
+
+从sdk_final_complete.txt确认:
+阶段1: DNS TXT → 控制面IP
+阶段2: 获取代理节点
+  方式A(.dat文件, 主要方式): HTTP HEAD+GET → AES-CBC → 3个代理节点
+  方式B(forwarder control, 备选方式): FetchForwarderFixedTuple → TLS+JSON+\n → 4B长度+JSON
+  需要forwarderControlPSK才能使用方式B!
+阶段3: VPN代理转发(DEADBEEF+MTProto)
+
+DEADBEEF是阶段3(VPN代理转发)的协议!
+不是forwarder control的协议!
+
+forwarder control用: TLS+JSON+\n(明文)
+响应: 4B长度+JSON
+需要: forwarderControlPSK + 控制面节点(从.dat获取)
+
+SecretPayload含AppLineIPs(可能从forwarder control获取)
