@@ -410,3 +410,20 @@ tcpdump只看到TLS握手(无AppData)
 sdk_forwarder_fixed.json没有重新生成
 说明MITM阻止了forwarder control完成
 但截获了大量DEADBEEF消息和1514B响应
+=== 卸载后纯净化测试(192.168.1.16:39653) ===
+
+卸载29个代理APK只剩1个(cii.gjjvikjqhhupaab)
+
+MITM截获数据(4700行):
+  23个auth_key_id(每连接动态生成)
+  22种APP DEADBEEF大小(200B-1163B)
+  30种SRV响应大小(98B-2911B)
+  2911B响应 = DEADBEEF+2896B加密payload
+  sublen=0 payload_len=2896 pad=6
+  2896B可能包含15个app_line_ips(需auth_key解密)
+
+676B消息(98次,非DEADBEEF,以22782694开头):
+  可能是MITM后端TLS数据被误分类
+
+sdk_forwarder_fixed.json没有重新生成
+MITM截获了请求+响应但可能没有正确转发
