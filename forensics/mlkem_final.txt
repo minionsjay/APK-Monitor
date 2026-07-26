@@ -1408,3 +1408,18 @@ getAuthKey反汇编:
 之前搜索SHA1(candidate)[:8]→0匹配!
   因为auth_key_id不是SHA1计算的!
   是预存在Datacenter+0x170的字段!
+=== auth_key_id搜索最终结果(大端+小端) ===
+
+从getPermanentAuthKeyId(0xdbe49c)确认:
+  auth_key_id = Datacenter+0x170 (直接读取,不是SHA1)
+  auth_key = Datacenter+0x168 (指针)
+
+搜索所有1931个内存段(包括只读):
+  大端序(8c01b731e516801b) → 0匹配
+  小端序(1b8016e531b7018c) → 0匹配
+  都没找到!
+
+结论:
+  auth_key_id不在APP进程内存中!
+  可能Datacenter对象还没创建(forwarder control未激活)
+  或者auth_key_id和之前MITM截获的不同(不同会话)
