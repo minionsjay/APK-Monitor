@@ -1291,3 +1291,25 @@ auth_key/tgnet.so/sendRequest不是用于forwarder control!
 
 之前DEADBEEF+JSON→302: 没有先发送MTProto握手!
 需要先发送1163B+1169B认证 → 然后发送DEADBEEF+JSON!
+=== 重大突破: 重放认证+JSON发送成功! ===
+
+测试123.207.40.186:30139(control_refresh_addr):
+
+测试1: 重放1163+1169 → 立即JSON → 空响应(可能太快)
+
+测试2: 重放1163+1169 → 等响应 → JSON → 收到164B!
+  认证响应: 168B DEADBEEF(105B payload)
+  JSON响应: 164B DEADBEEF(105B payload)
+
+测试3: 重放1163+1169+395B → 2041B响应(13个DEADBEEF帧)!
+  每帧105B payload, 共13帧
+
+测试4: 重放1163+1169 → 替换395B为DEADBEEF+JSON → 收到174B!
+  认证响应: 119B DEADBEEF
+  JSON响应: 174B DEADBEEF
+
+关键发现:
+  1. 认证成功! 重放1163+1169B→收到响应!
+  2. JSON发送成功! 收到DEADBEEF响应!
+  3. 响应也是DEADBEEF格式(payload=105B)
+  4. payload包含文本(可能是加密的MTProto或JSON)
