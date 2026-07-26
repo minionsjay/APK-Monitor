@@ -1033,3 +1033,19 @@ Connection3-5: keyPtr=0或不在合理范围
   2. auth_key的Go字符串格式不同(不是标准Go字符串)
   3. auth_key不在+0x210(可能在+0x168)
   4. 或者这些不是真正的Connection对象(误报)
+=== Connection对象搜索(放松条件) ===
+
+条件: +0x230指针+ +0x270=0x64 + +0x288<10000
+找到10个Connection对象候选
+
+Go字符串格式(从0x15cb8c8确认):
+  bit0=0: 短字符串, 长度=byte>>1, 数据在offset 1内联
+  bit0=1: 长字符串, 长度在offset 8, 数据ptr在offset 0x10
+
+结果: auth_key的值看起来像是指针(0x7100000000xx)
+  不是高entropy的密钥数据
+  可能这些不是真正的Connection对象
+  或者+0x210不是auth_key的位置(运行时偏移可能不同)
+
+需要: 从session对象直接搜索
+  session+0x20 = auth_key(从0xdd2b80确认)
