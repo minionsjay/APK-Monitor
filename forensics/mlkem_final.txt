@@ -1127,3 +1127,21 @@ AES_key附近64KB无256B高entropy块
 
 下一步: 深入分析每个DEADBEEF帧的内容
   可能包含auth_key或其生成方式!
+=== AES key暴力搜索(IV1=msgkey) ===
+
+从反编译确认:
+  0xdd3304: str q0, [x19, #0x3d0] → 清零IV2(全0)
+  0xdd3368: ldr q0, [x27] → IV1从x19+0x2ac(随机数据)
+
+搜索84724个32B高entropy块:
+  result = AES_decrypt(enc[0:16], candidate)
+  result XOR IV1(=msgkey) == candidate[0:16]?
+  结果: 0匹配!
+
+IV1不等于msgkey!
+IV1可能在padding中(62字节padding)
+
+当前状态: 95%逆向完成
+  auth_key的值仍无法确定
+  AES key = SHA256(data[:32]+auth_key[:16])
+  但data和auth_key都未知
