@@ -577,3 +577,18 @@ DH握手流程:
 之前DEADBEEF+req_pq→timeout(被接受但无响应)
 
 需要实现完整MTProto DH握手获取auth_key
+=== req_pq和TLS配置测试 ===
+
+标准MTProto req_pq(32字节= msg_len+msg_id+constructor+nonce):
+  DB+req_pq → EOF(所有pad都EOF)
+  raw req_pq → 302
+  15秒等待 → EOF
+
+标准crypto/tls各种配置:
+  std+ALPN → EOF
+  std+cipher0xc013 → EOF
+  std+default → EOF
+  std+SNI=webestim → EOF
+
+结论: 所有DEADBEEF→EOF, raw→302
+可能需要TLS Session Ticket或特定ClientHello指纹
