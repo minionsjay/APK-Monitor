@@ -961,3 +961,16 @@ APP内存0x40002a2798找到control_refresh_addr:
   APP发送的是DEADBEEF(本地代理封装的),不是明文JSON!
   FetchForwarderFixedTuple发送JSON+\n到VPN
   VPN/本地代理负责DEADBEEF封装+TLS连接
+=== 本地代理60139分析 ===
+
+/proc/net/tcp确认: 127.0.0.1:60139 LISTEN + 3个ESTAB
+明文TCP→EOF/timeout, TLS→timeout, HTTP CONNECT→timeout
+60139只接受VPN转发的连接!
+
+=== auth_key搜索(Go字符串格式0x41) ===
+搜索第一个字节=0x41(32<<1|1)的Go字符串
+找到10个候选(32字节高entropy)
+地址: 0x70594c04-0x705a97b1(在rw内存段中)
+
+需要验证哪个是真正的auth_key
+验证方式: SHA256(data+key)→AES key→AES-CFB/CTR解密
