@@ -1249,3 +1249,24 @@ APP内存中的DEADBEEF帧证实:
 auth_key/tgnet.so/sendRequest不是用于forwarder control!
   tgnet.so的sendRequest用于Telegram MTProto(不是DEADBEEF)!
   DEADBEEF只是obfs封装(不加密)!
+=== DEADBEEF+明文JSON测试结果 ===
+
+从writeFrame反编译(obfs.go:48-60)确认帧格式:
+  DEADBEEF(4)+sublen(2)+payloadlen(2)+pad(1)+padding+payload(明文)
+
+测试123.207.40.186:30139:
+  utls Chrome115_PQ_PSK + DEADBEEF+JSON → 302
+  标准crypto/tls + DEADBEEF+JSON → 302
+  utls + DEADBEEF+空JSON → 302
+  utls + 4Blen+JSON → 302
+  utls + raw+JSON → 302
+  所有组合 → 302!
+
+但之前重放1163B+1169B → 收到响应!
+1163B也是DEADBEEF格式!
+
+分析:
+  1163B的payload是高entropy(可能是TLS应用数据)
+  新的DEADBEEF payload是明文JSON
+  relayObfs中继的是所有TCP流量(包括TLS)
+  1163B可能不是forwarder control的JSON!
