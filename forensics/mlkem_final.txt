@@ -1383,3 +1383,28 @@ tgnet.dat暴力搜索:
 结论: auth_key不在任何可访问位置!
   可能auth_key_id不是SHA1(auth_key)[:8]
   SDK可能用不同的hash算法计算auth_key_id
+=== auth_key_id计算方式确认! ===
+
+从tgnet.so符号表找到:
+  getPermanentAuthKeyId at 0xdbe49c (8字节,极小)
+  getAuthKey at 0xdbd9d4 (312字节)
+  tgvoip_openssl_sha1 at 0x14da648
+
+getPermanentAuthKeyId反汇编:
+  0xdbe49c: ldr x0, [x0, #0x170]
+  0xdbe4a0: ret
+  → auth_key_id = Datacenter+0x170 (直接读取!)
+
+getAuthKey反汇编:
+  0xdbda5c: ldr x22, [x19, #0x168]
+  → auth_key = Datacenter+0x168 (直接读取!)
+
+重大发现!
+  auth_key_id不是SHA1(auth_key)[:8]!
+  auth_key_id = Datacenter+0x170 (预存的字段!)
+  auth_key = Datacenter+0x168 (预存的指针!)
+  两者都是直接从Datacenter对象读取!
+
+之前搜索SHA1(candidate)[:8]→0匹配!
+  因为auth_key_id不是SHA1计算的!
+  是预存在Datacenter+0x170的字段!
