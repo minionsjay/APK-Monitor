@@ -427,3 +427,9 @@ MITM截获数据(4700行):
 
 sdk_forwarder_fixed.json没有重新生成
 MITM截获了请求+响应但可能没有正确转发
+=== mitmmlkem后端地址 ===
+
+mitmmlkem后端: 43.248.2.74:30139 + 193.112.75.147:30138
+mitmmlkem有MATCH解密功能
+4700行数据(有SRV响应) vs 2254行(无SRV响应)
+可能是后端连接不稳定
