@@ -793,3 +793,19 @@ Go标准库已修改: handshake_server.go添加SavedPreMasterSecret
 
 需要: 重新运行MITM代理,记录前端MasterSecret
 然后用MasterSecret作为auth_key解密395B消息
+=== 前端MasterSecret测试结果 ===
+
+MITM代理前端(APP→MITM)用标准crypto/tls+KeyLogWriter
+获取17435个前端MasterSecret(48字节)
+46466个DEADBEEF消息(大小163B-192B)
+
+SHA1(MS[:32/48])[:8] → 0匹配
+EKM(各种label) → 0匹配
+PRF(MS, label, random) → 0匹配
+
+结论:
+  auth_key不来自TLS MasterSecret!
+  sdk_final_complete.txt说'auth_key=master_secret'是错误的!
+  auth_key来自MTProto DH握手(tgnet.so的Handshake)
+  encryptKeyWithSecret用this+0x210(永久密钥)
+  来自onHandshakeComplete(MTProto握手完成)
