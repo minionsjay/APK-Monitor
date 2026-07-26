@@ -992,3 +992,25 @@ session对象(x20)从0xdbaf70获取
   auth_key来自session对象+0x20
   session从session cache(0xdbaf70)获取
   session cache可能来自TLS Session Ticket!
+=== Connection对象找到! ===
+
+搜索Connection对象特征(+0x230指针+小整数type/size/state):
+
+Connection对象1 at 0x705a5618:
+  +0x230: 0x705ad388 (ConnectionsManager)
+  +0x210: key byte=0x65 (len=50, bit0=1)
+  +0x218: ptr=0xe8d4a5102e90edd (不在合理范围,可能不是auth_key)
+
+Connection对象2 at 0x705c9658:
+  +0x230: 0x705b8ad0 (ConnectionsManager)
+  +0x210: key byte=0x41 (len=32, bit0=1)
+  +0x218: ptr=0x460045 (不在合理范围)
+  auth_key(inline): 00420043... (看起来像ASCII BCD字符不是密钥)
+
+Connection对象3 at 0x70625fa0:
+  +0x230: 0x72cfa4f5 (不在合理范围)
+  +0x210: key byte=0x49 (len=36)
+
+问题: auth_key的ptr不在合理范围
+  可能auth_key不是内联存储而是ptr指向外部
+  或者Go字符串格式理解有误
