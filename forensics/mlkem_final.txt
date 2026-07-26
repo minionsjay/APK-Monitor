@@ -512,3 +512,22 @@ utls+X25519MLKEM768测试:
 
 从反编译L185: 4字节数组(可能是长度前缀或IV)
 可能需要PSK认证或特定TLS配置
+=== APP内存发现 ===
+
+APP内存中有193个 UUID|fallback|IP:port 条目:
+  每个app_line_ip都有device_uuid关联
+  格式: device_uuid|fallback|8.163.42.186:30139
+
+DEADBEEF payload格式确认:
+  payload = auth_key_id(8) + msg_key(16) + padding(pad1) + encrypted(16k)
+  pad1 = len(data) % 16
+  395B: pad1=1, encrypted=320=20*16
+  1163B: pad1=3, encrypted=1120=70*16
+
+FetchForwarderFixedTuple确认用标准crypto/tls:
+  net.Dialer.DialContext → TCP连接
+  crypto/tls.Conn.clientHandshake_fm → TLS握手
+  crypto/tls.Conn.Write → 发送数据
+
+标准crypto/tls+DEADBEEF→EOF(指纹被拒绝)
+必须用utls(Chrome115_PQ_PSK指纹)
