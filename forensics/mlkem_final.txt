@@ -676,3 +676,27 @@ C. 从APP内存提取IP(明文)
 A. 运行原APK→读取sdk_forwarder_fixed.json(最简单)
 B. 重放1163+1169B→收到响应但无法解密
 C. 从APP内存提取IP(明文)
+=== ML-KEM-768最终发现 ===
+
+ML-KEM-768共享密钥是32字节(不是256字节)
+之前搜索auth_key时用了256字节MTProto格式 → 错误
+32字节搜索未完成(rw段超时)
+
+SDK有X25519MLKEM768曲线配置
+utls库(utls v1.8.2)有mlkem.DecapsulationKey768
+
+从memory.md记录:
+- SDK auth_key来自MTProto DH握手(非TLS/非AES_key)
+- DEADBEEF帧: magic+sublen+payloadlen+pad+padding+payload
+- payload: auth_key_id(8)+msg_key(16)+padding(pad1)+encrypted(16k)
+- auth_key_id从加密后data[8:55]提取(非SHA1)
+- encryptKeyWithSecret: HMAC-SHA256+AES-IGE双重加密
+- forwarder control通过代理节点(43.248.2.74:30139)
+
+完整逆向状态: 90%完成
+核心阻塞: auth_key的值和生成方式(10%)
+
+可行方案:
+A. 运行原APK→读取sdk_forwarder_fixed.json(最简单)
+B. 重放1163+1169B→收到1835B响应(但无法解密)
+C. 从APP内存提取IP(明文字符串)
