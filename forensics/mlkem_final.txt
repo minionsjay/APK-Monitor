@@ -809,3 +809,25 @@ PRF(MS, label, random) → 0匹配
   auth_key来自MTProto DH握手(tgnet.so的Handshake)
   encryptKeyWithSecret用this+0x210(永久密钥)
   来自onHandshakeComplete(MTProto握手完成)
+=== 重大发现: 加密方式不是AES-IGE! ===
+
+从tgnet.so反编译确认(0xdd2e08=sendRequest):
+1. encryptKeyWithSecret(0xdd3cd4) = SHA256(data+auth_key) → 32字节AES key
+   不是HMAC-SHA256! 只是普通SHA256!
+   SHA256 init(0x8c413c)没有用key做ipad/opad
+
+2. AES key expansion(0x89f158, 32字节hash, 0x100=256) → AES-256
+
+3. 加密函数0x89f320 = AES-CFB/CTR(不是AES-IGE!)
+   - 逐字节XOR(不满16字节部分)
+   - 每16字节: AES_encrypt(IV,IV,key) + IV递增
+   - 这是AES-CFB或AES-CTR模式
+
+4. sendRequest双重加密:
+   a. SHA256(data+auth_key) → hash → AES key
+   b. AES-CFB/CTR加密(data, hash, IV)
+   c. AES key expansion
+   d. 再次SHA256+AES-CFB/CTR
+
+之前所有AES-IGE搜索都是错的!
+应该用AES-CFB/CTR搜索!
