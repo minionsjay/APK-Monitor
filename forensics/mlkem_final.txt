@@ -893,3 +893,26 @@ msg_key和akid不在so文件中→1163B不是硬编码
   3. x19+0x210(永久密钥,x28=2)
   4. ConnectionsManager+0x1d0(全局密钥)
   key第17字节: 0xdd→mode2, 0xee→mode3
+=== FetchForwarderFixedTuple确认为明文JSON! ===
+
+从kem_decomp.c行605-753确认:
+行605: encoding_json_Marshal(fwdHelloRequest) → JSON序列化
+行633: uVar12 = len + 1 → JSON长度+1
+行637: runtime_growslice → 追加1字节
+行643: *(buf+len-1) = 10 → 写入\n(0x0A)
+行644: crypto/tls.Conn.Write → 发送JSON+\n!
+行666: Array_4_uint8 → 4字节用于读取响应(4B长度前缀)
+行722: runtime_makeslice → 创建响应缓冲区
+行750: fwdControlResponse → 创建响应对象
+行753: encoding_json_Unmarshal → 反序列化响应JSON
+
+结论:
+  FetchForwarderFixedTuple发送明文JSON+\n!
+  响应是4B长度+JSON(不是DEADBEEF)
+  1163B(DEADBEEF)不是FetchForwarderFixedTuple发送的!
+  1163B通过代理连接(sendRequest/tgnet.so)发送
+
+关键问题: FetchForwarderFixedTuple连接到哪个地址?
+  control_refresh_addr → 可能不是30139端口
+  raw JSON→302是因为连到了30139(代理端口)
+  forwarder control可能用不同的端口!
