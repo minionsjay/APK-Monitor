@@ -592,3 +592,20 @@ DH握手流程:
 
 结论: 所有DEADBEEF→EOF, raw→302
 可能需要TLS Session Ticket或特定ClientHello指纹
+=== 重大突破: 原样重放成功! ===
+
+原样重放MITM截获的消息:
+  1163B(认证) + 1169B(补充) + 395B(请求)
+  → 收到1835B响应(DEADBEEF格式)!
+
+响应包含12个DEADBEEF消息:
+  159B, 141B, 156B, 139B, 128B, 155B, 170B, 135B, 127B, 161B, 233B, 131B
+
+关键发现:
+  1. 必须先发送1163B(认证)再发送1169B(补充)
+  2. 1163B+1169B → 收到响应(不需要auth_key!)
+  3. 响应是加密的DEADBEEF(需要auth_key解密)
+  4. 但响应可能包含app_line_ips
+
+下一步: 解密响应(需要auth_key)
+或者: 从APP读取sdk_forwarder_fixed.json(已确认可行)
