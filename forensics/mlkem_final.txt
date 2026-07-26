@@ -872,3 +872,24 @@ auth_key(this+0x210)是Go字符串:
   2. x19+0x58(临时密钥, x28=1)
   3. x19+0x210(永久密钥/auth_key, x28=2)
   4. ConnectionsManager+0x1d0(全局密钥)
+=== sendRequest深入反编译 ===
+
+0x8be05c使用syscall getrandom(0x116)→真随机数
+sendRequest用随机IV→每次加密结果不同
+
+但1163B在所有utls连接中相同!
+→ 1163B不是用sendRequest发送
+→ 可能通过FetchForwarderFixedTuple(libgojni.so)发送
+→ FetchForwarderFixedTuple用crypto/tls.Conn.Write
+→ 不走tgnet.so的sendRequest(不走随机IV)
+
+msg_key和akid不在so文件中→1163B不是硬编码
+但1163B在所有utls连接中相同→数据固定
+可能是APP初始化时生成一次,缓存后重用
+
+密钥选择优先级(从0xdd2f08-0xdd2fe4):
+  1. x19+0x40(第一个key)
+  2. x19+0x58(临时密钥,x28=1)
+  3. x19+0x210(永久密钥,x28=2)
+  4. ConnectionsManager+0x1d0(全局密钥)
+  key第17字节: 0xdd→mode2, 0xee→mode3
