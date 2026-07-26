@@ -831,3 +831,22 @@ PRF(MS, label, random) → 0匹配
 
 之前所有AES-IGE搜索都是错的!
 应该用AES-CFB/CTR搜索!
+=== sendRequest完整加密流程 ===
+
+从tgnet.so反编译(0xdd2e08=sendRequest):
+1. 拷贝数据到x19+0x28c(48字节)
+2. encryptKeyWithSecret(x19, x28=data, w21=type)
+   → SHA256(data+auth_key) → data前32字节=hash
+3. AES key expansion(hash, 0x100=256) → expanded key
+4. IV=x19+0x2ac(16字节), IV state=x19+0x3c0
+5. 拷贝更多数据(48字节反向)
+6. 第二次encryptKeyWithSecret → hash2
+7. 第二次AES key expansion → expanded key2
+8. AES-CFB/CTR(x25输入, x28输出, 64字节, expanded_key, IV_state, IV2, counter)
+   只加密64字节(消息头)!
+9. 后续多次调用AES-CFB/CTR(1字节, 4字节, 剩余数据)
+   分段加密不同部分!
+
+关键: auth_key在x19+0x210(永久密钥)
+AES key = SHA256(data + auth_key)
+IV = x19+0x2ac(可能来自auth_key或msg_key)
