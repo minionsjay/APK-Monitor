@@ -1423,3 +1423,23 @@ getAuthKey反汇编:
   auth_key_id不在APP进程内存中!
   可能Datacenter对象还没创建(forwarder control未激活)
   或者auth_key_id和之前MITM截获的不同(不同会话)
+=== Datacenter对象找到! ===
+
+json重新生成(432B, 15个app_line_ips)!
+forwarder control成功!
+
+搜索Datacenter对象(+0x10 DC ID + +0x168指针 + +0x170非0):
+找到3个Datacenter候选!
+
+Datacenter1 at 0x727f46a8:
+  DC ID: 0
+  auth_key ptr: 0x7066b648
+  auth_key_id: 0x200000007072dcd8
+  auth_key(256B): 28dbab70... (看起来像指针不是密钥)
+
+auth_key_id=0x200000007072dcd8 不是8c01b731e516801b!
+确认: 新会话有不同的auth_key_id!
+
+但auth_key的数据看起来像指针(0x70xxxxxx)不是密钥!
+可能+0x168不是直接指向auth_key数据
+  或者Datacenter对象布局不同
