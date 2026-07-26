@@ -1088,3 +1088,22 @@ AES_key附近64KB无256B高entropy块
   auth_key可能不是256字节!
   从encryptKeyWithSecret确认: 只用前16字节!
   auth_key可能是16字节!
+=== akid/msgkey内存搜索 ===
+
+在APP所有rw内存段搜索akid(8c01b731e516801b)和msgkey(c6bfe935fddaccc4cb2d4d23aab4acff)
+结果: 都没找到!
+
+结论:
+  1163B消息的akid和msgkey不在APP内存中!
+  说明1163B是预先生成的(不在当前会话中)
+  或者akid/msgkey在只读段(不在rw段中)
+
+=== data[:32]分析 ===
+从sendRequest(0xdd2e08):
+  data = 随机64字节(0x8ae1d8=getrandom)
+  data[:32]是随机数据(不是JSON!)
+  SHA256(data[:32] + auth_key[:16]) → AES key
+
+但1163B固定→不走sendRequest→data固定
+  本地代理用固定data封装DEADBEEF
+  data和auth_key都不在APP内存中(被GC或只读)
