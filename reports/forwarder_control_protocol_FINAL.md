@@ -65,7 +65,38 @@ PSK/DEADBEEF/utls/MTProto/auth_key **全部无关**。之前 exdyfb 直连被 30
 
 ---
 
+## ⚡ 实测验证结果（2026-07-26/27，对存活 C2 实连）
+
+**协议传输层已 100% 验证成功**：
+- 用 utls **HelloGolang 指纹**（不是 Chrome！）+ ALPN `cursor-control-v1` → 握手成功，
+  协商到 TLS1.3 + ALPN `cursor-control-v1`。
+- **服务端按 TLS 指纹分流**（同一端口）：Chrome115_PQ 指纹 → ALPN `h2`(代理转发通道)；
+  Go 指纹 + ALPN → `cursor-control-v1`(forwarder control)。**这就是之前直连被 302/RST 的根因。**
+- 发送 fwdHelloRequest JSON + `\n` → 服务端**成功解析**并返回结构化 JSON：
+  `{"v":1,"type":"error","code":"auth_failed","message":"authentication failed",...}`
+- 说明：TLS/ALPN/请求结构/字段名/MAC 结构**全部正确**，已到达服务端 MAC 校验环节。
+
+**唯一未通过：MAC 认证（auth_failed）= HMAC KEY 不对。**
+- 已排除：AES_key（虽能解 .dat/DNS，但不是 MAC key）；pPVW 候选（原文/ base64 解码都不是）；
+  .so 无全局硬编码 psk。
+- KEY 真身 = 每样本独立的 **control psk**，运行时经 JNI `setForwarderControl(String,bool)`
+  写入 bootstrap+0x238，由加壳主 dex 调用注入。**静态在已恢复代码里拿不到**。
+- 获取方式（任一，每样本一次即可，之后永久离线可用直到对方轮换）：
+  (a) 运行一次读进程内存 bootstrap+0x238；(b) hook setForwarderControl / hmacSHA256Hex；
+  (c) 脱壳恢复主 dex 里 setForwarderControl 的调用方常量。
+
+---
+
 ## MAC 算法（signForwarderHelloMAC，已确认）
+
+**从 ARM 汇编逐槽确认的字段顺序**（8 字段，"|" 分隔）：
+`v1 | hello | AppName | SDKVersion | DeviceID | versionStr | tsStr | Nonce`
+- versionStr = FormatUint(*LastVersion) 或 ""（LastVersion 为 nil 时）
+- tsStr = FormatInt(TS,10)
+- 服务端用**收到的字段值**重算，故字段值只需自洽；KEY 是唯一必须与服务端一致的秘密。
+
+（下方为早期推断，以上为汇编确认版）
+
 
 ```
 msg = strings.Join([

@@ -547,18 +547,18 @@ def generate_report():
     print(f"华为IP: {changes['total_huawei_previous']} → {changes['total_huawei_current']} (新增{len(changes['new_huawei'])} 消失{len(changes['removed_huawei'])})")
     if changes['new_huawei']:
         print(f"  新增华为: {', '.join(changes['new_huawei'][:5])}...")
-    if changes['new_huawei']:
-        print("检测到新华为IP，推送到GitHub...")
-        try:
-            subprocess.run(['git', 'add', '-A'], cwd=BASE_DIR, capture_output=True, timeout=30)
-            msg = f"新增华为IP: {', '.join(changes['new_huawei'][:5])} 共{len(changes['new_huawei'])}个"
-            subprocess.run(['git', 'commit', '-m', msg], cwd=BASE_DIR, capture_output=True, timeout=30)
-            env = os.environ.copy()
-            env['GIT_SSH_COMMAND'] = 'ssh -o ConnectTimeout=10'
-            subprocess.run(['git', 'push', 'origin', 'main'], cwd=BASE_DIR, capture_output=True, timeout=30, env=env)
-            print("✅ 已推送到GitHub")
-        except Exception as e:
-            print(f"推送失败: {e}")
+    # 每次都推送到GitHub
+    try:
+        subprocess.run(['git', 'add', '-A'], cwd=BASE_DIR, capture_output=True, timeout=30)
+        installed = stats.get('installed', 0)
+        msg = f"更新: 已安装{installed}个APK, {changes['total_current']}节点, {changes['total_huawei_current']}华为IP"
+        subprocess.run(['git', 'commit', '-m', msg], cwd=BASE_DIR, capture_output=True, timeout=30)
+        env = os.environ.copy()
+        env['GIT_SSH_COMMAND'] = 'ssh -o ConnectTimeout=15'
+        subprocess.run(['git', 'push', 'origin', 'main'], cwd=BASE_DIR, capture_output=True, timeout=60, env=env)
+        print("已推送到GitHub")
+    except Exception as e:
+        print(f"推送失败: {e}")
 
 def main():
     domains = load_all_domains()
