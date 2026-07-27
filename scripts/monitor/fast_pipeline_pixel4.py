@@ -33,8 +33,8 @@ STATE_FIELDS = ['apk_id','package','label','score','size_mb',
 def get_cloud(ip):
     ip = ip.split(':')[0] if ':' in ip else ip
     if ip.startswith('8.13') or ip.startswith('8.138') or ip.startswith('8.148') or ip.startswith('8.163'): return "阿里云"
-    elif any(ip.startswith(p) for p in ['43.','42.','106.','159.75','139.','175.178','134.175','1.1','111.230','119.','123.207','129.204','193.112','115.175','139.9','1.14','1.202']): return "腾讯云"
-    elif any(ip.startswith(p) for p in ['110.41','113.45','113.46','114.132','116.205','121.37','124.71']): return "华为云"
+    elif any(ip.startswith(p) for p in ['43.','42.','106.','114.132','159.75','139.','175.178','134.175','1.1','111.230','119.','123.207','129.204','193.112','115.175','139.9','1.14','1.202']): return "腾讯云"
+    elif any(ip.startswith(p) for p in ['110.41','113.45','113.46','116.205','121.37','124.71']): return "华为云"
     return "未知"
 
 def load_json(path):
@@ -108,10 +108,10 @@ def click_popup():
         time.sleep(2)
     return False
 
-def get_proxy_nodes(pkg, max_wait=30):
+def get_proxy_nodes(pkg, max_wait=15):
     """通过root直接读取 sdk_forwarder_fixed.json"""
     for i in range(max_wait // 5):
-        time.sleep(5)
+        time.sleep(3)
         # 方法1: 直接cat (Pixel 4有root)
         result = subprocess.run(
             f'{ADB} shell su -c "cat /sdcard/Android/data/{pkg}/files/sdk_forwarder_fixed.json 2>/dev/null"',
@@ -138,11 +138,11 @@ def get_proxy_nodes(pkg, max_wait=30):
                 pass
     return []
 
-def get_proxy_nodes_via_proc(pkg, max_wait=30):
+def get_proxy_nodes_via_proc(pkg, max_wait=15):
     """备用方法: 通过 /proc/PID/net/tcp 获取节点 (root不需要但可作为补充)"""
     all_nodes = set()
     for i in range(max_wait // 5):
-        time.sleep(5)
+        time.sleep(3)
         try:
             r = subprocess.run(f'{ADB} shell pidof {pkg}'.split(),
                              capture_output=True, text=True, timeout=5)
@@ -260,8 +260,46 @@ def load_all_domains():
                     all_domains.append(row)
     return all_domains
 
+def preload_existing_apks():
+    """按CSV顺序(旧CSV先,新CSV后)扫描已下载但未处理的APK放入安装队列"""
+    import csv as csvmod
+    # 按CSV顺序获取域名
+    ordered_domains = []
+    seen = set()
+    for csv_path in [DOMAIN_CSV_OLD, DOMAIN_CSV_NEW]:
+        if not os.path.exists(csv_path):
+            continue
+        with open(csv_path, encoding='utf-8-sig') as f:
+            for row in csvmod.DictReader(f):
+                domain = row.get('pre_host','').strip()
+                if domain and domain not in seen:
+                    seen.add(domain)
+                    ordered_domains.append(domain)
+    
+    # 按域名顺序检查是否有已下载的APK
+    preloaded = 0
+    for domain in ordered_domains:
+        if domain in existing_ids:
+            continue
+        apk_path = os.path.join(APK_DIR, domain + '.apk')
+        if not os.path.exists(apk_path) or os.path.getsize(apk_path) < 1000000:
+            continue
+        score, pkg, label = detect_apk(apk_path)
+        if score < 80:
+            continue
+        if pkg in existing_pkgs:
+            continue
+        apk_queue.put({
+            'domain':domain,'url':'','apk_path':apk_path,
+            'score':score,'package':pkg,'label':label,'size_mb':os.path.getsize(apk_path)//1024//1024,
+            'download_time':0,'detect_time':0
+        })
+        preloaded += 1
+    print(f'预加载{preloaded}个已下载APK到安装队列(按CSV顺序)', flush=True)
+
 def download_worker(domains):
-    """线程1：下载+检测→队列"""
+    """线程1：先预加载已下载APK,然后下载+检测→队列"""
+    preload_existing_apks()
     for i, d in enumerate(domains):
         domain = d.get('pre_host','')
         url = d.get('max(prev)', f'https://{domain}/')
@@ -366,7 +404,7 @@ def install_worker():
         t4 = time.time()
         subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(),
                       capture_output=True, timeout=10)
-        time.sleep(5)
+        time.sleep(3)
         # 点击通知弹窗
         click_popup()
         # 获取节点 (优先 sdk_forwarder_fixed.json, 备用 /proc/PID/net/tcp)
@@ -438,7 +476,7 @@ def install_worker():
         print(f'安装{t_inst:.1f}s 节点{t_node:.1f}s → {len(nodes)}节点 {len(hw_ips)}华为')
         stats['installed']+=1
 
-        if stats['installed'] % 5 == 0:
+        if stats['installed'] % 1 == 0:
             generate_report()
 
 def compute_ip_changes():
@@ -476,6 +514,22 @@ def generate_report():
     run_result = {'timestamp': ts, 'stats': stats,
                   'apk_details': current_run_details, 'ip_changes': changes}
     save_json(f'{out_dir}/run_result.json', run_result)
+    # 同时写带时间戳的目录(regen_html.py读取用, 用旧格式)
+    ts_dir = f'{OUTPUTS_DIR}/{ts}'
+    os.makedirs(ts_dir, exist_ok=True)
+    # 旧格式: [{name, package, proxy_nodes, proxy_count, huawei_count}]
+    old_format = []
+    for d in db.get('apks', []):
+        nodes = d.get('proxy_nodes', [])
+        hw = [ip for ip in nodes if get_cloud(ip) == '华为云']
+        old_format.append({
+            'name': d.get('label', d.get('id','')),
+            'package': d.get('package',''),
+            'proxy_nodes': nodes,
+            'proxy_count': len(nodes),
+            'huawei_count': len(hw),
+        })
+    save_json(f'{ts_dir}/result.json', old_format)
     
     # 调用 regen_html.py 生成HTML
     try:

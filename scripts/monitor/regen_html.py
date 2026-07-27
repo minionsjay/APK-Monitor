@@ -31,8 +31,8 @@ def img_b64_full(path):
 
 def get_cloud(ip):
     if ip.startswith('8.13') or ip.startswith('8.138') or ip.startswith('8.148') or ip.startswith('8.163'): return "阿里云"
-    elif any(ip.startswith(p) for p in ['43.','42.','106.','159.75','139.','175.178','134.175','1.1','111.230','119.','123.207','129.204','193.112','115.175','139.9']): return "腾讯云"
-    elif any(ip.startswith(p) for p in ['110.41','113.45','113.46','114.132','116.205','121.37','124.71']): return "华为云"
+    elif any(ip.startswith(p) for p in ['43.','42.','106.','114.132','159.75','139.','175.178','134.175','1.1','111.230','119.','123.207','129.204','193.112','115.175','139.9']): return "腾讯云"
+    elif any(ip.startswith(p) for p in ['110.41','113.45','113.46','116.205','121.37','124.71']): return "华为云"
     return "未知"
 
 ip_tls_info = {}
@@ -144,7 +144,7 @@ table.apk-detail th {{font-size:17px;padding:12px 14px}} table.apk-detail td {{f
 <div class="stats">
 <div class="stat-card"><div class="stat-number">{len(db['apks'])}</div><div class="stat-label">APK 数量</div></div>
 <div class="stat-card"><div class="stat-number">{len(all_nodes)}</div><div class="stat-label">代理节点</div></div>
-<div class="stat-card"><div class="stat-number">29</div><div class="stat-label">华为云 IP</div></div>
+<div class="stat-card"><div class="stat-number">44</div><div class="stat-label">华为云 IP</div></div>
 <div class="stat-card"><div class="stat-number">{len(monitor_records)}</div><div class="stat-label">监控次数</div></div>
 </div>
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
