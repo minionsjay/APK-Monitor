@@ -304,7 +304,7 @@ def install_worker():
             save_json(DB_PATH, db)
             # 保存总节点IP到nodes/
             with open(f"{NODES_DIR}/all_nodes.txt", 'w') as f:
-                for ip in sorted(all_proxy): f.write(ip + '\n')
+                for ip in sorted(all_proxy): f.write(ip + ' [' + get_cloud(ip) + ']\n')
             hw_list = [ip for ip in all_proxy if get_cloud(ip) == "华为云"]
             with open(f"{NODES_DIR}/huawei_nodes.txt", 'w') as f:
                 for ip in sorted(hw_list): f.write(ip + '\n')
