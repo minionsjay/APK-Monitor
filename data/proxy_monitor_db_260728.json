@@ -934,6 +934,25 @@
       "proxy_count": 8,
       "first_seen": "2026-07-28 22:34",
       "last_collected": "2026-07-28 22:34"
+    },
+    {
+      "id": "725c14.j3fyi.com",
+      "package": "tos.erxirnqkfastks.leytoytbbxdqwd",
+      "label": "CrHEAy",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.153.71:30122",
+        "8.134.180.186:30139",
+        "8.138.118.169:30122",
+        "8.148.148.131:30139",
+        "8.163.107.239:30118",
+        "8.163.88.46:30118"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-07-28 22:35",
+      "last_collected": "2026-07-28 22:35"
     }
   ],
   "all_proxy_nodes": [
