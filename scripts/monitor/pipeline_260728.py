@@ -116,6 +116,50 @@ def get_proxy_nodes_via_proc(pkg, max_wait=15):
         except: pass
     return sorted(all_nodes) if all_nodes else []
 
+def extract_icon(apk_path, apk_id):
+    """从APK提取图标"""
+    try:
+        result = subprocess.run([AAPT, 'dump', 'badging', apk_path], capture_output=True, text=True, timeout=10)
+        icon_path = None
+        for line in result.stdout.split('\n'):
+            if 'application-icon-640' in line:
+                m = re.search(r"'([^']+)'"  , line)
+                if m: icon_path = m.group(1); break
+        with zipfile.ZipFile(apk_path) as zf:
+            webps = [(n, zf.getinfo(n).file_size) for n in zf.namelist() if n.endswith('.webp')]
+            if not webps:
+                pngs = [(n, zf.getinfo(n).file_size) for n in zf.namelist() if n.endswith('.png') and 'res/' in n]
+                if pngs:
+                    pngs.sort(key=lambda x: x[1], reverse=True)
+                    data = zf.read(pngs[0][0])
+                else: return None
+            else:
+                found = False
+                if icon_path:
+                    path_parts = icon_path.replace('\\','/').split('/')
+                    last_part = path_parts[-1] if path_parts else ''
+                    for name, size in webps:
+                        name_parts = name.replace('\\','/').split('/')
+                        if last_part and name_parts[-1] == last_part:
+                            data = zf.read(name); found = True; break
+                if not found:
+                    webps.sort(key=lambda x: x[1], reverse=True)
+                    data = zf.read(webps[0][0])
+            icon_file = f'{BASE_DIR}/screenshots/icons/{apk_id}.png'
+            os.makedirs(os.path.dirname(icon_file), exist_ok=True)
+            with open(icon_file, 'wb') as f: f.write(data)
+            return icon_file
+    except: return None
+
+def screenshot(apk_id, pkg):
+    """截图"""
+    try:
+        subprocess.run(f'{ADB} shell screencap -p /sdcard/shot.png'.split(), capture_output=True, timeout=5)
+        shot_path = f'{BASE_DIR}/screenshots/{apk_id}.png'
+        subprocess.run(f'{ADB} pull /sdcard/shot.png {shot_path}'.split(), capture_output=True, timeout=10)
+        return shot_path if os.path.exists(shot_path) else None
+    except: return None
+
 def collect_apk_artifacts(pkg, domain):
     """收集APK的sdk_cache, sdk_forwarder_fixed, uuid, .dat文件"""
     apk_artifact_dir = f"{APK_DIR}/{domain}"
@@ -240,6 +284,10 @@ def install_worker():
         # 收集APK artifacts (抓包/sdk_cache/sdk_forwarder/uuid/.dat)
         collect_apk_artifacts(pkg, domain)
         
+        # 截图 + 提取图标
+        screenshot(domain, pkg)
+        extract_icon(apk_path, domain)
+
         # force-stop + uninstall
         subprocess.run(f'{ADB} shell am force-stop {pkg}'.split(), capture_output=True, timeout=10)
         subprocess.run(f'{ADB} uninstall {pkg}'.split(), capture_output=True, timeout=30)
