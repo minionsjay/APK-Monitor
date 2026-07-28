@@ -2474,6 +2474,24 @@
       "proxy_count": 2,
       "first_seen": "2026-07-28 23:58",
       "last_collected": "2026-07-28 23:58"
+    },
+    {
+      "id": "725yh119.0awug.com",
+      "package": "vet.nayiwhdrkdpy.eliwhfffucjfajvjnnua",
+      "label": "wktTBm",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "183.240.98.215:443",
+        "218.91.113.207:443",
+        "8.134.153.71:30122",
+        "8.134.33.143:30151",
+        "8.138.118.169:30122"
+      ],
+      "proxy_count": 6,
+      "first_seen": "2026-07-29 00:00",
+      "last_collected": "2026-07-29 00:00"
     }
   ],
   "all_proxy_nodes": [
