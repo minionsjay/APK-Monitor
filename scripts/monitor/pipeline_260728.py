@@ -298,11 +298,25 @@ def generate_report(db, all_proxy):
             with open(f"{NODES_DIR}/new_huawei_alert.txt", 'a') as f:
                 f.write(f"[{ts}] 新华为IP: {', '.join(sorted(new_hw))}\n")
     
-    # 生成独立HTML(只包含今天检测的APK)
+    # 用regen_html.py生成完整HTML(和之前格式一样)
     try:
-        html = generate_html(db, all_proxy)
-        with open(f'{RESULTS_DIR}/report.html', 'w') as f:
-            f.write(html)
+        # 临时把260728数据库复制为主数据库
+        import shutil
+        main_db = f'{BASE_DIR}/data/proxy_monitor_db.json'
+        backup_db = f'{BASE_DIR}/data/proxy_monitor_db_backup.json'
+        if os.path.exists(main_db):
+            shutil.copy2(main_db, backup_db)
+        shutil.copy2(DB_PATH, main_db)
+        # 调用regen_html.py
+        subprocess.run(['python3', f'{BASE_DIR}/scripts/monitor/regen_html.py'], capture_output=True, timeout=60)
+        # 复制结果到results/
+        src = f'{BASE_DIR}/forensics/pcaps/hw_forensics_report.html'
+        dst = f'{RESULTS_DIR}/report.html'
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
+        # 恢复主数据库
+        if os.path.exists(backup_db):
+            shutil.copy2(backup_db, main_db)
     except Exception as e:
         print(f'HTML生成失败: {e}')
     
