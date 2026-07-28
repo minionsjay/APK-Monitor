@@ -343,7 +343,7 @@ def generate_html(db, all_proxy):
         label = a.get('label', a.get('id',''))
         domain = a.get('id','')
         pkg = a.get('package','')
-        ip_tags = ' '.join([f'<span class="tag tag-{"huawei" if get_cloud(ip)=="华为云" else "aliyun" if get_cloud(ip)=="阿里云" else "tencent" if get_cloud(ip)=="腾讯云" else "unknown"}">{ip}</span>' for ip in nodes[:20]])
+        ip_tags = ' '.join(['<span class="tag tag-' + ('huawei' if get_cloud(ip)=='华为云' else 'aliyun' if get_cloud(ip)=='阿里云' else 'tencent' if get_cloud(ip)=='腾讯云' else 'unknown') + '">' + ip + '</span>' for ip in nodes[:20]])
         parts.append(f'<tr><td><strong>{label}</strong></td><td>{pkg}</td><td>{domain}</td><td>{len(nodes)}</td><td>{len(hw)}</td><td>{ip_tags}</td></tr>')
     parts.append('</table>')
     
