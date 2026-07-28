@@ -55,7 +55,15 @@ csv_b64=base64.b64encode(csv_buf.getvalue().encode('utf-8-sig')).decode()
 
 parts = []
 parts.append('<!DOCTYPE html>\n<html lang="zh-CN"><head><meta charset="UTF-8"><title>260728 APK检测报告</title>')
-parts.append('<style>body{font-family:sans-serif;margin:20px;background:#f5f5f5}h1{color:#333;border-bottom:3px solid #e74c3c;padding-bottom:10px}h2{color:#2c3e50;border-left:4px solid #3498db;padding-left:10px;margin-top:30px}table{border-collapse:collapse;width:100%;margin:10px 0;background:white;box-shadow:0 1px 3px rgba(0,0,0,.1)}th{background:#2c3e50;color:white;padding:10px;text-align:left}td{padding:8px;border-bottom:1px solid #ddd}tr:hover{background:#f0f0f0}.tag{display:inline-block;padding:3px 10px;border-radius:3px;font-size:13px;margin:1px}.tag-aliyun{background:#ff6600;color:white}.tag-tencent{background:#00a4ef;color:white}.tag-huawei{background:#e60012;color:white}.tag-unknown{background:#95a5a6;color:white}.stat-card{background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);display:inline-block;margin:5px;text-align:center;min-width:120px}.stat-number{font-size:2em;font-weight:bold;color:#2c3e50}img.icon{width:100px;height:100px;border-radius:10px}.mono{font-family:monospace;font-size:13px}.btn-download{display:inline-block;background:#27ae60;color:white;padding:8px 16px;border-radius:5px;text-decoration:none;font-size:14px;margin:5px 0;cursor:pointer}</style></head><body>')
+parts.append('<style>body{font-family:sans-serif;margin:20px;background:#f5f5f5}h1{color:#333;border-bottom:3px solid #e74c3c;padding-bottom:10px}h2{color:#2c3e50;border-left:4px solid #3498db;padding-left:10px;margin-top:30px}table{border-collapse:collapse;width:100%;margin:10px 0;background:white;box-shadow:0 1px 3px rgba(0,0,0,.1)}th{background:#2c3e50;color:white;padding:10px;text-align:left}td{padding:8px;border-bottom:1px solid #ddd}tr:hover{background:#f0f0f0}.tag{display:inline-block;padding:3px 10px;border-radius:3px;font-size:13px;margin:1px}.tag-aliyun{background:#ff6600;color:white}.tag-tencent{background:#00a4ef;color:white}.tag-huawei{background:#e60012;color:white}.tag-unknown{background:#95a5a6;color:white}.stat-card{background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);display:inline-block;margin:5px;text-align:center;min-width:120px}.stat-number{font-size:2em;font-weight:bold;color:#2c3e50}img.icon{width:100px;height:100px;border-radius:10px}.mono{font-family:monospace;font-size:13px}.btn-download{display:inline-block;background:#27ae60;color:white;padding:8px 16px;border-radius:5px;text-decoration:none;font-size:14px;margin:5px 0;cursor:pointer}img.screenshot-thumb{width:120px;border-radius:5px;border:1px solid #ddd;cursor:pointer}.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:9999;justify-content:center;align-items:center}.lightbox.active{display:flex}.lightbox img{max-width:90%;max-height:85%}.lb-close{position:absolute;top:20px;right:30px;color:white;font-size:40px;cursor:pointer}</style></head><body>
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLb()">
+<span class="lb-close" onclick="closeLb()">&times;</span>
+<img id="lb-img" src="">
+</div>
+<script>
+function openLb(b){var lb=document.getElementById('lightbox');document.getElementById('lb-img').src='data:image/png;base64,'+b;lb.classList.add('active')}
+function closeLb(){document.getElementById('lightbox').classList.remove('active')}
+</script>')
 parts.append('<h1>260728 APK检测报告</h1>')
 hw_count = len([ip for ip in all_nodes if get_cloud(ip)=="华为云"])
 has_nodes = [a for a in apks if a.get('proxy_count',0)>0]
@@ -68,7 +76,7 @@ parts.append('<div class="stat-card"><div class="stat-number">'+str(hw_count)+'<
 parts.append('<script>function downloadCSV(){var c="'+csv_b64+'";var l=document.createElement("a");l.href="data:text/csv;base64,"+c;l.download="APK_网络请求详情.csv";l.click()}</script>')
 parts.append('<h2>APK信息与网络请求详情</h2>')
 parts.append('<button class="btn-download" onclick="downloadCSV()">下载为CSV</button>')
-parts.append('<table><tr><th>APP名称</th><th>APP包名</th><th>安装包图标</th><th>app_name</th><th>端口</th><th>首次发现</th><th>监控时间</th><th>服务器地址（华为云IP）</th><th>请求域名(SNI)</th><th>请求方法</th><th>请求地址</th><th>请求协议</th><th>请求头大小</th><th>返回状态码</th><th>返回头大小</th><th>返回内容大小</th><th>返回类型</th><th>返回内容摘选</th><th>代理节点数</th></tr>')
+parts.append('<table><tr><th>APP名称</th><th>APP包名</th><th>安装包图标</th><th>运行截图</th><th>app_name</th><th>端口</th><th>首次发现</th><th>监控时间</th><th>服务器地址（华为云IP）</th><th>请求域名(SNI)</th><th>请求方法</th><th>请求地址</th><th>请求协议</th><th>请求头大小</th><th>返回状态码</th><th>返回头大小</th><th>返回内容大小</th><th>返回类型</th><th>返回内容摘选</th><th>代理节点数</th></tr>')
 
 for apk in apks:
     aid=apk.get('id','');pkg=apk.get('package','');app_name=apk.get('app_name','')
