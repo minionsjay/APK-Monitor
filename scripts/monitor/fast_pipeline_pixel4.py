@@ -12,7 +12,7 @@ import subprocess, json, os, time, re, csv, zipfile, hashlib, threading, queue
 from datetime import datetime
 
 # ====== Pixel 4 配置 ======
-ADB = "adb -s 192.168.1.16:39653"
+ADB = "adb -s 192.168.1.16:38817"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
 APK_DIR = f"{BASE_DIR}/new_samples"
@@ -21,7 +21,7 @@ STATE_CSV = f"{BASE_DIR}/data/apk_state.csv"                # Pixel 4 状态表
 IP_HISTORY = f"{BASE_DIR}/data/ip_history.json"            # Pixel 4 IP历史
 DOMAIN_CSV_OLD = f"{BASE_DIR}/data/apk-domain.csv"         # 旧域名列表 (1000)
 DOMAIN_CSV_NEW = f"{BASE_DIR}/data/apk-domain-260724.csv"   # 新域名列表 (1112)
-OUTPUTS_DIR = f"{BASE_DIR}/outputs"
+OUTPUTS_DIR = f"{BASE_DIR}/outputs_rerun"
 STORAGE_THRESHOLD_GB = 5
 
 STATE_FIELDS = ['apk_id','package','label','score','size_mb',
@@ -547,11 +547,23 @@ def generate_report():
     print(f"华为IP: {changes['total_huawei_previous']} → {changes['total_huawei_current']} (新增{len(changes['new_huawei'])} 消失{len(changes['removed_huawei'])})")
     if changes['new_huawei']:
         print(f"  新增华为: {', '.join(changes['new_huawei'][:5])}...")
+    # 新旧华为IP对比
+    import json as jsonmod
+    old_hw_path = '/tmp/old_hw_ips.json'
+    if os.path.exists(old_hw_path):
+        with open(old_hw_path) as f:
+            old_hw = set(jsonmod.load(f))
+        new_hw_set = set(changes.get('all_proxy',[])) - old_hw
+        new_hw_filtered = {ip for ip in new_hw_set if any(ip.startswith(p) for p in ['110.41','113.45','113.46','116.205','121.37','124.71'])}
+        if new_hw_filtered:
+            print("*** 告警! 发现" + str(len(new_hw_filtered)) + "个新华为IP! ***")
+            for ip in sorted(new_hw_filtered):
+                print("  新华为IP: " + ip)
     # 每次都推送到GitHub
     try:
         subprocess.run(['git', 'add', '-A'], cwd=BASE_DIR, capture_output=True, timeout=30)
         installed = stats.get('installed', 0)
-        msg = f"更新: 已安装{installed}个APK, {changes['total_current']}节点, {changes['total_huawei_current']}华为IP"
+        msg = f"重跑更新: 已安装{installed}个APK, {changes['total_current']}节点, {changes['total_huawei_current']}华为IP"
         subprocess.run(['git', 'commit', '-m', msg], cwd=BASE_DIR, capture_output=True, timeout=30)
         env = os.environ.copy()
         env['GIT_SSH_COMMAND'] = 'ssh -o ConnectTimeout=15'
