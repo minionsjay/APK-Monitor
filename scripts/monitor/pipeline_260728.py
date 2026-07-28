@@ -317,7 +317,7 @@ def generate_report(db, all_proxy):
     except: pass
 
 def generate_html(db, all_proxy):
-    生成独立HTML报告,只包含今天检测的APK
+    """生成独立HTML报告,只包含今天检测的APK"""
     apks = db.get('apks', [])
     hw_ips = [ip for ip in all_proxy if get_cloud(ip) == '华为云']
     ali_ips = [ip for ip in all_proxy if get_cloud(ip) == '阿里云']
