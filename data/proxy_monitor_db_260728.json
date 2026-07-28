@@ -2693,6 +2693,20 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 00:12",
       "last_collected": "2026-07-29 00:12"
+    },
+    {
+      "id": "726c236.8mjkp.com",
+      "package": "wij.isaqvhhhdpeulb.ejhcagyuagfpnh",
+      "label": "MuYrdX",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 00:14",
+      "last_collected": "2026-07-29 00:14"
     }
   ],
   "all_proxy_nodes": [
