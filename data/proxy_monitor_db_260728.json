@@ -1547,6 +1547,25 @@
       "proxy_count": 7,
       "first_seen": "2026-07-28 23:07",
       "last_collected": "2026-07-28 23:07"
+    },
+    {
+      "id": "726c269.3550d.com",
+      "package": "udm.sxbacfjapfjsma.cdtgrbbmaveygy",
+      "label": "fuhMGx",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "183.240.98.215:443",
+        "218.91.113.207:443",
+        "47.113.75.142:443",
+        "8.134.180.186:30139",
+        "8.134.33.143:30151",
+        "8.148.148.131:30139"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-07-28 23:08",
+      "last_collected": "2026-07-28 23:08"
     }
   ],
   "all_proxy_nodes": [
