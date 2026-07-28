@@ -2288,6 +2288,25 @@
       "proxy_count": 6,
       "first_seen": "2026-07-28 23:47",
       "last_collected": "2026-07-28 23:47"
+    },
+    {
+      "id": "726sl064.0xpft.com",
+      "package": "irk.wctnlsoygic.jpmycffjkbjvtdbh",
+      "label": "XHFIZI",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "183.240.98.215:443",
+        "218.91.113.207:443",
+        "8.134.33.143:30151",
+        "8.148.148.131:30139",
+        "8.163.107.239:30118",
+        "8.163.88.46:30118"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-07-28 23:48",
+      "last_collected": "2026-07-28 23:48"
     }
   ],
   "all_proxy_nodes": [
