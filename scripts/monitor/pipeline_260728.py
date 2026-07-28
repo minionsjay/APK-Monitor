@@ -298,12 +298,11 @@ def generate_report(db, all_proxy):
             with open(f"{NODES_DIR}/new_huawei_alert.txt", 'a') as f:
                 f.write(f"[{ts}] 新华为IP: {', '.join(sorted(new_hw))}\n")
     
-    # 生成HTML
+    # 生成独立HTML(只包含今天检测的APK)
     try:
-        subprocess.run(['python3', f'{BASE_DIR}/scripts/monitor/regen_html.py'], capture_output=True, timeout=60)
-        src = f'{BASE_DIR}/forensics/pcaps/hw_forensics_report.html'
-        dst = f'{RESULTS_DIR}/report.html'
-        if os.path.exists(src): shutil.copy2(src, dst)
+        html = generate_html(db, all_proxy)
+        with open(f'{RESULTS_DIR}/report.html', 'w') as f:
+            f.write(html)
     except Exception as e:
         print(f'HTML生成失败: {e}')
     
@@ -316,6 +315,48 @@ def generate_report(db, all_proxy):
         env = os.environ.copy(); env['GIT_SSH_COMMAND'] = 'ssh -o ConnectTimeout=15'
         subprocess.run(['git', 'push', 'origin', 'main'], cwd=BASE_DIR, capture_output=True, timeout=60, env=env)
     except: pass
+
+def generate_html(db, all_proxy):
+    生成独立HTML报告,只包含今天检测的APK
+    apks = db.get('apks', [])
+    hw_ips = [ip for ip in all_proxy if get_cloud(ip) == '华为云']
+    ali_ips = [ip for ip in all_proxy if get_cloud(ip) == '阿里云']
+    tencent_ips = [ip for ip in all_proxy if get_cloud(ip) == '腾讯云']
+    other_ips = [ip for ip in all_proxy if get_cloud(ip) not in ('华为云','阿里云','腾讯云')]
+    has_nodes = [a for a in apks if a.get('proxy_count',0) > 0]
+    
+    parts = []
+    parts.append('<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>260728 APK检测报告</title>')
+    parts.append('<style>body{font-family:sans-serif;margin:20px;background:#f5f5f5}h1{color:#333;border-bottom:3px solid #e74c3c;padding-bottom:10px}h2{color:#2c3e50;border-left:4px solid #3498db;padding-left:10px}table{border-collapse:collapse;width:100%;margin:10px 0;background:white;box-shadow:0 1px 3px rgba(0,0,0,.1)}th{background:#2c3e50;color:white;padding:10px;text-align:left}td{padding:8px;border-bottom:1px solid #ddd}tr:hover{background:#f0f0f0}.stat-card{background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);display:inline-block;margin:5px;text-align:center;min-width:120px}.stat-number{font-size:2em;font-weight:bold;color:#2c3e50}.tag{display:inline-block;padding:3px 10px;border-radius:3px;font-size:13px;margin:1px}.tag-huawei{background:#e60012;color:white}.tag-aliyun{background:#ff6600;color:white}.tag-tencent{background:#00a4ef;color:white}.tag-unknown{background:#95a5a6;color:white}</style></head><body>')
+    parts.append(f'<h1>260728 APK检测报告</h1>')
+    parts.append(f'<p>生成时间: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>')
+    parts.append(f'<div><div class="stat-card"><div class="stat-number">{len(apks)}</div>APK总数</div>')
+    parts.append(f'<div class="stat-card"><div class="stat-number">{len(has_nodes)}</div>有节点</div>')
+    parts.append(f'<div class="stat-card"><div class="stat-number">{len(all_proxy)}</div>总节点IP</div>')
+    parts.append(f'<div class="stat-card"><div class="stat-number">{len(hw_ips)}</div>华为云IP</div></div>')
+    
+    parts.append('<h2>APK信息与网络请求详情</h2>')
+    parts.append('<table><tr><th>APP名称</th><th>包名</th><th>域名</th><th>节点数</th><th>华为数</th><th>节点IP列表</th></tr>')
+    for a in apks:
+        nodes = a.get('proxy_nodes', [])
+        hw = [ip for ip in nodes if get_cloud(ip) == '华为云']
+        label = a.get('label', a.get('id',''))
+        domain = a.get('id','')
+        pkg = a.get('package','')
+        ip_tags = ' '.join([f'<span class="tag tag-{"huawei" if get_cloud(ip)=="华为云" else "aliyun" if get_cloud(ip)=="阿里云" else "tencent" if get_cloud(ip)=="腾讯云" else "unknown"}">{ip}</span>' for ip in nodes[:20]])
+        parts.append(f'<tr><td><strong>{label}</strong></td><td>{pkg}</td><td>{domain}</td><td>{len(nodes)}</td><td>{len(hw)}</td><td>{ip_tags}</td></tr>')
+    parts.append('</table>')
+    
+    parts.append('<h2>华为云IP列表</h2>')
+    for ip in sorted(hw_ips):
+        apks_with = [a.get('label','?') for a in apks if ip in a.get('proxy_nodes',[])]
+        parts.append(f'<div><span class="tag tag-huawei">{ip}</span> ({len(apks_with)}个APK) {', '.join(apks_with[:3])}</div>')
+    
+    parts.append(f'<h2>IP分布</h2>')
+    parts.append(f'<p>阿里云: {len(ali_ips)} | 腾讯云: {len(tencent_ips)} | 华为云: {len(hw_ips)} | 其他: {len(other_ips)}</p>')
+    
+    parts.append('</body></html>')
+    return ''.join(parts)
 
 def compute_ip_changes(db, all_proxy):
     current_ips = set(all_proxy)
