@@ -2537,6 +2537,20 @@
       "proxy_count": 6,
       "first_seen": "2026-07-29 00:02",
       "last_collected": "2026-07-29 00:02"
+    },
+    {
+      "id": "725c228.p6lw6.com",
+      "package": "wij.isaqvhhhdpeulb.ejhcagyuagfpnh",
+      "label": "MuYrdX",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 00:03",
+      "last_collected": "2026-07-29 00:03"
     }
   ],
   "all_proxy_nodes": [
