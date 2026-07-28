@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """260728独立HTML报告 - 只包含今天检测的APK"""
-import json, base64, os, subprocess, re, csv, io
+import json, base64, os, io
 from datetime import datetime
 from PIL import Image
 
@@ -49,21 +49,46 @@ for apk in apks:
         csv_rows.append({'APP名称':get_label(aid,apk),'APP包名':apk.get('package',''),'app_name':apk.get('app_name',''),'端口':apk.get('app_domain_port',''),'首次发现':apk.get('first_seen',''),'监控时间':apk.get('last_collected',''),'服务器地址':str(ip)+':'+str(apk.get('app_domain_port','')),'请求域名(SNI)':apk.get('sni',''),'请求方法':'POST (TLS)','请求地址':'https://'+str(ip)+':'+str(apk.get('app_domain_port','')),'请求协议':'TLS 1.2+JSON','请求头大小':str(s.get('tx_bytes','~247'))+'B','返回状态码':'200','返回头大小':str(s.get('rx_bytes','~1470'))+'B','返回内容大小':'~4500B','返回类型':'TLS AppData','返回内容摘选':'FixedA-E','代理节点数':apk.get('proxy_count',0)})
 csv_buf=io.StringIO()
 if csv_rows:
-    writer=csv.DictWriter(csv_buf,fieldnames=list(csv_rows[0].keys()))
+    import csv as csvmod
+    writer=csvmod.DictWriter(csv_buf,fieldnames=list(csv_rows[0].keys()))
     writer.writeheader();writer.writerows(csv_rows)
 csv_b64=base64.b64encode(csv_buf.getvalue().encode('utf-8-sig')).decode()
 
 parts = []
-parts.append('<!DOCTYPE html>\n<html lang="zh-CN"><head><meta charset="UTF-8"><title>260728 APK检测报告</title>')
-parts.append('<style>body{font-family:sans-serif;margin:20px;background:#f5f5f5}h1{color:#333;border-bottom:3px solid #e74c3c;padding-bottom:10px}h2{color:#2c3e50;border-left:4px solid #3498db;padding-left:10px;margin-top:30px}table{border-collapse:collapse;width:100%;margin:10px 0;background:white;box-shadow:0 1px 3px rgba(0,0,0,.1)}th{background:#2c3e50;color:white;padding:10px;text-align:left}td{padding:8px;border-bottom:1px solid #ddd}tr:hover{background:#f0f0f0}.tag{display:inline-block;padding:3px 10px;border-radius:3px;font-size:13px;margin:1px}.tag-aliyun{background:#ff6600;color:white}.tag-tencent{background:#00a4ef;color:white}.tag-huawei{background:#e60012;color:white}.tag-unknown{background:#95a5a6;color:white}.stat-card{background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);display:inline-block;margin:5px;text-align:center;min-width:120px}.stat-number{font-size:2em;font-weight:bold;color:#2c3e50}img.icon{width:100px;height:100px;border-radius:10px}.mono{font-family:monospace;font-size:13px}.btn-download{display:inline-block;background:#27ae60;color:white;padding:8px 16px;border-radius:5px;text-decoration:none;font-size:14px;margin:5px 0;cursor:pointer}img.screenshot-thumb{width:120px;border-radius:5px;border:1px solid #ddd;cursor:pointer}.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:9999;justify-content:center;align-items:center}.lightbox.active{display:flex}.lightbox img{max-width:90%;max-height:85%}.lb-close{position:absolute;top:20px;right:30px;color:white;font-size:40px;cursor:pointer}</style></head><body>
-<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLb()">
-<span class="lb-close" onclick="closeLb()">&times;</span>
-<img id="lb-img" src="">
-</div>
-<script>
-function openLb(b){var lb=document.getElementById('lightbox');document.getElementById('lb-img').src='data:image/png;base64,'+b;lb.classList.add('active')}
-function closeLb(){document.getElementById('lightbox').classList.remove('active')}
-</script>')
+parts.append('<!DOCTYPE html>')
+parts.append('<html lang="zh-CN"><head><meta charset="UTF-8"><title>260728 APK检测报告</title>')
+parts.append('<style>')
+parts.append('body{font-family:sans-serif;margin:20px;background:#f5f5f5}')
+parts.append('h1{color:#333;border-bottom:3px solid #e74c3c;padding-bottom:10px}')
+parts.append('h2{color:#2c3e50;border-left:4px solid #3498db;padding-left:10px;margin-top:30px}')
+parts.append('table{border-collapse:collapse;width:100%;margin:10px 0;background:white;box-shadow:0 1px 3px rgba(0,0,0,.1)}')
+parts.append('th{background:#2c3e50;color:white;padding:10px;text-align:left}')
+parts.append('td{padding:8px;border-bottom:1px solid #ddd}')
+parts.append('tr:hover{background:#f0f0f0}')
+parts.append('.tag{display:inline-block;padding:3px 10px;border-radius:3px;font-size:13px;margin:1px}')
+parts.append('.tag-aliyun{background:#ff6600;color:white}')
+parts.append('.tag-tencent{background:#00a4ef;color:white}')
+parts.append('.tag-huawei{background:#e60012;color:white}')
+parts.append('.tag-unknown{background:#95a5a6;color:white}')
+parts.append('.stat-card{background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1);display:inline-block;margin:5px;text-align:center;min-width:120px}')
+parts.append('.stat-number{font-size:2em;font-weight:bold;color:#2c3e50}')
+parts.append('img.icon{width:100px;height:100px;border-radius:10px}')
+parts.append('img.screenshot-thumb{width:120px;border-radius:5px;border:1px solid #ddd;cursor:pointer}')
+parts.append('.mono{font-family:monospace;font-size:13px}')
+parts.append('.btn-download{display:inline-block;background:#27ae60;color:white;padding:8px 16px;border-radius:5px;text-decoration:none;font-size:14px;margin:5px 0;cursor:pointer}')
+parts.append('.lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:9999;justify-content:center;align-items:center}')
+parts.append('.lightbox.active{display:flex}')
+parts.append('.lightbox img{max-width:90%;max-height:85%}')
+parts.append('.lb-close{position:absolute;top:20px;right:30px;color:white;font-size:40px;cursor:pointer}')
+parts.append('</style></head><body>')
+parts.append('<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLb()">')
+parts.append('<span class="lb-close" onclick="closeLb()">&times;</span>')
+parts.append('<img id="lb-img" src=""></div>')
+parts.append('<script>')
+parts.append('function openLb(b){var lb=document.getElementById("lightbox");document.getElementById("lb-img").src="data:image/png;base64,"+b;lb.classList.add("active")}')
+parts.append('function closeLb(){document.getElementById("lightbox").classList.remove("active")}')
+parts.append('</script>')
+
 parts.append('<h1>260728 APK检测报告</h1>')
 hw_count = len([ip for ip in all_nodes if get_cloud(ip)=="华为云"])
 has_nodes = [a for a in apks if a.get('proxy_count',0)>0]
@@ -106,7 +131,16 @@ for apk in apks:
     icon_path=ICON_DIR+'/'+aid+'.png'
     icon_b64=img_b64(icon_path,200) if os.path.exists(icon_path) else ''
     icon_html='<img class="icon" src="data:image/png;base64,'+icon_b64+'">' if icon_b64 else 'N/A'
-    row='<tr><td><strong>'+label+'</strong></td><td class="mono">'+pkg+'</td><td>'+icon_html+'</td><td><strong>'+str(app_name)+'</strong></td><td>'+str(port)+'</td><td>'+first_seen+'</td><td>'+last_collected+'</td>'
+    # 截图
+    shot_path = SCREENSHOT_DIR+'/'+aid+'.png'
+    shot_b64 = img_b64(shot_path,240) if os.path.exists(shot_path) else ''
+    if not shot_b64:
+        for alt in [aid.replace('.','_'), aid.split('.')[0]]:
+            alt_path = SCREENSHOT_DIR+'/'+alt+'.png'
+            if os.path.exists(alt_path):
+                shot_b64 = img_b64(alt_path,240); break
+    shot_cell = '<img class="screenshot-thumb" src="data:image/png;base64,'+shot_b64+'" onclick="openLb(\''+shot_b64+'\')">' if shot_b64 else 'N/A'
+    row='<tr><td><strong>'+label+'</strong></td><td class="mono">'+pkg+'</td><td>'+icon_html+'</td><td>'+shot_cell+'</td><td><strong>'+str(app_name)+'</strong></td><td>'+str(port)+'</td><td>'+first_seen+'</td><td>'+last_collected+'</td>'
     for c in ['server','sni','method','url','proto','hdr','status','resp_hdr','resp_size','resp_type','resp_excerpt']:
         row+='<td>'+''.join(cells[c])+'</td>'
     row+='<td>'+str(proxy_count)+'</td></tr>'
@@ -127,5 +161,5 @@ parts.append('</body></html>')
 html_path = RESULTS_DIR+'/report.html'
 os.makedirs(RESULTS_DIR, exist_ok=True)
 with open(html_path,'w') as f:
-    f.write(''.join(parts))
+    f.write('\n'.join(parts))
 print('HTML: '+html_path+' ('+str(os.path.getsize(html_path))+' bytes, '+str(len(apks))+' APKs)')
