@@ -2583,6 +2583,24 @@
       "proxy_count": 6,
       "first_seen": "2026-07-29 00:05",
       "last_collected": "2026-07-29 00:05"
+    },
+    {
+      "id": "725bh424.198go.com",
+      "package": "fpr.gqsbwiudpmdqt.qfxhrmwcodjjrxqdrti",
+      "label": "EcQedi",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "183.240.98.215:443",
+        "218.91.113.207:443",
+        "43.248.2.74:30176",
+        "8.134.14.211:30176",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 6,
+      "first_seen": "2026-07-29 00:07",
+      "last_collected": "2026-07-29 00:07"
     }
   ],
   "all_proxy_nodes": [
