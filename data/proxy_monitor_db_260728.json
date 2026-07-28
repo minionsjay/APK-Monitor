@@ -207,6 +207,26 @@
       "proxy_count": 14,
       "first_seen": "2026-07-28 21:48",
       "last_collected": "2026-07-28 21:48"
+    },
+    {
+      "id": "725a3.8axrc.com",
+      "package": "vbcby.qbqspcwg.mogidddkf",
+      "label": "ZUQlNz",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "117.88.33.247:443",
+        "183.240.98.215:443",
+        "47.113.75.165:443",
+        "8.134.153.71:30122",
+        "8.138.118.169:30122",
+        "8.148.211.7:30138",
+        "8.148.221.235:30138"
+      ],
+      "proxy_count": 8,
+      "first_seen": "2026-07-28 21:49",
+      "last_collected": "2026-07-28 21:49"
     }
   ],
   "all_proxy_nodes": [
