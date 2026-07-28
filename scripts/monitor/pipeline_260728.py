@@ -108,11 +108,10 @@ def get_proxy_nodes_via_proc(pkg, max_wait=15):
                 ip_hex, port_hex = parts[2].split(':')
                 port = int(port_hex, 16)
                 if port <= 100: continue
-                if not (30000 <= port <= 30200): continue
                 if len(ip_hex) == 8:
                     b = bytes.fromhex(ip_hex)
                     ip = f"{b[3]}.{b[2]}.{b[1]}.{b[0]}"
-                    if ip.startswith("127.") or ip.startswith("192.168."): continue
+                    if ip.startswith("127.") or ip.startswith("192.168.") or ip.startswith("172.217.") or ip.startswith("142.250.") or ip.startswith("10."): continue
                     all_nodes.add(f"{ip}:{port}")
         except: pass
     return sorted(all_nodes) if all_nodes else []
