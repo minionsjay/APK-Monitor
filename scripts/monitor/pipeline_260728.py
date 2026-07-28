@@ -350,7 +350,8 @@ def generate_html(db, all_proxy):
     parts.append('<h2>华为云IP列表</h2>')
     for ip in sorted(hw_ips):
         apks_with = [a.get('label','?') for a in apks if ip in a.get('proxy_nodes',[])]
-        parts.append(f'<div><span class="tag tag-huawei">{ip}</span> ({len(apks_with)}个APK) {', '.join(apks_with[:3])}</div>')
+        apks_str = ', '.join(apks_with[:3])
+        parts.append('<div><span class="tag tag-huawei">' + ip + '</span> (' + str(len(apks_with)) + '个APK) ' + apks_str + '</div>')
     
     parts.append(f'<h2>IP分布</h2>')
     parts.append(f'<p>阿里云: {len(ali_ips)} | 腾讯云: {len(tencent_ips)} | 华为云: {len(hw_ips)} | 其他: {len(other_ips)}</p>')
