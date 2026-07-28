@@ -68,6 +68,25 @@
       "proxy_count": 9,
       "first_seen": "2026-07-28 21:40",
       "last_collected": "2026-07-28 21:40"
+    },
+    {
+      "id": "724cpa14.2sbez.com",
+      "package": "myf.ckhvpqhcoivh.oyknhpnaucodpnkmfnuc",
+      "label": "kpsGsR",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "117.88.33.247:443",
+        "183.240.98.215:443",
+        "47.106.53.68:443",
+        "8.134.153.71:30122",
+        "8.134.33.143:30151",
+        "8.138.118.169:30122"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-07-28 21:42",
+      "last_collected": "2026-07-28 21:42"
     }
   ],
   "all_proxy_nodes": [
