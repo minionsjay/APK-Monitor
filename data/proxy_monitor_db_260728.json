@@ -5351,6 +5351,20 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 11:57",
       "last_collected": "2026-07-29 11:57"
+    },
+    {
+      "id": "725c419.bjeuz.com",
+      "package": "uhf.rirmbncngacedj.ysoabrtndenexc",
+      "label": "hkfhAj",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 11:59",
+      "last_collected": "2026-07-29 11:59"
     }
   ],
   "all_proxy_nodes": [
