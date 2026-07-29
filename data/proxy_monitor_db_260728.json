@@ -4764,6 +4764,23 @@
       "proxy_count": 6,
       "first_seen": "2026-07-29 11:02",
       "last_collected": "2026-07-29 11:02"
+    },
+    {
+      "id": "725bh77.wke7r.com",
+      "package": "myf.lsjtlytfctjdg.rorlftbeyksxwbnbwsa",
+      "label": "OWNrFi",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "117.88.33.247:443",
+        "183.240.98.215:443",
+        "43.248.2.74:30176",
+        "8.134.14.211:30176"
+      ],
+      "proxy_count": 5,
+      "first_seen": "2026-07-29 11:03",
+      "last_collected": "2026-07-29 11:03"
     }
   ],
   "all_proxy_nodes": [
