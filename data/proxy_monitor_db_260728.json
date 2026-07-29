@@ -4978,6 +4978,20 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 11:20",
       "last_collected": "2026-07-29 11:20"
+    },
+    {
+      "id": "725c176.p6lw6.com",
+      "package": "snq.xpbjkulshxyrtg.mopromwgwxtwok",
+      "label": "Mvqhae",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 11:22",
+      "last_collected": "2026-07-29 11:22"
     }
   ],
   "all_proxy_nodes": [
