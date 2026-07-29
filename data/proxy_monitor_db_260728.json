@@ -5118,6 +5118,20 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 11:34",
       "last_collected": "2026-07-29 11:34"
+    },
+    {
+      "id": "725c239.8fyw6.com",
+      "package": "ygu.dqqguxlkcylpld.qvhicowfarptpc",
+      "label": "obNgwB",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 11:36",
+      "last_collected": "2026-07-29 11:36"
     }
   ],
   "all_proxy_nodes": [
