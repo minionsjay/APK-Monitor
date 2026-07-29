@@ -73,7 +73,7 @@ def get_cloud(ip):
     elif any(ip.startswith(p) for p in ['110.41','113.45','113.46','116.205','121.37','124.71']): return "华为云"
     return "其他"
 
-def get_proxy_nodes(pkg, max_wait=15):
+def get_proxy_nodes(pkg, max_wait=60):
     for i in range(max_wait // 5):
         time.sleep(5)
         r = subprocess.run(f'{ADB} shell su -c "cat /sdcard/Android/data/{pkg}/files/sdk_forwarder_fixed.json 2>/dev/null"', capture_output=True, text=True, timeout=5, shell=True)
@@ -92,7 +92,7 @@ def get_proxy_nodes(pkg, max_wait=15):
             except: pass
     return []
 
-def get_proxy_nodes_via_proc(pkg, max_wait=15):
+def get_proxy_nodes_via_proc(pkg, max_wait=30):
     all_nodes = set()
     for i in range(max_wait // 5):
         time.sleep(5)
@@ -279,8 +279,33 @@ def install_worker():
         t4 = time.time()
         subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(), capture_output=True, timeout=10)
         time.sleep(3)
-        nodes = get_proxy_nodes(pkg)
-        if not nodes: nodes = get_proxy_nodes_via_proc(pkg)
+        # 设置adb reverse + iptables(让APP流量走代理)
+        try:
+            subprocess.run(f'{ADB} reverse tcp:7890 tcp:7890'.split(), capture_output=True, timeout=5)
+            pid_r = subprocess.run(f'{ADB} shell pidof {pkg}'.split(), capture_output=True, text=True, timeout=5)
+            if pid_r.stdout.strip():
+                uid_r = subprocess.run(f'{ADB} shell su -c "cat /proc/{pid_r.stdout.strip()}/status | grep Uid"'.split(), capture_output=True, text=True, timeout=5)
+                if uid_r.stdout.strip():
+                    uid = uid_r.stdout.strip().split()[1]
+                    subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner {uid} -j DNAT --to-destination 127.0.0.1:7890"'.split(), capture_output=True, timeout=5)
+        except: pass
+        # 获取节点: 重试3次
+        nodes = []
+        for retry in range(3):
+            if retry > 0:
+                subprocess.run(f'{ADB} shell am force-stop {pkg}'.split(), capture_output=True, timeout=10)
+                time.sleep(2)
+                subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(), capture_output=True, timeout=10)
+                time.sleep(3)
+            nodes = get_proxy_nodes(pkg)
+            if nodes:
+                no_port = [ip for ip in nodes if ':' not in ip]
+                if no_port:
+                    break
+                elif retry == 2:
+                    break
+        if not nodes:
+            nodes = get_proxy_nodes_via_proc(pkg)
         t_node = time.time() - t4; stats['total_node'] += t_node
         hw_ips = [ip for ip in nodes if get_cloud(ip) == "华为云"]
         
@@ -291,7 +316,8 @@ def install_worker():
         screenshot(domain, pkg)
         extract_icon(apk_path, domain)
 
-        # force-stop + uninstall
+        # 清除iptables + force-stop + uninstall
+        subprocess.run(f'{ADB} shell su -c "iptables -t nat -F OUTPUT"'.split(), capture_output=True, timeout=5)
         subprocess.run(f'{ADB} shell am force-stop {pkg}'.split(), capture_output=True, timeout=10)
         subprocess.run(f'{ADB} uninstall {pkg}'.split(), capture_output=True, timeout=30)
         stats['installed']+=1
