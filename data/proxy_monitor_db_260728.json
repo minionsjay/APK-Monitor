@@ -4868,6 +4868,19 @@
       "proxy_count": 5,
       "first_seen": "2026-07-29 11:10",
       "last_collected": "2026-07-29 11:10"
+    },
+    {
+      "id": "725c104.j3fyi.com",
+      "package": "ogc.igcbfbpdnyjaqq.emldadfxpyxgtu",
+      "label": "EfUdtQ",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151"
+      ],
+      "proxy_count": 1,
+      "first_seen": "2026-07-29 11:11",
+      "last_collected": "2026-07-29 11:11"
     }
   ],
   "all_proxy_nodes": [
