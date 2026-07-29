@@ -4100,6 +4100,26 @@
       "proxy_count": 8,
       "first_seen": "2026-07-29 10:16",
       "last_collected": "2026-07-29 10:16"
+    },
+    {
+      "id": "725b77.3qydj.com",
+      "package": "akvae.sspmwybn.nylkocvcq",
+      "label": "qipHfQ",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "183.240.98.215:443",
+        "218.91.113.207:443",
+        "47.106.53.50:443",
+        "8.134.33.143:30151",
+        "8.148.211.7:30138",
+        "8.148.221.235:30138",
+        "8.148.236.101:30138"
+      ],
+      "proxy_count": 8,
+      "first_seen": "2026-07-29 10:17",
+      "last_collected": "2026-07-29 10:17"
     }
   ],
   "all_proxy_nodes": [
