@@ -4908,6 +4908,20 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 11:14",
       "last_collected": "2026-07-29 11:14"
+    },
+    {
+      "id": "725c119.j3fyi.com",
+      "package": "wxw.skdtoyllfipjfe.rocrqhshhifjsl",
+      "label": "kDTUKu",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 11:15",
+      "last_collected": "2026-07-29 11:15"
     }
   ],
   "all_proxy_nodes": [
