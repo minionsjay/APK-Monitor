@@ -5257,6 +5257,19 @@
       "proxy_count": 1,
       "first_seen": "2026-07-29 11:48",
       "last_collected": "2026-07-29 11:48"
+    },
+    {
+      "id": "725c316.v2jbb.com",
+      "package": "ogc.igcbfbpdnyjaqq.emldadfxpyxgtu",
+      "label": "EfUdtQ",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151"
+      ],
+      "proxy_count": 1,
+      "first_seen": "2026-07-29 11:49",
+      "last_collected": "2026-07-29 11:49"
     }
   ],
   "all_proxy_nodes": [
