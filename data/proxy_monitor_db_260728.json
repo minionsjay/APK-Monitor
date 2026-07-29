@@ -5244,6 +5244,19 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 11:46",
       "last_collected": "2026-07-29 11:46"
+    },
+    {
+      "id": "725c314.bjeuz.com",
+      "package": "snq.xpbjkulshxyrtg.mopromwgwxtwok",
+      "label": "Mvqhae",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151"
+      ],
+      "proxy_count": 1,
+      "first_seen": "2026-07-29 11:48",
+      "last_collected": "2026-07-29 11:48"
     }
   ],
   "all_proxy_nodes": [
