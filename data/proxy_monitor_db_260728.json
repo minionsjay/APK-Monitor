@@ -4936,6 +4936,20 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 11:16",
       "last_collected": "2026-07-29 11:16"
+    },
+    {
+      "id": "725c131.bjeuz.com",
+      "package": "bys.kmabrkxbhqbdtc.aidpoxvsdceoxx",
+      "label": "JAxMdR",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 11:18",
+      "last_collected": "2026-07-29 11:18"
     }
   ],
   "all_proxy_nodes": [
