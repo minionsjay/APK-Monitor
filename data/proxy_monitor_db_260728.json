@@ -4377,6 +4377,24 @@
       "proxy_count": 6,
       "first_seen": "2026-07-29 10:34",
       "last_collected": "2026-07-29 10:34"
+    },
+    {
+      "id": "725bh201.hzhtj.com",
+      "package": "myf.lsjtlytfctjdg.rorlftbeyksxwbnbwsa",
+      "label": "OWNrFi",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "117.88.33.247:443",
+        "183.240.98.215:443",
+        "43.248.2.74:30176",
+        "8.134.14.211:30176",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 6,
+      "first_seen": "2026-07-29 10:35",
+      "last_collected": "2026-07-29 10:35"
     }
   ],
   "all_proxy_nodes": [
