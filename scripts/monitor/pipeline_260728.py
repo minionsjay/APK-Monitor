@@ -247,6 +247,9 @@ def download_worker(domains):
                     else: print('非APK')
             else: print('下载失败')
         except: print('异常')
+    # 等待安装队列处理完所有已下载的APK
+    while not apk_queue.empty():
+        time.sleep(5)
     apk_queue.put(None)
 
 def install_worker():
