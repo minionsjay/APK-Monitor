@@ -5283,6 +5283,20 @@
       "proxy_count": 1,
       "first_seen": "2026-07-29 11:51",
       "last_collected": "2026-07-29 11:51"
+    },
+    {
+      "id": "725c356.v2jbb.com",
+      "package": "nws.sygexfqvkkwuab.isxndraqjwfmbs",
+      "label": "yKIXvP",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 11:52",
+      "last_collected": "2026-07-29 11:52"
     }
   ],
   "all_proxy_nodes": [
