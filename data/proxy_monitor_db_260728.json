@@ -5216,6 +5216,20 @@
       "proxy_count": 2,
       "first_seen": "2026-07-29 11:44",
       "last_collected": "2026-07-29 11:44"
+    },
+    {
+      "id": "725c290.mfgb3.com",
+      "package": "sey.pafugxbbsjpjoc.gnrxwoqyhqerxx",
+      "label": "BCIKyA",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "8.134.33.143:30151"
+      ],
+      "proxy_count": 2,
+      "first_seen": "2026-07-29 11:45",
+      "last_collected": "2026-07-29 11:45"
     }
   ],
   "all_proxy_nodes": [
