@@ -4746,6 +4746,24 @@
       "proxy_count": 5,
       "first_seen": "2026-07-29 11:00",
       "last_collected": "2026-07-29 11:00"
+    },
+    {
+      "id": "725bh484.tuqh4.com",
+      "package": "vbe.uvvrpkajit.wbhraxojulhskryxk",
+      "label": "gYyPaO",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "106.55.6.156:30151",
+        "117.88.33.209:443",
+        "183.240.98.215:443",
+        "47.113.75.168:443",
+        "8.134.100.7:30175",
+        "8.148.192.50:30175"
+      ],
+      "proxy_count": 6,
+      "first_seen": "2026-07-29 11:02",
+      "last_collected": "2026-07-29 11:02"
     }
   ],
   "all_proxy_nodes": [
