@@ -12,7 +12,7 @@ Pixel 4 流水线 v5 — 260728域名
 import subprocess, json, os, time, re, csv, zipfile, hashlib, threading, queue, shutil
 from datetime import datetime
 
-ADB = "adb -s 192.168.1.16:38817"
+ADB = "adb -s 192.168.1.16:38997"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
 WIN_BASE = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/20260728"
