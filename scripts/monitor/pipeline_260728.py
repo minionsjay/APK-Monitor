@@ -279,15 +279,16 @@ def install_worker():
         t4 = time.time()
         subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(), capture_output=True, timeout=10)
         time.sleep(3)
-        # 设置adb reverse + iptables(让APP流量走代理)
+        # 设置adb reverse + iptables(排除shell/root,其他全DNAT到mihomo)
         try:
             subprocess.run(f'{ADB} reverse tcp:7890 tcp:7890'.split(), capture_output=True, timeout=5)
-            pid_r = subprocess.run(f'{ADB} shell pidof {pkg}'.split(), capture_output=True, text=True, timeout=5)
-            if pid_r.stdout.strip():
-                uid_r = subprocess.run(f'{ADB} shell su -c "cat /proc/{pid_r.stdout.strip()}/status | grep Uid"'.split(), capture_output=True, text=True, timeout=5)
-                if uid_r.stdout.strip():
-                    uid = uid_r.stdout.strip().split()[1]
-                    subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner {uid} -j DNAT --to-destination 127.0.0.1:7890"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 -j RETURN"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -d 192.168.0.0/16 -j RETURN"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner 1001 -j RETURN"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner 0 -j RETURN"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp --dport 38997 -j RETURN"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p udp --dport 53 -j RETURN"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -j DNAT --to-destination 127.0.0.1:7890"'.split(), capture_output=True, timeout=5)
         except: pass
         # 获取节点: 重试3次
         nodes = []
