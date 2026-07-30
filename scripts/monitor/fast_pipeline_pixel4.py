@@ -12,7 +12,7 @@ import subprocess, json, os, time, re, csv, zipfile, hashlib, threading, queue
 from datetime import datetime
 
 # ====== Pixel 4 配置 ======
-ADB = "adb -s 192.168.1.16:38817"
+ADB = "adb -s 192.168.1.16:37933"   # 无线调试端口每次重连会变,跑前用 `adb devices` 核对更新
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
 APK_DIR = f"{BASE_DIR}/new_samples"
@@ -36,6 +36,32 @@ STATE_FIELDS = ['apk_id','package','label','score','size_mb',
                 'huawei_count','installed_on_device','apk_path',
                 'domain','download_url','status',
                 'download_time','detect_time','install_time','node_time']
+
+# ====== 换IP代理辅助 ======
+def _proxy_cmd(sub, timeout=130):
+    """调 proxy_manager.py 子命令,返回 (rc, stdout)"""
+    env = dict(os.environ, ADB_SERIAL=ADB_SERIAL)
+    try:
+        r = subprocess.run(f'python3 {PROXY_MGR} {sub}', shell=True,
+                           capture_output=True, text=True, timeout=timeout, env=env)
+        return r.returncode, (r.stdout or '') + (r.stderr or '')
+    except Exception as e:
+        return 1, str(e)
+
+def rotate_proxy():
+    """换一个国内出口IP并挂到手机。返回新出口IP或None。"""
+    if not PROXY_ENABLED: return None
+    rc, out = _proxy_cmd('rotate', timeout=150)
+    m = re.search(r'手机出口\s*=\s*(\d{1,3}(?:\.\d{1,3}){3})', out)
+    return m.group(1) if m else None
+
+def proxy_down():
+    if not PROXY_ENABLED: return
+    _proxy_cmd('down', timeout=40)
+
+def proxy_refill():
+    if not PROXY_ENABLED: return
+    _proxy_cmd(f'refill {POOL_TARGET}', timeout=300)
 
 def get_cloud(ip):
     ip = ip.split(':')[0] if ':' in ip else ip
@@ -407,18 +433,33 @@ def install_worker():
         except Exception as e:
             print(f'安装异常({e})'); stats['failed']+=1; continue
 
-        # 启动APP
+        # 启动APP + 取节点(每次尝试前换一个国内IP,让每个app从不同IP注册避开限流;
+        #                    没拿到节点=疑似限流,清数据+换IP重试)
         t4 = time.time()
-        subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(),
-                      capture_output=True, timeout=10)
-        time.sleep(3)
-        # 点击通知弹窗
-        click_popup()
-        # 获取节点 (优先 sdk_forwarder_fixed.json, 备用 /proc/PID/net/tcp)
-        nodes = get_proxy_nodes(pkg)
-        if not nodes:
-            # 备用方法: /proc/PID/net/tcp
-            nodes = get_proxy_nodes_via_proc(pkg)
+        nodes = []
+        attempts = MAX_IP_RETRY if PROXY_ENABLED else 1
+        for attempt in range(attempts):
+            if PROXY_ENABLED:
+                newip = rotate_proxy()
+                print(f'[IP:{newip or "换失败"}]', end=' ')
+            # 启动APP
+            subprocess.run(f'{ADB} shell monkey -p {pkg} -c android.intent.category.LAUNCHER 1'.split(),
+                          capture_output=True, timeout=10)
+            time.sleep(3)
+            # 点击通知弹窗
+            click_popup()
+            # 获取节点 (优先 sdk_forwarder_fixed.json, 备用 /proc/PID/net/tcp)
+            nodes = get_proxy_nodes(pkg)
+            if not nodes:
+                nodes = get_proxy_nodes_via_proc(pkg)
+            if nodes:
+                break
+            # 没拿到节点(疑似IP被限流)→ 清APP数据强制重新注册 + 换IP重试
+            if PROXY_ENABLED and attempt < attempts - 1:
+                subprocess.run(f'{ADB} shell am force-stop {pkg}'.split(), capture_output=True, timeout=5)
+                subprocess.run(f'{ADB} shell pm clear {pkg}'.split(), capture_output=True, timeout=15)
+                print('限流?换IP重试', end=' ')
+                time.sleep(1)
 
         hw_ips = [ip for ip in nodes if get_cloud(ip) == "华为云"]
 
@@ -587,6 +628,11 @@ def main():
     print(f"待处理: {len(domains) - len(existing_ids)}")
     print(f"手机存储: {get_storage_gb()}GB")
     print(f"已下载APK: {len([f for f in os.listdir(APK_DIR) if f.endswith('.apk')])}")
+    if PROXY_ENABLED:
+        print(f"换IP代理: 开启 (设备 {ADB_SERIAL}),预热代理池...")
+        proxy_refill()
+    else:
+        print("换IP代理: 关闭 (PROXY_ENABLED=0)")
     print()
 
     t_start = time.time()
@@ -596,6 +642,8 @@ def main():
     dt.join(); it.join()
     elapsed = time.time() - t_start
 
+    if PROXY_ENABLED:
+        proxy_down()   # 批量结束拆隧道恢复手机直连
     generate_report()
 
     n = stats['installed'] if stats['installed'] > 0 else 1
