@@ -269,3 +269,73 @@ Google 官方 Android Emulator（37.2.1.0）**明确拒绝**在 x86 主机上跑
 3. **静态 ELF 补丁是可行的替代方案**，但要注意：代码段和数据段必须物理隔离（不能用RWX，会触发系统层面的反利用检测崩溃）；拷贝任何变长数据都要做边界检查，不能假设固定长度
 4. **"打不开"、"环境不支持"这类现象，未必是反检测逻辑主动拒绝**，很可能只是安卓版本兼容性 bug（尤其是安卓10引入的设备标识符访问限制、GMS依赖），排查时要先看崩溃日志里的具体异常类型，不要先入为主假设是"被识别了"
 5. 这批加固壳样本的 native 库、Ghidra 工程的地址基准都是统一的 `image base = 0x100000`，换算文件偏移时注意别漏减
+
+---
+
+## 十一、纯本地 QEMU 模拟 ARM64 深挖记录（2026-07-29/30 会话）
+
+> 目标：在没有真机、没有 ARM 云手机的前提下，用宿主机自带的 vanilla `qemu-system-aarch64`（apt 装的 6.2.0，**不是** Google 改过的 emulator fork）直接引导官方 AOSP 系统镜像，跑起 Android 再装样本抓 app_line_ips。
+
+### 11.1 结论先行（最重要）
+
+**vanilla QEMU 无法把这批 goldfish/ranchu 系统镜像跑到能启动 GUI app 的程度。根本瓶颈是显示设备。** 但过程中把 Android 首阶段启动的一系列坑全趟平了，创下本次调查最深纪录：**完整启动到 `system_server` + 131 个进程，zygote 稳定运行**，最终卡死在 `SystemServer` 的 `PHASE_WAIT_FOR_DEFAULT_DISPLAY`（phase 100）。
+
+卡死机制（已确认，非猜测）：DisplayManagerService 在 phase 100 要通过 binder 向 SurfaceFlinger 查询默认显示器；SurfaceFlinger 因为拿不到 goldfish 显示设备反复崩溃、从未注册成功（日志 `W/ServiceManager: Service SurfaceFlinger didn't start. Returning NULL`），于是那个 `waitForService` binder 调用**永久阻塞**（不是超时等待，所以不崩溃也不 reboot，就是干挂着，只刷 `android.display expire N lines` 限流噪音）。
+
+为什么无解：ranchu 内核只认 Google 私有的 `goldfish_fb`（帧缓冲）和 `goldfish_pipe`（GPU 透传到宿主）这两个虚拟设备，它们只存在于 Google 改过的 QEMU fork。实测给 vanilla QEMU 加 `virtio-gpu-device` 后，guest 里 `/dev/dri`、`/dev/graphics` **都不存在**——证明这个精简内核根本没编译 DRM/virtio-gpu 驱动。SurfaceFlinger 的软件渲染兜底（`/system/lib64/egl/libGLES_android.so`）也救不了，因为它仍需要一个真实 framebuffer 来合成，而 fb0 来自 goldfish_fb（vanilla QEMU 没有）。
+
+**API 级别选型教训**：API30(Android11) 镜像分区结构复杂（GPT+AVB+动态super分区+一种无法识别的system分区文件系统），卡在文件系统识别阶段放弃；换 **API28(Android9)** 镜像后分区结构简单得多（单 GPT 分区/镜像、标准 ext4），才得以推进。
+
+### 11.2 趟平的坑（这些修复是可复用的，换任何 vanilla-QEMU 引导 AOSP 镜像都用得上）
+
+按启动顺序：
+
+1. **system-as-root 布局**：API28 的 `system.img` 分区根目录本身就是完整根文件系统（含 `/init`、`/init.rc`、`/adb_keys` 等），同时有个 `/system` 子目录装真正系统内容。所以不能挂到 `/system`，要让内核直接把它当根：cmdline 用 `root=/dev/vda rw rootwait init=/init`，**不挂独立 initrd**。
+
+2. **sepolicy 加载失败**（`Could not open /sepolicy`）：API27+ 用 split policy，策略文件在 `/vendor/etc/selinux/precompiled_sepolicy` 等处，不是根目录单一 `/sepolicy`。挂对根文件系统后自动解决（之前挂到 `/system` 导致路径多一层 `/system/system/...` 才找不到）。设备树里只保留 vendor 的 android-fstab 节点（system 由内核根挂载处理）。
+
+3. **`/data` 挂载失败之一**（`Invalid argument`）：`fstab.ranchu` 里 `/data` 的挂载选项含过时的 `nomblk_io_submit`，当前内核直接 EINVAL 拒绝。删掉该选项。
+
+4. **`/data` 挂载失败之二**（加密级联失败）：`fstab.ranchu` 里 `/data` 有 `forceencrypt=/dev/block/vdd` 标记，vold 的 `cryptfs enablecrypto` 在精简环境反复失败 → `nonencrypted`/`class_start main` 触发条件永不满足 → zygote 永远起不来。把 `forceencrypt=...` 从 fsmgr_flags 删掉。
+
+5. **`userdata.img` 是空的**：官方镜像里的 userdata.img 只有 1MB、未格式化。要 `truncate -s 3G` 造个够大的再 `mkfs.ext4 -F` 格式化，否则 `/data` 挂不上。**注意**：QEMU 被 `timeout`/`pkill` 强杀时若正挂着该分区写入，会损坏 ext4 超级块（`e2fsck` 报 Bad magic），每次强杀后要重新格式化一份干净的。
+
+6. **zygote 被 surfaceflinger 拖累重启**：`/system/etc/init/surfaceflinger.rc` 里 `onrestart restart zygote`——SF 崩溃循环会把 zygote 一起拖重启。删掉这行 `onrestart restart zygote`，zygote 才稳定。
+
+7. **adb 连不上（offline）**：镜像自带的 `/adb_keys` 是 Google 官方测试公钥，和宿主机 `~/.android/adbkey.pub` 不匹配，握手卡在未授权。把宿主机公钥**换行后**追加进镜像 `/adb_keys`。另外 adbd 默认只走 USB gadget 不监听 TCP，需在 `/system/etc/prop.default` 加 `service.adb.tcp.port=5555`。（注：最终 adb 仍未连通，但串口控制台 `-serial tcp:127.0.0.1:4444,server,nowait` 给了个可交互 root shell，诊断改走串口，比 adb 省事。）
+
+8. **EGL 崩溃（zygote preload 阶段）**：传 `qemu=1 androidboot.qemu=1` 会强制走 vendor 的 `libEGL_emulation.so`（要 goldfish pipe）。去掉这两个 flag，zygote 的 EGL 崩溃消失（走软件兜底），但 surfaceflinger 仍崩（见 11.1）。
+
+### 11.3 无 root 改镜像的手法
+
+宿主机没 root、不能 loop mount。改用 e2fsprogs 的 `debugfs`（不需要挂载/root）直接读写 ext4 镜像：
+- 读目录：`debugfs -R "ls -l /path" img`
+- 导出文件：`debugfs -R "dump /path/file /host/out" img`
+- 写回文件：`debugfs -w -f cmds.txt img`，cmds.txt 内容 `cd /dir` / `rm file` / `write /host/newfile file` / `close`
+- 提取分区：`fdisk -l img` 看扇区偏移 → `dd if=img of=out bs=512 skip=<sector> count=<n>` → `xxd -l 2 -s 0x438 out` 验证 ext4 magic（应为 `53ef`）
+
+### 11.4 可用的启动命令（供后人复现到 system_server 卡死这一步）
+
+```bash
+qemu-system-aarch64 -M virt -cpu max -smp 4 -m 3072 \
+  -dtb custom4.dtb -kernel kernel-ranchu \
+  -append "console=ttyAMA0 earlycon=pl011,0x9000000 root=/dev/vda rw rootwait init=/init androidboot.hardware=ranchu androidboot.console=ttyAMA0 androidboot.selinux=permissive printk.devkmsg=on ignore_loglevel" \
+  -drive file=system_fs.raw,if=virtio,format=raw \
+  -drive file=vendor_fs.raw,if=virtio,format=raw \
+  -drive file=userdata_fmt.img,if=virtio,format=raw \
+  -netdev user,id=net0,hostfwd=tcp::5555-:5555 -device virtio-net-device,netdev=net0 \
+  -serial tcp:127.0.0.1:4444,server,nowait -monitor none -display none -no-reboot
+```
+custom4.dtb = 从 QEMU 自动生成的 virt DTB 反编译后，只插入一个 `firmware/android/fstab` 节点（compatible=`android,fstab`），其中只声明 vendor（dev=`/dev/block/vdb` type=ext4）。system 交给内核根挂载，userdata 由 fstab.ranchu 处理。
+
+### 11.5 剩下唯一可能的路（评估为低回报，未实施）
+
+patch 框架字节码绕过显示依赖：`services.jar` 是 183 字节桩，真代码在 `services.odex/vdex`（OAT 格式）。要 deodex（从 vdex 抽 dex）→ baksmali 反汇编 → 改掉 SF 依赖 → smali 回编 → 删 odex/vdex 让 ART 回退解释原始 dex。但即使跳过 WaitForDisplay，后续 WindowManagerService 和目标 app 的 Activity **仍需显示器**，会接着崩——等于要把整个框架改造成 headless 且还能拉起 GUI app，基本是重新实现 cuttlefish/goldfish。**结论：不值得投入。**
+
+### 11.6 对总目标（拿 app_line_ips）的意义
+
+QEMU 本地模拟这条路对**这批 goldfish 镜像**走不通。要继续拿动态 app_line_ips，回到已验证可行的两条路：
+- **真机抓包**（已成功，捕获 IP：`106.55.6.156`、`8.134.33.143`、`103.45.129.234`、`103.120.90.46`，详见第六节）
+- **支持 GMS 的 ARM 云手机**（Android 12/13+，避开华为，需 root；或 Oracle Cloud Always-Free ARM 实例自建）
+
+若一定要本地模拟，正解是改用 **Cuttlefish**（`cvd`，Google 官方的 vanilla-QEMU/crosvm 虚拟设备方案，自带 virtio 显示，不依赖 goldfish）或 **Google 官方 emulator 的 arm64 镜像配 `-gpu swiftshader_indirect`**（但后者在 x86 宿主上对 ARM Go-runtime 代码有 SIGILL 问题，见第七节），而不是手搓 vanilla QEMU 引导 goldfish 镜像。

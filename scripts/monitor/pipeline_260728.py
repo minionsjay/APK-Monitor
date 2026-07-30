@@ -282,13 +282,14 @@ def install_worker():
         # 设置adb reverse + iptables(排除shell/root,其他全DNAT到mihomo)
         try:
             subprocess.run(f'{ADB} reverse tcp:7890 tcp:7890'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} reverse tcp:7891 tcp:7891'.split(), capture_output=True, timeout=5)
             subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 -j RETURN"'.split(), capture_output=True, timeout=5)
             subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -d 192.168.0.0/16 -j RETURN"'.split(), capture_output=True, timeout=5)
             subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner 1001 -j RETURN"'.split(), capture_output=True, timeout=5)
             subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner 0 -j RETURN"'.split(), capture_output=True, timeout=5)
             subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp --dport 38997 -j RETURN"'.split(), capture_output=True, timeout=5)
             subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p udp --dport 53 -j RETURN"'.split(), capture_output=True, timeout=5)
-            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -j DNAT --to-destination 127.0.0.1:7890"'.split(), capture_output=True, timeout=5)
+            subprocess.run(f'{ADB} shell su -c "iptables -t nat -A OUTPUT -p tcp -j DNAT --to-destination 127.0.0.1:7891"'.split(), capture_output=True, timeout=5)
         except: pass
         # 获取节点: 重试3次
         nodes = []
