@@ -3,11 +3,6 @@
 # 用法: sh proxy_up.sh <SOCKS_IP> <SOCKS_PORT> [user] [pass]
 # native socket 也被抓:靠内核 ip rule(优先级9000,压过 Android fwmark 分流),非 App 层 VPN。
 
-SOCKS_IP="$1"; SOCKS_PORT="$2"; SOCKS_USER="$3"; SOCKS_PASS="$4"
-if [ -z "$SOCKS_IP" ] || [ -z "$SOCKS_PORT" ]; then
-  echo "usage: proxy_up.sh <SOCKS_IP> <SOCKS_PORT> [user] [pass]"; exit 1
-fi
-
 BIN=/data/local/tmp/tun2socks
 TUN=tun0
 TUN_ADDR=198.18.0.1
@@ -15,11 +10,25 @@ TUN_MASK=15
 TABLE=138
 RULE_PRIO=9000
 
-if [ -n "$SOCKS_USER" ]; then
-  PROXY="socks5://${SOCKS_USER}:${SOCKS_PASS}@${SOCKS_IP}:${SOCKS_PORT}"
+# 两种用法:
+#  ① PROXY_URL='http://ip:port' 或 'socks5://user:pass@ip:port' sh proxy_up.sh
+#  ② sh proxy_up.sh <ip> <port> [user] [pass]   (默认按 socks5 拼)
+if [ -n "$PROXY_URL" ]; then
+  PROXY="$PROXY_URL"
+  hp="${PROXY_URL#*://}"; hp="${hp##*@}"; PROXY_HOST="${hp%%:*}"
 else
-  PROXY="socks5://${SOCKS_IP}:${SOCKS_PORT}"
+  SOCKS_IP="$1"; SOCKS_PORT="$2"; SOCKS_USER="$3"; SOCKS_PASS="$4"
+  if [ -z "$SOCKS_IP" ] || [ -z "$SOCKS_PORT" ]; then
+    echo "usage: proxy_up.sh <ip> <port> [user] [pass]   或   PROXY_URL='http://ip:port' proxy_up.sh"; exit 1
+  fi
+  if [ -n "$SOCKS_USER" ]; then
+    PROXY="socks5://${SOCKS_USER}:${SOCKS_PASS}@${SOCKS_IP}:${SOCKS_PORT}"
+  else
+    PROXY="socks5://${SOCKS_IP}:${SOCKS_PORT}"
+  fi
+  PROXY_HOST="$SOCKS_IP"
 fi
+echo "[*] 代理: $PROXY (host=$PROXY_HOST)"
 
 # 找当前IPv4默认路由(Android在按netId的表里,不在main;排除dummy0)
 DEFLINE=$(ip route show table all | grep '^default via' | grep -v dummy0 | grep 'dev ' | head -1)
@@ -52,7 +61,7 @@ sleep 2
 if ! pgrep -f "$BIN" >/dev/null; then echo "!! tun2socks 未启动:"; cat /data/local/tmp/tun2socks.log; exit 1; fi
 
 echo "[*] 配路由表 $TABLE:代理服务器+本地LAN走物理网卡(防自环/防锁死adb),其余走 tun"
-ip route add ${SOCKS_IP}/32 via $GW dev $DEV table $TABLE 2>/dev/null
+ip route add ${PROXY_HOST}/32 via $GW dev $DEV table $TABLE 2>/dev/null
 # 关键:排除本地LAN(含 adb-over-WiFi 控制通道 + adb reverse),否则会把 adb 自己吸进隧道锁死
 for net in $(ip route show table all | grep "dev $DEV " | grep -vE "default|unreachable|via|table (local|.*_local)" | awk '{print $1}' | grep '/' | sort -u); do
   ip route add $net dev $DEV table $TABLE 2>/dev/null
