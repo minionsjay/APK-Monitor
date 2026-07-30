@@ -33,12 +33,29 @@ adb shell su -c 'sh /data/local/tmp/proxy_down.sh'     # 拆除
 # 看门狗保险(防自锁死adb): WATCHDOG=300 sh proxy_up.sh ... → 300s后自动拆除
 ```
 
-## 待办 / 约束
-- **代理必须支持 UDP ASSOCIATE**:否则 App 的 DNS(UDP53)走隧道失败。
-  两条路:①买支持UDP的秒拨SOCKS5;②改脚本让 UDP53 直连、只隧道TCP
-  (DNS从家宽IP出,但风控看的是TCP注册IP,通常可接受)。
-- 真机务必用**支持UDP的国内秒拨SOCKS5**替换 127.0.0.1:1080(本地测试端点)。
-- 手机adb建议USB(WSL需usbipd);WiFi也可,LAN已排除不自锁。
-- 批量循环:装样本→起App→等sdk_forward json→pull→卸载→proxy_rotate→verify确认IP变→下一个;
-  没拿到json(命中限流)就再rotate重试。
+## 更新 2026-07-30:接入 58ip.top API,端到端全打通 ✅
+
+实测结论:**58ip.top API 生成的代理可用**,给的是真·轮换国内出口 IP。
+- 它们是 **HTTP 代理**(不是SOCKS5),tun2socks 用 `PROXY_URL=http://ip:port`。
+- 混有境外出口(如日本),管理器自动过滤只留国内。
+- **DNS(UDP53)已做直连**(iptables mark 0x35 → table 139 → 物理网卡),
+  因为 HTTP 代理只转 TCP。`ping www.baidu.com` 实测能解析。
+- **不能加 tun2socks `--interface`**(Android fwmark 下 SO_BINDTODEVICE 出站包被丢)。
+- 实测:手机经隧道出口 = 代理国内IP(如123.138.24.112西安联通),
+  native socket(APK的C2 :30139)被捕获,DNS正常。
+
+### 代理轮换管理器 proxy_manager.py(宿主机)
+```bash
+python3 proxy_manager.py refill 20     # 调API拉批+并发探活+过滤国内,填池子(pool.txt)
+python3 proxy_manager.py rotate        # 挑一个可用代理挂手机+验证出口(自动跳过坏的)
+python3 proxy_manager.py status        # 看当前代理+池子
+python3 proxy_manager.py verify        # 打印手机当前经隧道出口IP
+python3 proxy_manager.py down          # 拆隧道
+python3 proxy_manager.py check ip:port # 单测一个代理
+# token 在脚本内 TOKEN=,或用环境变量 PROXY_TOKEN= 覆盖
+```
+
+### 批量循环(接进 fast_pipeline_pixel4.py)
+装样本 → 起App → 等 sdk_forward json → pull → 卸载 →
+`python3 proxy_manager.py rotate` → 下一个;没拿到json(限流)就再 rotate 重试。
 ```
