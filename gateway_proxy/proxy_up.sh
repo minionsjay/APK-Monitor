@@ -56,7 +56,9 @@ echo "DEV='$DEV'"     >> /data/local/tmp/proxy.env
 echo "TUN='$TUN'"     >> /data/local/tmp/proxy.env
 
 echo "[*] 启动 tun2socks"
-nohup $BIN --device $TUN --proxy "$PROXY" --interface $DEV --loglevel warn > /data/local/tmp/tun2socks.log 2>&1 </dev/null &
+# 注意:不能加 --interface(Android fwmark路由下SO_BINDTODEVICE会让出站包被丢);
+# 防环路已由 table 138 里的 代理IP/32 via wlan0 排除路由处理。
+nohup $BIN --device $TUN --proxy "$PROXY" --loglevel warn > /data/local/tmp/tun2socks.log 2>&1 </dev/null &
 sleep 2
 if ! pgrep -f "$BIN" >/dev/null; then echo "!! tun2socks 未启动:"; cat /data/local/tmp/tun2socks.log; exit 1; fi
 

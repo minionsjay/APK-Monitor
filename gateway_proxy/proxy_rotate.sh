@@ -10,7 +10,7 @@ fi
 
 killall tun2socks 2>/dev/null || true   # toybox 无 pkill -f
 sleep 1
-nohup $BIN --device $TUN --proxy "$PROXY" --interface $DEV --loglevel warn > /data/local/tmp/tun2socks.log 2>&1 </dev/null &
+nohup $BIN --device $TUN --proxy "$PROXY" --loglevel warn > /data/local/tmp/tun2socks.log 2>&1 </dev/null &
 sleep 2
 if pgrep -f "$BIN" >/dev/null; then
   echo "[OK] 已换IP(tun2socks 重启)。用 proxy_verify.sh 确认出口IP变化。"
