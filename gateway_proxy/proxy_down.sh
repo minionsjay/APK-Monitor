@@ -8,7 +8,7 @@ BIN=/data/local/tmp/tun2socks
 ip rule del priority $RULE_PRIO 2>/dev/null || true
 ip -6 rule del priority $RULE_PRIO 2>/dev/null || true
 ip route flush table $TABLE 2>/dev/null || true
-pkill -f "$BIN" 2>/dev/null || true
+killall tun2socks 2>/dev/null || true   # toybox 无 pkill -f
 ip link set $TUN down 2>/dev/null || true
 ip tuntap del mode tun dev $TUN 2>/dev/null || true
 echo "[OK] 代理已拆除,恢复直连。"

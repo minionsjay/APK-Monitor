@@ -34,7 +34,7 @@ ip -6 rule del priority $RULE_PRIO 2>/dev/null
 ip route flush table $TABLE 2>/dev/null
 ip link set $TUN down 2>/dev/null
 ip tuntap del mode tun dev $TUN 2>/dev/null
-pkill -f "$BIN" 2>/dev/null
+killall tun2socks 2>/dev/null   # toybox 无 pkill -f,用 killall 按名杀
 sleep 1
 
 echo "[*] 建 tun"
@@ -47,7 +47,7 @@ echo "DEV='$DEV'"     >> /data/local/tmp/proxy.env
 echo "TUN='$TUN'"     >> /data/local/tmp/proxy.env
 
 echo "[*] 启动 tun2socks"
-nohup $BIN --device $TUN --proxy "$PROXY" --interface $DEV --loglevel warn > /data/local/tmp/tun2socks.log 2>&1 &
+nohup $BIN --device $TUN --proxy "$PROXY" --interface $DEV --loglevel warn > /data/local/tmp/tun2socks.log 2>&1 </dev/null &
 sleep 2
 if ! pgrep -f "$BIN" >/dev/null; then echo "!! tun2socks 未启动:"; cat /data/local/tmp/tun2socks.log; exit 1; fi
 
@@ -79,7 +79,7 @@ if [ -n "$WATCHDOG" ]; then
     [ -f /data/local/tmp/proxy.keep ] && exit 0
     [ "$NOW_WD" != "$WD_START" ] && exit 0
     sh /data/local/tmp/proxy_down.sh
-  ) >/dev/null 2>&1 &
+  ) </dev/null >/dev/null 2>&1 &
   echo "[*] 看门狗已启:${WATCHDOG}s 后自动拆除(touch /data/local/tmp/proxy.keep 可取消)"
 fi
 echo "[OK] 已挂上。用 proxy_verify.sh 验证。拆除用 proxy_down.sh。"
