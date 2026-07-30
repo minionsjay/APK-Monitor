@@ -9,21 +9,23 @@ spec = importlib.util.spec_from_file_location(
 fp = importlib.util.module_from_spec(spec); spec.loader.exec_module(fp)
 
 ADB = fp.ADB
-# 过滤掉<1MB的空/失败下载,选正常大小里最小的3个
-cand = [a for a in glob.glob(f"{fp.APK_DIR}/*.apk") if os.path.getsize(a) > 1_000_000]
-APKS = sorted(cand, key=os.path.getsize)[:3]
+# 扫描,选前3个 detect 能读出包名的有效样本(跳过损坏下载)
+cand = sorted(a for a in glob.glob(f"{fp.APK_DIR}/*.apk") if os.path.getsize(a) > 1_000_000)
+APKS = []
+for a in cand:
+    s, p, l = fp.detect_apk(a)
+    if p:
+        APKS.append((a, s, p, l))
+        if len(APKS) >= 3: break
 print(f"ADB={ADB}  PROXY_ENABLED={fp.PROXY_ENABLED}  MAX_IP_RETRY={fp.MAX_IP_RETRY}")
-print(f"测试样本: {[os.path.basename(a) for a in APKS]}\n")
+print(f"测试样本: {[os.path.basename(a[0]) for a in APKS]}\n")
 
 print("=== 预热代理池 ===")
 fp.proxy_refill()
 
-for apk in APKS:
+for apk, score, pkg, label in APKS:
     name = os.path.basename(apk)
     print(f"\n===== {name} ({os.path.getsize(apk)//1024}KB) =====")
-    score, pkg, label = fp.detect_apk(apk)
-    if not pkg:
-        print("  detect失败,跳过"); continue
     print(f"  包名: {pkg}  label={label} score={score}")
 
     subprocess.run(f'{ADB} uninstall {pkg}'.split(), capture_output=True, timeout=30)
