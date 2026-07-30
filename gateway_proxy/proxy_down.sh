@@ -7,7 +7,10 @@ BIN=/data/local/tmp/tun2socks
 
 ip rule del priority $RULE_PRIO 2>/dev/null || true
 ip -6 rule del priority $RULE_PRIO 2>/dev/null || true
+ip rule del priority 8998 2>/dev/null || true
 ip route flush table $TABLE 2>/dev/null || true
+ip route flush table 139 2>/dev/null || true
+iptables -t mangle -D OUTPUT -p udp --dport 53 -j MARK --set-mark 0x35 2>/dev/null || true
 killall tun2socks 2>/dev/null || true   # toybox 无 pkill -f
 ip link set $TUN down 2>/dev/null || true
 ip tuntap del mode tun dev $TUN 2>/dev/null || true

@@ -75,6 +75,17 @@ ip rule add priority $RULE_PRIO from all lookup $TABLE
 # IPv6 全部不可达,逼 App 回落到被隧道捕获的 IPv4(防 v6 漏流量)
 ip -6 rule add priority $RULE_PRIO from all unreachable
 
+# DNS(UDP53)直连:HTTP/TCP-only代理无法转UDP,DNS必须走物理网卡直连
+# (DNS不影响风控注册IP——风控看的是TCP控制面连接的源IP)
+DNSTABLE=139
+DNSMARK=0x35
+ip route add default via $GW dev $DEV table $DNSTABLE 2>/dev/null
+iptables -t mangle -D OUTPUT -p udp --dport 53 -j MARK --set-mark $DNSMARK 2>/dev/null
+iptables -t mangle -A OUTPUT -p udp --dport 53 -j MARK --set-mark $DNSMARK
+ip rule del priority 8998 2>/dev/null
+ip rule add priority 8998 fwmark $DNSMARK lookup $DNSTABLE
+echo "[*] DNS(UDP53)已配直连(mark $DNSMARK -> table $DNSTABLE via $GW)"
+
 echo "[*] ip rule:"; ip rule | sed -n '1,6p'
 echo "[*] tun2socks 日志:"; tail -2 /data/local/tmp/tun2socks.log
 
