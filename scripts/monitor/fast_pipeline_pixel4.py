@@ -24,6 +24,13 @@ DOMAIN_CSV_NEW = f"{BASE_DIR}/data/apk-domain-260724.csv"   # 新域名列表 (1
 OUTPUTS_DIR = f"{BASE_DIR}/outputs_rerun"
 STORAGE_THRESHOLD_GB = 5
 
+# ====== 换IP代理配置(gateway_proxy/proxy_manager.py) ======
+PROXY_ENABLED = os.environ.get('PROXY_ENABLED', '1') == '1'   # 设 PROXY_ENABLED=0 可关闭换IP
+PROXY_MGR = f"{BASE_DIR}/gateway_proxy/proxy_manager.py"
+ADB_SERIAL = ADB.split('-s ', 1)[1].strip() if '-s ' in ADB else ''  # 与ADB同一台设备
+MAX_IP_RETRY = 3            # 没拿到节点(疑似限流)时换IP重试的最大次数
+POOL_TARGET = 20           # 代理池目标大小
+
 STATE_FIELDS = ['apk_id','package','label','score','size_mb',
                 'first_installed','last_monitored','proxy_count',
                 'huawei_count','installed_on_device','apk_path',
