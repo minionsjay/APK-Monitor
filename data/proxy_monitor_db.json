@@ -15422,6 +15422,25 @@
       "node_source": "proc",
       "first_seen": "2026-07-31 09:46",
       "last_collected": "2026-07-31 09:46"
+    },
+    {
+      "id": "716sl155.b0416.com",
+      "package": "qkr.gewkglspjar.qvnpmiqsbjluunb",
+      "label": "DQmiyC",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "114.111.19.228:3389",
+        "120.233.71.230:443",
+        "120.92.212.16:8890",
+        "142.250.197.110:443",
+        "142.250.198.46:443",
+        "172.217.119.4:443"
+      ],
+      "proxy_count": 6,
+      "node_source": "proc",
+      "first_seen": "2026-07-31 09:49",
+      "last_collected": "2026-07-31 09:49"
     }
   ],
   "all_proxy_nodes": [
