@@ -8958,6 +8958,17 @@
       "proxy_count": 15,
       "first_seen": "2026-08-01 07:24",
       "last_collected": "2026-08-01 07:24"
+    },
+    {
+      "id": "726fq010.eusu8.com",
+      "package": "ipa.mwxiwh.filw",
+      "label": "syjKuB",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [],
+      "proxy_count": 0,
+      "first_seen": "2026-08-01 07:31",
+      "last_collected": "2026-08-01 07:31"
     }
   ],
   "all_proxy_nodes": [
