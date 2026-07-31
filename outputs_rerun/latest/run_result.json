@@ -1,15 +1,15 @@
 {
-  "timestamp": "20260731_092832",
+  "timestamp": "20260731_093121",
   "stats": {
     "downloaded": 0,
-    "installed": 14,
+    "installed": 15,
     "failed": 0,
     "skipped": 0,
     "total_dl": 0.0,
     "total_detect": 0.0,
-    "total_install": 240.37323808670044,
-    "total_node": 752.3750801086426,
-    "total_icon": 0.9540374279022217
+    "total_install": 259.5775887966156,
+    "total_node": 800.8462650775909,
+    "total_icon": 0.9732887744903564
   },
   "apk_details": [
     {
@@ -326,11 +326,31 @@
       "detect_time": 0,
       "install_time": 21.58659553527832,
       "node_time": 57.79805636405945
+    },
+    {
+      "domain": "710cpa6.4okci.com",
+      "label": "ykmfnk",
+      "package": "lfu.dcuavjluswdaber.nshrgocirwfsvrvaxdfh",
+      "nodes": [
+        "103.120.90.46:30151",
+        "103.45.129.234:30151",
+        "106.55.6.156:30151",
+        "112.53.42.114:443",
+        "123.138.24.112:9443",
+        "142.250.197.110:443",
+        "183.6.115.212:19450",
+        "8.134.96.86:30151"
+      ],
+      "hw_ips": [],
+      "download_time": 0,
+      "detect_time": 0,
+      "install_time": 19.20435070991516,
+      "node_time": 48.471184968948364
     }
   ],
   "ip_changes": {
     "new_proxy": [
-      "117.29.176.58:8010"
+      "183.6.115.212:19450"
     ],
     "removed_proxy": [],
     "unchanged_proxy": [
@@ -424,6 +444,7 @@
       "116.205.171.225",
       "116.205.179.132",
       "116.205.233.41",
+      "117.29.176.58:8010",
       "117.50.194.130:7890",
       "117.88.33.209:443",
       "117.88.33.247:443",
@@ -773,8 +794,8 @@
     ],
     "new_huawei": [],
     "removed_huawei": [],
-    "total_current": 437,
-    "total_previous": 436,
+    "total_current": 438,
+    "total_previous": 437,
     "total_huawei_current": 40,
     "total_huawei_previous": 40,
     "all_proxy": [
@@ -995,6 +1016,7 @@
       "175.6.75.144:10064",
       "183.240.98.215:443",
       "183.240.99.224:443",
+      "183.6.115.212:19450",
       "185.45.5.35:443",
       "193.112.105.63",
       "193.112.131.222",
