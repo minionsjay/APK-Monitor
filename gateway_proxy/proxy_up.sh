@@ -4,7 +4,7 @@
 # native socket 也被抓:靠内核 ip rule(优先级9000,压过 Android fwmark 分流),非 App 层 VPN。
 
 BIN=/data/local/tmp/tun2socks
-TUN=tun0
+TUN=${TUN_NAME:-tun0}
 TUN_ADDR=198.18.0.1
 TUN_MASK=15
 TABLE=138
