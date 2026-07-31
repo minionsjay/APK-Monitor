@@ -37,7 +37,8 @@ def run_adb(cmd, timeout=30):
                           capture_output=True, text=True, timeout=timeout, shell=False)
         return r
     except:
-        return subprocess.run([''], capture_output=True, text=True, timeout=1)
+        class R: stdout=''; stderr=''; returncode=-1
+        return R()
 
 def load_json(path):
     if not os.path.exists(path): return {}
