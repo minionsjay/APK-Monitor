@@ -34,7 +34,7 @@ POOL_TARGET = 20           # 代理池目标大小
 STATE_FIELDS = ['apk_id','package','label','score','size_mb',
                 'first_installed','last_monitored','proxy_count',
                 'huawei_count','installed_on_device','apk_path',
-                'domain','download_url','status',
+                'domain','download_url','status','node_source',
                 'download_time','detect_time','install_time','node_time']
 
 # ====== 换IP代理辅助 ======
@@ -437,6 +437,7 @@ def install_worker():
         #                    没拿到节点=疑似限流,清数据+换IP重试)
         t4 = time.time()
         nodes = []
+        node_source = 'none'   # json | proc | none —— 区分节点来源
         attempts = MAX_IP_RETRY if PROXY_ENABLED else 1
         for attempt in range(attempts):
             if PROXY_ENABLED:
@@ -450,8 +451,11 @@ def install_worker():
             click_popup()
             # 获取节点 (优先 sdk_forwarder_fixed.json, 备用 /proc/PID/net/tcp)
             nodes = get_proxy_nodes(pkg)
-            if not nodes:
+            if nodes:
+                node_source = 'json'
+            else:
                 nodes = get_proxy_nodes_via_proc(pkg)
+                node_source = 'proc' if nodes else 'none'
             if nodes:
                 break
             # 没拿到节点(疑似IP被限流)→ 清APP数据强制重新注册 + 换IP重试
@@ -490,7 +494,7 @@ def install_worker():
                  'proxy_count':str(len(nodes)),'huawei_count':str(len(hw_ips)),
                  'installed_on_device':'false','apk_path':apk_path,
                  'domain':domain,'download_url':item['url'],
-                 'status':'ok' if nodes else 'no_nodes',
+                 'status':'ok' if nodes else 'no_nodes','node_source':node_source,
                  'download_time':f'{t_dl:.1f}','detect_time':f'{t_det:.1f}',
                  'install_time':f'{t_inst:.1f}','node_time':f'{t_node:.1f}'}
 
@@ -507,6 +511,7 @@ def install_worker():
             db['apks'].append({'id':domain,'package':pkg,'label':label,
                               'app_name':'','app_domain_port':'',
                               'proxy_nodes':nodes,'proxy_count':len(nodes),
+                              'node_source':node_source,
                               'first_seen':now,'last_collected':now})
             for ip in nodes:
                 all_proxy.add(ip)
@@ -521,7 +526,7 @@ def install_worker():
                 'install_time':t_inst,'node_time':t_node
             })
 
-        print(f'安装{t_inst:.1f}s 节点{t_node:.1f}s → {len(nodes)}节点 {len(hw_ips)}华为')
+        print(f'安装{t_inst:.1f}s 节点{t_node:.1f}s → {len(nodes)}节点[{node_source}] {len(hw_ips)}华为')
         stats['installed']+=1
 
         if stats['installed'] % 1 == 0:

@@ -1,15 +1,15 @@
 {
-  "timestamp": "20260731_093121",
+  "timestamp": "20260731_093400",
   "stats": {
     "downloaded": 0,
-    "installed": 15,
+    "installed": 16,
     "failed": 0,
     "skipped": 0,
     "total_dl": 0.0,
     "total_detect": 0.0,
-    "total_install": 259.5775887966156,
-    "total_node": 800.8462650775909,
-    "total_icon": 0.9732887744903564
+    "total_install": 277.72307777404785,
+    "total_node": 841.187792301178,
+    "total_icon": 1.3098149299621582
   },
   "apk_details": [
     {
@@ -346,12 +346,33 @@
       "detect_time": 0,
       "install_time": 19.20435070991516,
       "node_time": 48.471184968948364
+    },
+    {
+      "domain": "711cpc57.ilq9v.com",
+      "label": "acezNI",
+      "package": "vnd.dmeanvrymvvreeq.qlcdrkkftgbuief",
+      "nodes": [
+        "103.120.90.46:30151",
+        "103.45.129.234:30151",
+        "106.55.6.156:30151",
+        "112.53.42.114:443",
+        "120.233.71.230:443",
+        "123.138.24.114:8800",
+        "142.250.197.110:443",
+        "172.217.112.4:443",
+        "183.240.99.224:443",
+        "183.6.115.212:19450",
+        "8.134.96.86:30151"
+      ],
+      "hw_ips": [],
+      "download_time": 0,
+      "detect_time": 0,
+      "install_time": 18.14548897743225,
+      "node_time": 40.341527223587036
     }
   ],
   "ip_changes": {
-    "new_proxy": [
-      "183.6.115.212:19450"
-    ],
+    "new_proxy": [],
     "removed_proxy": [],
     "unchanged_proxy": [
       "1.12.59.156",
@@ -571,6 +592,7 @@
       "175.6.75.144:10064",
       "183.240.98.215:443",
       "183.240.99.224:443",
+      "183.6.115.212:19450",
       "185.45.5.35:443",
       "193.112.105.63",
       "193.112.131.222",
@@ -795,7 +817,7 @@
     "new_huawei": [],
     "removed_huawei": [],
     "total_current": 438,
-    "total_previous": 437,
+    "total_previous": 438,
     "total_huawei_current": 40,
     "total_huawei_previous": 40,
     "all_proxy": [
