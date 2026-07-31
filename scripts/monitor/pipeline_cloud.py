@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """云手机流水线 — 用Windows adb.exe连接云手机
-- 从已下载的APK安装到云手机(127.0.0.1:53610)
+- 从已下载的APK安装到云手机(127.0.0.1:52924)
 - 读取sdk_forwarder_fixed.json(用cat,不需要root)
 - 收集artifacts(sdk_cache/sdk_forwarder/uuid/.dat)
 - 生成HTML报告
@@ -10,7 +10,7 @@ import subprocess, json, os, time, re, csv, zipfile, hashlib, threading, queue, 
 from datetime import datetime
 
 ADB = "/mnt/c/Users/minions/AppData/Local/Android/Sdk/platform-tools/adb.exe"
-ADB_DEVICE = "127.0.0.1:53610"
+ADB_DEVICE = "127.0.0.1:52924"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
 WIN_BASE = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/20260728"
@@ -419,7 +419,7 @@ def main():
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(NODES_DIR, exist_ok=True)
     state = load_state()
-    print(f"=== 云手机流水线 (rk3588s, Android10, 127.0.0.1:53610) ===")
+    print(f"=== 云手机流水线 (rk3588s, Android10, 127.0.0.1:52924) ===")
     print(f"域名总数: {len(domains)}")
     print(f"已处理: {len(state)}")
     print(f"待处理: {len(domains) - len(state)}")
