@@ -1,15 +1,15 @@
 {
-  "timestamp": "20260731_091141",
+  "timestamp": "20260731_091407",
   "stats": {
     "downloaded": 0,
-    "installed": 8,
+    "installed": 9,
     "failed": 0,
     "skipped": 0,
     "total_dl": 0.0,
     "total_detect": 0.0,
-    "total_install": 145.75594854354858,
-    "total_node": 433.2618911266327,
-    "total_icon": 0.5025103092193604
+    "total_install": 154.0159502029419,
+    "total_node": 472.17418909072876,
+    "total_icon": 0.8555703163146973
   },
   "apk_details": [
     {
@@ -190,10 +190,33 @@
       "detect_time": 0,
       "install_time": 22.596848487854004,
       "node_time": 52.59474015235901
+    },
+    {
+      "domain": "711cpc94.u68qm.com",
+      "label": "oOvBXM",
+      "package": "gje.mreokkkcijhilnj.ppfgstxqwhpvrfu",
+      "nodes": [
+        "103.120.90.46:30151",
+        "103.45.129.234:30151",
+        "106.55.6.156:30151",
+        "112.53.42.114:443",
+        "117.50.194.130:7890",
+        "123.138.24.114:8800",
+        "142.250.197.110:443",
+        "172.217.117.4:443",
+        "8.134.96.86:30151"
+      ],
+      "hw_ips": [],
+      "download_time": 0,
+      "detect_time": 0,
+      "install_time": 8.26000165939331,
+      "node_time": 38.91229796409607
     }
   ],
   "ip_changes": {
-    "new_proxy": [],
+    "new_proxy": [
+      "117.50.194.130:7890"
+    ],
     "removed_proxy": [],
     "unchanged_proxy": [
       "1.12.59.156",
@@ -628,7 +651,7 @@
     ],
     "new_huawei": [],
     "removed_huawei": [],
-    "total_current": 429,
+    "total_current": 430,
     "total_previous": 429,
     "total_huawei_current": 40,
     "total_huawei_previous": 40,
@@ -723,6 +746,7 @@
       "116.205.171.225",
       "116.205.179.132",
       "116.205.233.41",
+      "117.50.194.130:7890",
       "117.88.33.209:443",
       "117.88.33.247:443",
       "119.29.175.194",
