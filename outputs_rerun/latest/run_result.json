@@ -1,15 +1,15 @@
 {
-  "timestamp": "20260731_102057",
+  "timestamp": "20260731_102345",
   "stats": {
     "downloaded": 0,
-    "installed": 5,
+    "installed": 6,
     "failed": 0,
     "skipped": 0,
     "total_dl": 0.0,
     "total_detect": 0.0,
-    "total_install": 97.95430588722229,
-    "total_node": 268.01808500289917,
-    "total_icon": 0.1038961410522461
+    "total_install": 117.49410557746887,
+    "total_node": 310.1936843395233,
+    "total_icon": 0.1236724853515625
   },
   "apk_details": [
     {
@@ -127,6 +127,29 @@
       "detect_time": 0,
       "install_time": 18.573113203048706,
       "node_time": 46.24611186981201
+    },
+    {
+      "domain": "713sl001.1plf7.com",
+      "label": "WCZVUc",
+      "package": "fop.xcfqvvymhaj.fdblijhyyognydh",
+      "nodes": [
+        "103.120.90.46:30151",
+        "103.45.129.234:30151",
+        "106.55.6.156:30151",
+        "112.53.42.114:443",
+        "115.231.181.40:8128",
+        "120.92.212.16:8890",
+        "142.250.197.110:443",
+        "142.250.198.46:443",
+        "183.240.99.224:443",
+        "36.140.66.185:7890",
+        "8.134.96.86:30151"
+      ],
+      "hw_ips": [],
+      "download_time": 0,
+      "detect_time": 0,
+      "install_time": 19.539799690246582,
+      "node_time": 42.175599336624146
     }
   ],
   "ip_changes": {
