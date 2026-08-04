@@ -479,6 +479,23 @@
       "proxy_count": 6,
       "first_seen": "2026-08-04 11:15",
       "last_collected": "2026-08-04 11:15"
+    },
+    {
+      "id": "724cpc31.qzlj2.com",
+      "package": "trc.smjjsuydwvrrrpa.qcgsowcxffslrbd",
+      "label": "vIdDUA",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "14.215.183.199:443",
+        "218.91.113.207:443",
+        "8.134.55.179:30160",
+        "8.163.2.69:30160",
+        "8.163.54.50:30160"
+      ],
+      "proxy_count": 5,
+      "first_seen": "2026-08-04 11:17",
+      "last_collected": "2026-08-04 11:17"
     }
   ],
   "all_proxy_nodes": [
