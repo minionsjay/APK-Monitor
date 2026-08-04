@@ -1399,6 +1399,17 @@
       "proxy_count": 13,
       "first_seen": "2026-08-04 20:37",
       "last_collected": "2026-08-04 20:37"
+    },
+    {
+      "id": "82barh.shaava.cn",
+      "package": "c3pymd.u1c3awz.tywzjawy",
+      "label": "",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [],
+      "proxy_count": 0,
+      "first_seen": "2026-08-04 20:38",
+      "last_collected": "2026-08-04 20:38"
     }
   ],
   "all_proxy_nodes": [
