@@ -888,6 +888,23 @@
       "proxy_count": 12,
       "first_seen": "2026-08-04 11:52",
       "last_collected": "2026-08-04 11:52"
+    },
+    {
+      "id": "725a271.bhcc0.com",
+      "package": "vhqps.munmkfwo.ucvqupmxi",
+      "label": "LiToID",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "47.113.75.183:443",
+        "8.148.236.101:30138",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 5,
+      "first_seen": "2026-08-04 11:53",
+      "last_collected": "2026-08-04 11:53"
     }
   ],
   "all_proxy_nodes": [
