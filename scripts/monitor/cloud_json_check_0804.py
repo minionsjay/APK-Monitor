@@ -8,7 +8,7 @@
 import subprocess, os, time, re, csv, sys, shutil
 
 WADB = "/mnt/c/Users/minions/AppData/Local/Android/Sdk/platform-tools/adb.exe"
-DEV  = "127.0.0.1:55054"
+DEV  = "127.0.0.1:54565"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 APK_DIR = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/20260804"
 WINTMP_WSL = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/tmp"
