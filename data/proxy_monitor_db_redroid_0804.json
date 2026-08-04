@@ -1874,6 +1874,17 @@
       "proxy_count": 4,
       "first_seen": "2026-08-04 20:55",
       "last_collected": "2026-08-04 20:55"
+    },
+    {
+      "id": "834b4e.showdou20261.xyz",
+      "package": "com.shuofeng.dl975022",
+      "label": "朔风下载",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [],
+      "proxy_count": 0,
+      "first_seen": "2026-08-04 20:57",
+      "last_collected": "2026-08-04 20:57"
     }
   ],
   "all_proxy_nodes": [
