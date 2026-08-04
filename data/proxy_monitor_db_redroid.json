@@ -1187,6 +1187,22 @@
       "proxy_count": 4,
       "first_seen": "2026-08-04 12:28",
       "last_collected": "2026-08-04 12:28"
+    },
+    {
+      "id": "725b186.ojb8o.com",
+      "package": "doyxa.wgdnwayi.ktkrrogxu",
+      "label": "idEmdB",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "47.113.75.183:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-04 12:30",
+      "last_collected": "2026-08-04 12:30"
     }
   ],
   "all_proxy_nodes": [
