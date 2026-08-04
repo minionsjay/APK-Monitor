@@ -938,6 +938,22 @@
       "proxy_count": 5,
       "first_seen": "2026-08-04 11:57",
       "last_collected": "2026-08-04 11:57"
+    },
+    {
+      "id": "725a305.6ole6.com",
+      "package": "gjvkj.qaessefn.deviwftmw",
+      "label": "yPewUf",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "8.148.236.101:30138",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-04 11:58",
+      "last_collected": "2026-08-04 11:58"
     }
   ],
   "all_proxy_nodes": [
