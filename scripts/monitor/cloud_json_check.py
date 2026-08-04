@@ -8,7 +8,7 @@
 import subprocess, os, time, re, csv, sys, shutil
 
 WADB = "/mnt/c/Users/minions/AppData/Local/Android/Sdk/platform-tools/adb.exe"
-DEV  = "127.0.0.1:49672"
+DEV  = "127.0.0.1:64903"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 APK_DIR = "/home/ninini/Agents/APK-Research/new_samples"
 WINTMP_WSL = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/tmp"
@@ -77,7 +77,7 @@ def main():
         rc,out = adb(["install","-r",WINTMP_WIN], timeout=300)
         if "Success" not in out:
             # 设备掉线? 别记假失败(否则被当已完成跳过),直接停下等人重连
-            if any(k in out for k in ("not found","offline","cannot connect","refused","closed","device unauthorized","protocol fault")):
+            if any(k in out for k in ("not found","offline","cannot connect","refused","closed","device unauthorized","protocol fault","timed out","Command '")):
                 print(f"[{i}] {domain} 设备掉线({out.strip()[:60]}) —— 停止,勿记录。重连后重跑即可续。", flush=True)
                 fout.close(); sys.exit(2)
             # 真实安装拒绝(存储不足/损坏等)才记 install_fail
