@@ -1381,6 +1381,21 @@
       "proxy_count": 3,
       "first_seen": "2026-08-04 12:48",
       "last_collected": "2026-08-04 12:48"
+    },
+    {
+      "id": "725b34.1hg9y.com",
+      "package": "elpcv.fuelmkyj.ghdxopeir",
+      "label": "aAOpvu",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "47.113.75.183:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 3,
+      "first_seen": "2026-08-04 12:51",
+      "last_collected": "2026-08-04 12:51"
     }
   ],
   "all_proxy_nodes": [
