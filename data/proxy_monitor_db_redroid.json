@@ -1321,6 +1321,21 @@
       "proxy_count": 4,
       "first_seen": "2026-08-04 12:41",
       "last_collected": "2026-08-04 12:41"
+    },
+    {
+      "id": "725b283.uxcpr.com",
+      "package": "aduhq.pmskixqe.idkavypmq",
+      "label": "arOBlz",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 3,
+      "first_seen": "2026-08-04 12:42",
+      "last_collected": "2026-08-04 12:42"
     }
   ],
   "all_proxy_nodes": [
