@@ -1305,6 +1305,22 @@
       "proxy_count": 12,
       "first_seen": "2026-08-04 12:39",
       "last_collected": "2026-08-04 12:39"
+    },
+    {
+      "id": "725b255.5xpty.com",
+      "package": "urvbi.jnuynpkc.gnfekwaod",
+      "label": "sDMkln",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "47.113.75.183:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-04 12:41",
+      "last_collected": "2026-08-04 12:41"
     }
   ],
   "all_proxy_nodes": [
