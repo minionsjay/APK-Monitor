@@ -277,6 +277,35 @@ def install_worker():
         collect_artifacts(pkg, domain)
         screenshot(domain, pkg)
         extract_icon(apk_path, domain)
+        # 对比: 获取TCP连接IP,和forward文件IP对比
+        try:
+            tcp_ips = set()
+            r_pid = run_adb(['shell', f'pidof {pkg}'], timeout=5)
+            pid = r_pid.stdout.strip()
+            if pid:
+                r_tcp = run_adb(['shell', f'cat /proc/{pid}/net/tcp'], timeout=5)
+                for line in r_tcp.stdout.strip().split('\n')[1:]:
+                    parts = line.split()
+                    if len(parts) < 4 or parts[3] != '01': continue
+                    ip_hex, port_hex = parts[2].split(':')
+                    port = int(port_hex, 16)
+                    if port <= 100: continue
+                    if len(ip_hex) == 8:
+                        b = bytes.fromhex(ip_hex)
+                        ip = f'{b[3]}.{b[2]}.{b[1]}.{b[0]}'
+                        if ip.startswith('127.') or ip.startswith('192.168.') or ip.startswith('172.'): continue
+                        tcp_ips.add(ip)
+            # 保存TCP连接IP到artifacts
+            apk_artifact_dir = f'{APK_DIR}/{domain}'
+            with open(f'{apk_artifact_dir}/tcp_connections.json', 'w') as f:
+                json.dump({'forward_ips': nodes, 'tcp_ips': sorted(tcp_ips),
+                           'common': sorted(set(nodes) & tcp_ips),
+                           'forward_only': sorted(set(nodes) - tcp_ips),
+                           'tcp_only': sorted(tcp_ips - set(nodes))}, f, indent=2)
+            if tcp_ips:
+                common = set(nodes) & tcp_ips
+                print(f'对比: forward={len(nodes)} tcp={len(tcp_ips)} 交集={len(common)} ', end='', flush=True)
+        except: pass
         # force-stop + uninstall
         run_adb(['shell', f'am force-stop {pkg}'], timeout=10)
         run_adb(['uninstall', pkg], timeout=30)
