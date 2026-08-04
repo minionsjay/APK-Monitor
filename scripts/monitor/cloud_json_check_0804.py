@@ -10,10 +10,10 @@ import subprocess, os, time, re, csv, sys, shutil
 WADB = "/mnt/c/Users/minions/AppData/Local/Android/Sdk/platform-tools/adb.exe"
 DEV  = "127.0.0.1:55054"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
-APK_DIR = "/home/ninini/Agents/APK-Research/new_samples"
+APK_DIR = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/20260804"
 WINTMP_WSL = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/tmp"
 WINTMP_WIN = r"E:\Work\App-analyze\Apks\Duoyun-apks\tmp\t.apk"
-OUT = "/home/ninini/Agents/APK-Research/data/cloud_json_results.csv"
+OUT = "/home/ninini/Agents/APK-Research/data/cloud_json_results_0804.csv"
 POLL_MAX = 25   # 秒
 FIELDS = ["domain","package","got_json","ip_count","port","ips","seconds"]
 

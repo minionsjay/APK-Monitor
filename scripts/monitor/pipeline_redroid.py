@@ -13,13 +13,13 @@ ADB = "/mnt/c/Users/minions/AppData/Local/Android/Sdk/platform-tools/adb.exe"
 ADB_DEVICE = "127.0.0.1:5555"
 AAPT = "/home/ninini/Agents/AI-APK/research/MARD/sandbox/android-sdk/build-tools/34.0.0/aapt"
 BASE_DIR = "/home/ninini/Agents/APK-Research"
-WIN_BASE = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/20260728"
-APK_DIR = f"{WIN_BASE}/apks"
+WIN_BASE = "/mnt/e/Work/App-analyze/Apks/Duoyun-apks/20260804"
+APK_DIR = WIN_BASE
 RESULTS_DIR = f"{WIN_BASE}/results"
 NODES_DIR = f"{WIN_BASE}/nodes"
-DB_PATH = f"{BASE_DIR}/data/proxy_monitor_db_redroid.json"
-STATE_CSV = f"{BASE_DIR}/data/apk_state_redroid.csv"
-IP_HISTORY = f"{BASE_DIR}/data/ip_history_redroid.json"
+DB_PATH = f"{BASE_DIR}/data/proxy_monitor_db_redroid_0804.json"
+STATE_CSV = f"{BASE_DIR}/data/apk_state_redroid_0804.csv"
+IP_HISTORY = f"{BASE_DIR}/data/ip_history_redroid_0804.json"
 STATE_FIELDS = ['apk_id','package','label','score','size_mb','first_installed','last_monitored','proxy_count','huawei_count','installed_on_device','apk_path','domain','download_url','status','download_time','detect_time','install_time','node_time']
 
 apk_queue = queue.Queue()
@@ -389,11 +389,13 @@ def generate_report(db, all_proxy):
 
 def main():
     domains = []
-    csv_path = f'{WIN_BASE}/apk-domain-260728.csv'
+    csv_path = f'{WIN_BASE}/【外部公开】违规APP下载链接260804.txt'
     with open(csv_path, encoding='utf-8-sig') as f:
-        for row in csv.DictReader(f):
-            d = row.get('pre_host','').strip()
-            if d: domains.append(d)
+        for line in f:
+            d = line.strip()
+            if d == 'pre_host' or not d:
+                continue
+            domains.append(d)
     os.makedirs(APK_DIR, exist_ok=True)
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(NODES_DIR, exist_ok=True)
