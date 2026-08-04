@@ -1847,6 +1847,17 @@
       "proxy_count": 0,
       "first_seen": "2026-08-04 20:52",
       "last_collected": "2026-08-04 20:52"
+    },
+    {
+      "id": "833xxtldxldy.umgm.cc",
+      "package": "com.xxtldy.sfzy",
+      "label": "小小屠龙",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [],
+      "proxy_count": 0,
+      "first_seen": "2026-08-04 20:54",
+      "last_collected": "2026-08-04 20:54"
     }
   ],
   "all_proxy_nodes": [
