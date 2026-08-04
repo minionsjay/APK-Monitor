@@ -1396,6 +1396,21 @@
       "proxy_count": 3,
       "first_seen": "2026-08-04 12:51",
       "last_collected": "2026-08-04 12:51"
+    },
+    {
+      "id": "725b40.5xpty.com",
+      "package": "tayds.facyljug.isuvdyomw",
+      "label": "dFQOXk",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 3,
+      "first_seen": "2026-08-04 12:53",
+      "last_collected": "2026-08-04 12:53"
     }
   ],
   "all_proxy_nodes": [
