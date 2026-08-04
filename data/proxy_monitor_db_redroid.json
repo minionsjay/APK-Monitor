@@ -1474,6 +1474,21 @@
       "proxy_count": 4,
       "first_seen": "2026-08-04 13:00",
       "last_collected": "2026-08-04 13:00"
+    },
+    {
+      "id": "725b7.3qydj.com",
+      "package": "ejvqj.jdnxgkre.pluigusxb",
+      "label": "ClBqmo",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 3,
+      "first_seen": "2026-08-04 13:02",
+      "last_collected": "2026-08-04 13:02"
     }
   ],
   "all_proxy_nodes": [
