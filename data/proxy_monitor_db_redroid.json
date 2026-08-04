@@ -1064,6 +1064,21 @@
       "proxy_count": 3,
       "first_seen": "2026-08-04 12:10",
       "last_collected": "2026-08-04 12:10"
+    },
+    {
+      "id": "725b105.5xpty.com",
+      "package": "aduhq.pmskixqe.idkavypmq",
+      "label": "arOBlz",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 3,
+      "first_seen": "2026-08-04 12:13",
+      "last_collected": "2026-08-04 12:13"
     }
   ],
   "all_proxy_nodes": [
