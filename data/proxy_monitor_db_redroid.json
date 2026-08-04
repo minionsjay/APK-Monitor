@@ -1001,6 +1001,22 @@
       "proxy_count": 3,
       "first_seen": "2026-08-04 12:03",
       "last_collected": "2026-08-04 12:03"
+    },
+    {
+      "id": "725a50.6ole6.com",
+      "package": "waypc.hioxkefj.piahccmoa",
+      "label": "RLhIse",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "1.14.201.64:30138",
+        "14.215.183.199:443",
+        "47.113.75.183:443",
+        "8.148.243.225:30138"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-04 12:05",
+      "last_collected": "2026-08-04 12:05"
     }
   ],
   "all_proxy_nodes": [
