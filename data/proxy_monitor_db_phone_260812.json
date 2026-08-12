@@ -3899,6 +3899,26 @@
       "proxy_count": 8,
       "first_seen": "2026-08-13 00:59",
       "last_collected": "2026-08-13 00:59"
+    },
+    {
+      "id": "810c320.d657r.com",
+      "package": "web.nsurbwvcaqsmc.qdfucwojuyxndvjway",
+      "label": "akVupT",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "119.13.113.34:443",
+        "223.109.82.2:443",
+        "3.5.215.29:443",
+        "47.106.53.176:443",
+        "8.138.220.224:30164",
+        "8.138.83.81:30138",
+        "8.163.101.21:30138",
+        "8.163.37.53:30164"
+      ],
+      "proxy_count": 8,
+      "first_seen": "2026-08-13 01:01",
+      "last_collected": "2026-08-13 01:01"
     }
   ],
   "all_proxy_nodes": [
