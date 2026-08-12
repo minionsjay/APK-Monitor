@@ -3919,6 +3919,17 @@
       "proxy_count": 8,
       "first_seen": "2026-08-13 01:01",
       "last_collected": "2026-08-13 01:01"
+    },
+    {
+      "id": "810c328.btnpx.com",
+      "package": "mnj.uqawgwghjlbrec.givyudckfjntxsq",
+      "label": "LpRjkR",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [],
+      "proxy_count": 0,
+      "first_seen": "2026-08-13 01:03",
+      "last_collected": "2026-08-13 01:03"
     }
   ],
   "all_proxy_nodes": [
