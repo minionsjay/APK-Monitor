@@ -4148,6 +4148,23 @@
       "proxy_count": 4,
       "first_seen": "2026-08-13 01:30",
       "last_collected": "2026-08-13 01:30"
+    },
+    {
+      "id": "810c58.btnpx.com",
+      "package": "onk.wtqfkcwilpkbkm.hbobbssgbsidcjb",
+      "label": "blFtkC",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "119.13.113.35:443",
+        "3.5.214.142:443",
+        "47.113.75.187:443",
+        "8.148.193.71:30146",
+        "8.163.54.109:30146"
+      ],
+      "proxy_count": 5,
+      "first_seen": "2026-08-13 01:32",
+      "last_collected": "2026-08-13 01:32"
     }
   ],
   "all_proxy_nodes": [
