@@ -5506,6 +5506,25 @@
       "proxy_count": 4,
       "first_seen": "2026-08-13 04:01",
       "last_collected": "2026-08-13 04:01"
+    },
+    {
+      "id": "810ww262.d8ai9s.top",
+      "package": "bhc.mgslqybaecadu.kdhlccdbhcwrdvae",
+      "label": "AugrSt",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "223.109.82.2:443",
+        "47.106.53.176:443",
+        "47.113.75.142:443",
+        "8.134.18.45:30172",
+        "8.134.61.122:30172",
+        "8.138.220.224:30164",
+        "8.163.37.53:30164"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-08-13 04:03",
+      "last_collected": "2026-08-13 04:03"
     }
   ],
   "all_proxy_nodes": [
