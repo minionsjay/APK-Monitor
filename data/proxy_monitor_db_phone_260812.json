@@ -426,6 +426,30 @@
       "proxy_count": 17,
       "first_seen": "2026-08-12 21:10",
       "last_collected": "2026-08-12 21:10"
+    },
+    {
+      "id": "810yh21.fvatp.com",
+      "package": "ldn.qvanwbcdse.cdfeqxddsauaneekmg",
+      "label": "ooCqVO",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "43.136.29.16",
+        "103.45.129.234",
+        "8.138.36.224",
+        "8.134.212.55",
+        "103.120.90.85",
+        "42.193.193.49",
+        "119.91.195.47",
+        "43.136.59.240",
+        "8.163.35.32",
+        "175.178.128.201",
+        "8.148.178.49",
+        "119.91.39.131"
+      ],
+      "proxy_count": 12,
+      "first_seen": "2026-08-12 21:11",
+      "last_collected": "2026-08-12 21:11"
     }
   ],
   "all_proxy_nodes": [
