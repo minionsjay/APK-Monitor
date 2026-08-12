@@ -3930,6 +3930,25 @@
       "proxy_count": 0,
       "first_seen": "2026-08-13 01:03",
       "last_collected": "2026-08-13 01:03"
+    },
+    {
+      "id": "810c329.klcc1.com",
+      "package": "ibl.maojtpcipmobc.xyeinlxrgnoytmpjgy",
+      "label": "tiskWM",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "223.109.82.2:443",
+        "47.106.53.176:443",
+        "47.113.75.183:443",
+        "8.138.2.94:30183",
+        "8.138.212.174:30183",
+        "8.138.220.224:30164",
+        "8.163.37.53:30164"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-08-13 01:05",
+      "last_collected": "2026-08-13 01:05"
     }
   ],
   "all_proxy_nodes": [
