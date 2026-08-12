@@ -4614,6 +4614,23 @@
       "proxy_count": 4,
       "first_seen": "2026-08-13 02:28",
       "last_collected": "2026-08-13 02:28"
+    },
+    {
+      "id": "810d270.y3zok.com",
+      "package": "wug.dpfqhevmitxvu.tpgtudotfwthpvhlkh",
+      "label": "ShsgZg",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "117.88.33.247:443",
+        "223.109.82.2:443",
+        "47.106.53.176:443",
+        "8.138.220.224:30164",
+        "8.163.37.53:30164"
+      ],
+      "proxy_count": 5,
+      "first_seen": "2026-08-13 02:30",
+      "last_collected": "2026-08-13 02:30"
     }
   ],
   "all_proxy_nodes": [
