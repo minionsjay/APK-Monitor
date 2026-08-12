@@ -4019,6 +4019,22 @@
       "proxy_count": 5,
       "first_seen": "2026-08-13 01:14",
       "last_collected": "2026-08-13 01:14"
+    },
+    {
+      "id": "810c388.7xaz9.com",
+      "package": "ntm.vgfrlhgyfwhewe.yhmfguevfpojyvx",
+      "label": "FXaOIx",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "223.109.82.2:443",
+        "47.113.75.183:443",
+        "8.138.2.94:30183",
+        "8.138.212.174:30183"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-13 01:16",
+      "last_collected": "2026-08-13 01:16"
     }
   ],
   "all_proxy_nodes": [
