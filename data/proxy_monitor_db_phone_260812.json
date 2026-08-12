@@ -4116,6 +4116,22 @@
       "proxy_count": 4,
       "first_seen": "2026-08-13 01:26",
       "last_collected": "2026-08-13 01:26"
+    },
+    {
+      "id": "810c552.kp5yq.com",
+      "package": "yqx.rhdguxrobpnaig.kubxsjsedfwngiv",
+      "label": "SzzIRa",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "119.13.113.34:443",
+        "3.5.214.242:443",
+        "8.138.83.81:30138",
+        "8.163.101.21:30138"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-13 01:28",
+      "last_collected": "2026-08-13 01:28"
     }
   ],
   "all_proxy_nodes": [
