@@ -4068,6 +4068,22 @@
       "proxy_count": 4,
       "first_seen": "2026-08-13 01:20",
       "last_collected": "2026-08-13 01:20"
+    },
+    {
+      "id": "810c430.mv4ow.com",
+      "package": "onk.wtqfkcwilpkbkm.hbobbssgbsidcjb",
+      "label": "blFtkC",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "223.109.82.2:443",
+        "47.113.75.142:443",
+        "8.134.18.45:30172",
+        "8.134.61.122:30172"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-13 01:22",
+      "last_collected": "2026-08-13 01:22"
     }
   ],
   "all_proxy_nodes": [
