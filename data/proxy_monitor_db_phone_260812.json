@@ -8136,6 +8136,24 @@
       "proxy_count": 14,
       "first_seen": "2026-08-13 09:11",
       "last_collected": "2026-08-13 09:11"
+    },
+    {
+      "id": "810bh709.86px9.com",
+      "package": "uhc.lewtngqgyqsdht.rgclqpwbxbldxurmuqk",
+      "label": "FtWOZb",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "139.199.159.229:30139",
+        "223.109.82.2:443",
+        "42.194.181.18:30139",
+        "47.113.75.143:443",
+        "8.138.87.6:30176",
+        "8.148.191.243:30139"
+      ],
+      "proxy_count": 6,
+      "first_seen": "2026-08-13 09:13",
+      "last_collected": "2026-08-13 09:13"
     }
   ],
   "all_proxy_nodes": [
