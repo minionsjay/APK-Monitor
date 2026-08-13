@@ -7808,6 +7808,24 @@
       "proxy_count": 8,
       "first_seen": "2026-08-13 08:42",
       "last_collected": "2026-08-13 08:42"
+    },
+    {
+      "id": "810ww377.x8uc5c.top",
+      "package": "ege.qcudrcvidwmey.mfikwtxwlnpblnkc",
+      "label": "ranyOI",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "223.109.82.2:443",
+        "42.194.181.18:30139",
+        "47.113.75.142:443",
+        "8.134.18.45:30172",
+        "8.134.61.122:30172",
+        "8.148.191.243:30139"
+      ],
+      "proxy_count": 6,
+      "first_seen": "2026-08-13 08:44",
+      "last_collected": "2026-08-13 08:44"
     }
   ],
   "all_proxy_nodes": [
