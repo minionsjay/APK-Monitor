@@ -7666,6 +7666,17 @@
       "proxy_count": 4,
       "first_seen": "2026-08-13 08:21",
       "last_collected": "2026-08-13 08:21"
+    },
+    {
+      "id": "810c341.m7g8c.com",
+      "package": "ldd.phnhamqsnnxrdc.gsxarjuimygsomd",
+      "label": "eTvReP",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [],
+      "proxy_count": 0,
+      "first_seen": "2026-08-13 08:24",
+      "last_collected": "2026-08-13 08:24"
     }
   ],
   "all_proxy_nodes": [
