@@ -7769,6 +7769,25 @@
       "proxy_count": 7,
       "first_seen": "2026-08-13 08:36",
       "last_collected": "2026-08-13 08:36"
+    },
+    {
+      "id": "810dla35.s2vb7c.top",
+      "package": "pbe.bojbqiwihcpteyu.havhwefrsbpexpq",
+      "label": "sthxVe",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "119.13.113.35:443",
+        "139.199.159.229:30139",
+        "3.5.239.149:443",
+        "42.194.181.18:30139",
+        "8.148.191.243:30139",
+        "8.148.193.71:30146",
+        "8.163.54.109:30146"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-08-13 08:39",
+      "last_collected": "2026-08-13 08:39"
     }
   ],
   "all_proxy_nodes": [
