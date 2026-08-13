@@ -7731,6 +7731,25 @@
       "proxy_count": 8,
       "first_seen": "2026-08-13 08:32",
       "last_collected": "2026-08-13 08:32"
+    },
+    {
+      "id": "810c299.klcc1.com",
+      "package": "wbo.teqwqygiyaerh.gamgyebqiellldiaaf",
+      "label": "mlFXaI",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "119.13.113.34:443",
+        "139.199.159.229:30139",
+        "3.5.215.220:443",
+        "42.194.181.18:30139",
+        "8.138.220.224:30164",
+        "8.148.191.243:30139",
+        "8.163.37.53:30164"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-08-13 08:34",
+      "last_collected": "2026-08-13 08:34"
     }
   ],
   "all_proxy_nodes": [
