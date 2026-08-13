@@ -7999,6 +7999,25 @@
       "proxy_count": 8,
       "first_seen": "2026-08-13 09:00",
       "last_collected": "2026-08-13 09:00"
+    },
+    {
+      "id": "810d200.y3zok.com",
+      "package": "baj.ucvwxhforwbld.bpajptrsoknjtuannq",
+      "label": "TtFVaO",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "119.13.113.34:443",
+        "139.199.159.229:30139",
+        "3.5.214.137:443",
+        "42.194.181.18:30139",
+        "8.138.220.224:30164",
+        "8.148.191.243:30139",
+        "8.163.37.53:30164"
+      ],
+      "proxy_count": 7,
+      "first_seen": "2026-08-13 09:02",
+      "last_collected": "2026-08-13 09:02"
     }
   ],
   "all_proxy_nodes": [
