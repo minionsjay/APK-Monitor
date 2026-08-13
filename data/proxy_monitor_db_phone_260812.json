@@ -7607,6 +7607,17 @@
       "proxy_count": 0,
       "first_seen": "2026-08-13 08:13",
       "last_collected": "2026-08-13 08:13"
+    },
+    {
+      "id": "810c181.kp5yq.com",
+      "package": "lei.dojkpwewfbxpri.eixojelkawecpna",
+      "label": "eUCRBU",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [],
+      "proxy_count": 0,
+      "first_seen": "2026-08-13 08:15",
+      "last_collected": "2026-08-13 08:15"
     }
   ],
   "all_proxy_nodes": [
