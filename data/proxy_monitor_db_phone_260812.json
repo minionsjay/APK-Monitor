@@ -7650,6 +7650,22 @@
       "proxy_count": 4,
       "first_seen": "2026-08-13 08:19",
       "last_collected": "2026-08-13 08:19"
+    },
+    {
+      "id": "810ww97.m8au5b.top",
+      "package": "uav.mbduehaustdjo.iebmfbnrrlhpxaxd",
+      "label": "ovQcgv",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "223.109.82.2:443",
+        "47.113.75.142:443",
+        "8.134.18.45:30172",
+        "8.134.61.122:30172"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-13 08:21",
+      "last_collected": "2026-08-13 08:21"
     }
   ],
   "all_proxy_nodes": [
