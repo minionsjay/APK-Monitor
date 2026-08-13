@@ -7618,6 +7618,22 @@
       "proxy_count": 0,
       "first_seen": "2026-08-13 08:15",
       "last_collected": "2026-08-13 08:15"
+    },
+    {
+      "id": "810pt3.gsx6i.top",
+      "package": "sai.vvjusllxdupgq.bwmclnbrdpctrnlurf",
+      "label": "GBZlcD",
+      "app_name": "",
+      "app_domain_port": "",
+      "proxy_nodes": [
+        "119.13.113.35:443",
+        "3.5.239.254:443",
+        "8.138.220.224:30164",
+        "8.163.37.53:30164"
+      ],
+      "proxy_count": 4,
+      "first_seen": "2026-08-13 08:17",
+      "last_collected": "2026-08-13 08:17"
     }
   ],
   "all_proxy_nodes": [
